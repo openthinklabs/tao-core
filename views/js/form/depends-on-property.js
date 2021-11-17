@@ -85,11 +85,14 @@
         ];
     }
 
+<<<<<<< HEAD
     /**
      * Check if the property has any current dependency by checking the dependson selectbox
      * @param {jQuery} $container
      * @returns {Boolean}
      */
+=======
+>>>>>>> 7a3eb7473d (fix: filter values of depends on property select)
     function hasAnyDependency($container) {
         return _isHiddenDependsOn($container);
     }

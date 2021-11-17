@@ -841,6 +841,7 @@
                 });
             }
 
+<<<<<<< HEAD
             /**
              * Filter the list of options available on the "depends on" select
              * based on the properties that already have a dependency declared
@@ -855,6 +856,13 @@
                     if (option.selected && option.disabled) {
                         option.parentElement.value = ' ';
                     }
+=======
+            function filterDependsOnProperty() {
+                const $changedProperty = $(this);
+                let primaryPropertyUri = $(this).closest('[id^="property_"]').attr('id').replace('property_', '');
+                $(`option[value=${primaryPropertyUri}]`).each((i, option) => {
+                    option.disabled = !!$changedProperty.val().trim();
+>>>>>>> 7a3eb7473d (fix: filter values of depends on property select)
                 });
             }
 
@@ -876,10 +884,13 @@
                 showDependsOnProperty.bind(this)(e);
             }
 
+<<<<<<< HEAD
             /**
              * On change of depends on property, the values are filtered
              * @param {event} e
              */
+=======
+>>>>>>> 7a3eb7473d (fix: filter values of depends on property select)
             function onDependsOnPropertyChange(e) {
                 filterDependsOnProperty.bind(this)(e);
             }
