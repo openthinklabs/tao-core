@@ -25,6 +25,7 @@
 declare(strict_types=1);
 
 use oat\tao\controller\api\Users;
+use oat\tao\model\import\ServiceProvider\ImportServiceProvider;
 use oat\tao\model\resources\ResourcesServiceProvider;
 use oat\tao\model\featureFlag\FeatureFlagServiceProvider;
 use oat\tao\helpers\form\ServiceProvider\FormServiceProvider;
@@ -33,6 +34,7 @@ use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\export\ServiceProvider\MetadataServiceProvider;
 use oat\tao\model\routing\ApiRoute;
 use oat\tao\model\routing\LegacyRoute;
+use oat\tao\model\routing\ServiceProvider\RoutingServiceProvider;
 use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\install\AddArchiveService;
 use oat\tao\scripts\install\AddLogFs;
@@ -233,6 +235,7 @@ return [
         [AccessRule::GRANT, TaoRoles::PROPERTY_MANAGER, 'tao_actions_PropertiesAuthoring'],
         [AccessRule::GRANT, TaoRoles::SYSTEM_ADMINISTRATOR, Users::class],
         [AccessRule::GRANT, TaoRoles::GLOBAL_MANAGER, Users::class],
+        [AccessRule::GRANT, TaoRoles::GLOBAL_MANAGER, ['ext' => 'tao','mod' => 'MetadataImport']],
     ],
     'routes' => [
         '/tao/api'  => ['class' => ApiRoute::class],
@@ -279,5 +282,7 @@ return [
         MetadataServiceProvider::class,
         FeatureFlagServiceProvider::class,
         ResourcesServiceProvider::class,
+        RoutingServiceProvider::class,
+        ImportServiceProvider::class,
     ],
 ];
