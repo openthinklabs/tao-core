@@ -74,7 +74,7 @@
         "oat-sa/jig": "~0.1",
         "oat-sa/composer-npm-bridge": "~0.4.2||dev-master",
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-        "openthinklabs/generis": ">=15.11.0",
+        "openthinklabs/generis": ">=15.13.0",
         "composer/package-versions-deprecated": "^1.11",
         "paragonie/random_compat": "^2.0",
         "phpdocumentor/reflection-docblock": "2.*",
