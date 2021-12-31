@@ -71,7 +71,7 @@
         "guzzlehttp/psr7": "1.6.1",
         "imsglobal/lti": "^3.0",
         "justinrainbow/json-schema": "5.2.1",
-        "openthinklabs/jig": "~0.1",
+        "openthinklabs/jig": ">=0.1",
         "openthinklabs/composer-npm-bridge": "~0.4.3.1||dev-master",
         "openthinklabs/oatbox-extension-installer": "~1.2.2||dev-master",
         "openthinklabs/generis": ">=15.13.1",
