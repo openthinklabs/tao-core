@@ -96,6 +96,7 @@ Cypress.Commands.add('addClassToRoot', (
 ) => {
     cy.log('COMMAND: addClassToRoot', name)
         .getSettled(`${rootSelector} a:nth(0)`)
+        .scrollIntoView()
         .click()
         .intercept('POST', `**/${editClassLabelUrl}`).as('editClassLabel')
         .addClass(formSelector, treeRenderUrl, addSubClassUrl)
@@ -252,7 +253,7 @@ Cypress.Commands.add('addNode', (formSelector, addSelector) => {
     cy.log('COMMAND: addNode');
     cy.intercept('GET', `**/getOntologyData**`).as('treeRender');
     cy.intercept('POST', '**/edit*').as('edit');
-    cy.getSettled(addSelector).click();
+    cy.getSettled(addSelector).scrollIntoView().click();
     cy.get(formSelector).should('exist');
     cy.wait('@treeRender');
     cy.wait('@edit');
@@ -373,4 +374,48 @@ Cypress.Commands.add('exportFromSelectedClass', (
             });
         }
     );
+});
+
+
+/**
+ * Import tree to tree root
+ * @param {String} filePath - path to RDF tree file
+ */
+ Cypress.Commands.add('importToRootTree', (filePath) => {
+    cy.log(`COMMAND: importToRootTree ${filePath}`);
+
+    cy.intercept('POST', `**/tao/Import/index*`).as('loadImport');
+    cy.getSettled('#tree-import a').click();
+    cy.wait('@loadImport');
+
+    cy.readFile(filePath, 'binary')
+        .then(fileContent => {
+            cy.get('input[type="file"][name="content"]')
+                .attachFile({
+                        fileContent,
+                        filePath,
+                        encoding: 'binary',
+                        lastModified: new Date().getTime()
+                    }
+                );
+
+            cy.get('.progressbar.success').should('exist');
+
+            cy.intercept('POST', `**/tao/Import/index`).as('import').get('.form-toolbar button')
+                .click()
+                .wait('@import')
+
+            return cy.isElementPresent('.task-report-container')
+                .then(isTaskStatus => {
+                    if (isTaskStatus) {
+                        cy.get('.feedback-success.hierarchical').should('exist');
+                    } else {
+                        // task was moved to the task queue (background)
+                        cy.get('.badge-component').click();
+                        cy.get('.task-element.completed').first().contains(className);
+                        // close the task manager
+                        cy.get('.badge-component').click();
+                    }
+                })
+        });
 });
