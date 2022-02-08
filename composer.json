@@ -55,6 +55,7 @@
             ]
         }
     },
+<<<<<<< HEAD
     "repositories": [
         {
           "type": "vcs",
@@ -64,6 +65,29 @@
           "type": "vcs",
           "url": "git@github.com:openthinklabs/jig.git"
         }        
+=======
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/jig.git"
+		},        
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/composer-npm-bridge.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/oatbox-extension-installer.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/generis.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/lib-generis-search.git"
+		}            
+>>>>>>> e829a2bf48 (update UNANS)
     ],    
     "require": {
         "php": "^7.1",
@@ -75,10 +99,17 @@
         "guzzlehttp/psr7": "1.6.1",
         "imsglobal/lti": "^3.0",
         "justinrainbow/json-schema": "5.2.1",
+<<<<<<< HEAD
         "openthinklabs/jig": ">=0.1.1",
         "openthinklabs/composer-npm-bridge": "~0.4.3.1||dev-master",
         "openthinklabs/oatbox-extension-installer": "~1.2.2||dev-master",
         "openthinklabs/generis": "15.13.1.4",
+=======
+        "openthinklabs/jig": "0.1.1",
+        "openthinklabs/composer-npm-bridge": "0.4.3.2",
+        "openthinklabs/oatbox-extension-installer": "1.2.2",
+        "openthinklabs/generis": "15.11.0.4",
+>>>>>>> e829a2bf48 (update UNANS)
         "composer/package-versions-deprecated": "^1.11",
         "paragonie/random_compat": "^2.0",
         "phpdocumentor/reflection-docblock": "2.*",
@@ -105,5 +136,12 @@
         "files": [
             "includes/globalHelpers.php"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "openthinklabs/composer-npm-bridge": true,
+            "openthinklabs/oatbox-extension-installer": true
+        }
     }
 }
