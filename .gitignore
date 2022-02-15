@@ -11,7 +11,7 @@ views/js/test/.htaccess
 /views/css/tao-3.css.map.orig
 /views/css/tao-3.css.orig
 /views/index.html
-
+generis/
 ### OSX ###
 .DS_Store
 .AppleDouble
