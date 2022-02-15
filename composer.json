@@ -71,7 +71,11 @@
 		{
 			"type": "vcs",
 			"url": "git@github.com:openthinklabs/jig.git"
-		}        
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/lib-generis-search.git"
+		}                     
     ],
     "require": {
         "php": "^7.1",
