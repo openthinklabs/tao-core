@@ -2100,22 +2100,20 @@ html a {
   background: #e61049;
 }
 
-
 .paragraph_container {
   text-align:left;
   border: 2px dashed rgba(114, 186, 94, 0.35);
-  height: 1000px;
+  height: 800px;
   background: rgba(114, 186, 94, 0.05);
   padding: 10px;
-  overflow:auto;
+  overflow-y:auto;
 }
 
 
 #question {
-height:1000px;
-overflow:auto;
+  height:800px;
+  overflow:auto;
 }
-
 
 span.hottext-content {
   border-bottom: 2px solid currentColor;
