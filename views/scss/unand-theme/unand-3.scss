@@ -2172,3 +2172,11 @@ html a {
 ::-webkit-scrollbar-thumb:hover {
   background: #e61049;
 }
+.qti-align-center {
+  text-align: center;
+}
+.qti-item .prompt, .qti-item .qti-prompt {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  margin-bottom: 5;
+}

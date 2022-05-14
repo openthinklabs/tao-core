@@ -2186,4 +2186,14 @@ input.ui-button[type="reset"] {
   color: #ffffff;
 }
 
+.qti-align-center {
+  text-align: center;
+}
+
+.qti-item .prompt, .qti-item .qti-prompt {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  margin-bottom: 5;
+}
+
 /*# sourceMappingURL=usk-3.css.map */
