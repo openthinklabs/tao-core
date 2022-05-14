@@ -16,20 +16,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
+ *
+ * @author Andrei Shapiro <andrei.shapiro@taotesting.com>
  */
 
 declare(strict_types=1);
 
-namespace oat\tao\model\StatisticalMetadata\Model;
+namespace oat\tao\model\resources\Contract;
 
-class MetadataProperty
+use core_kernel_classes_Class;
+use core_kernel_classes_Property;
+
+interface ClassMetadataCopierInterface
 {
-    /** @var string */
-    public $uri;
-
-    /** @var string */
-    public $alias;
-
-    /** @var string */
-    public $domain;
+    public function copy(core_kernel_classes_Class $class, core_kernel_classes_Class $destinationClass): void;
 }

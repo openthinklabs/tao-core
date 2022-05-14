@@ -25,13 +25,19 @@
 declare(strict_types=1);
 
 use oat\tao\controller\api\Users;
+use oat\tao\controller\Middleware\MiddlewareConfig;
+use oat\tao\model\accessControl\AccessControlServiceProvider;
+use oat\tao\model\Csv\CsvServiceProvider;
+use oat\tao\model\featureVisibility\FeatureVisibilityServiceProvider;
 use oat\tao\model\import\ServiceProvider\ImportServiceProvider;
+use oat\tao\model\metadata\ServiceProvider\MetadataServiceProvider;
+use oat\tao\model\Observer\ServiceProvider\ObserverServiceProvider;
 use oat\tao\model\resources\ResourcesServiceProvider;
 use oat\tao\model\featureFlag\FeatureFlagServiceProvider;
 use oat\tao\helpers\form\ServiceProvider\FormServiceProvider;
 use oat\tao\install\services\SetupSettingsStorage;
 use oat\tao\model\accessControl\func\AccessRule;
-use oat\tao\model\export\ServiceProvider\MetadataServiceProvider;
+use oat\tao\model\export\ServiceProvider\MetadataServiceProvider as ExportMetadataServiceProvider;
 use oat\tao\model\Lists\ServiceProvider\ListsServiceProvider;
 use oat\tao\model\routing\ApiRoute;
 use oat\tao\model\routing\LegacyRoute;
@@ -71,7 +77,6 @@ use oat\tao\scripts\install\RegisterValueCollectionServices;
 use oat\tao\scripts\install\SetClientLoggerConfig;
 use oat\tao\scripts\install\SetContainerService;
 use oat\tao\scripts\install\SetDefaultCSPHeader;
-use oat\tao\scripts\install\SetImageAligmentConfig;
 use oat\tao\scripts\install\SetLocaleNumbersConfig;
 use oat\tao\scripts\install\SetServiceFileStorage;
 use oat\tao\scripts\install\SetServiceState;
@@ -171,8 +176,7 @@ return [
             RegisterTaoUpdateEventListener::class,
             RegisterActionAccessControl::class,
             RegisterRtlLocales::class,
-            RegisterSearchServices::class,
-            SetImageAligmentConfig::class
+            RegisterSearchServices::class
         ],
     ],
     'update' => Updater::class,
@@ -245,9 +249,9 @@ return [
     ],
     'constants' => [
         #TAO version number
-        'TAO_VERSION' => '2022.01',
+        'TAO_VERSION' => '2022.06',
         #TAO version label
-        'TAO_VERSION_NAME' => '2022.01',
+        'TAO_VERSION_NAME' => '2022.06',
         #the name to display
         'PRODUCT_NAME' => 'TAO',
         #TAO release status, use to add specific footer to TAO, available alpha, beta, demo, stable
@@ -281,7 +285,7 @@ return [
     'containerServiceProviders' => [
         ListsServiceProvider::class,
         FormServiceProvider::class,
-        MetadataServiceProvider::class,
+        ExportMetadataServiceProvider::class,
         FeatureFlagServiceProvider::class,
         LanguageServiceProvider::class,
         ResourcesServiceProvider::class,
@@ -289,5 +293,13 @@ return [
         ImportServiceProvider::class,
         UserSettingsServiceProvider::class,
         StatisticalMetadataServiceProvider::class,
+        CsvServiceProvider::class,
+        AccessControlServiceProvider::class,
+        MetadataServiceProvider::class,
+        ObserverServiceProvider::class,
+        FeatureVisibilityServiceProvider::class,
     ],
+    'middlewares' => [
+        MiddlewareConfig::class,
+    ]
 ];

@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\tao\helpers\form;
 
 use common_Logger;
+use oat\generis\model\OntologyAwareTrait;
 use tao_helpers_Uri;
 use tao_helpers_Context;
 use core_kernel_classes_Class;
@@ -43,11 +44,16 @@ use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
+use oat\tao\model\Lists\Business\Contract\ListElementSorterInterface;
 use tao_helpers_form_elements_GenerisAsyncFile as GenerisAsyncFile;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
+use oat\tao\model\Language\Business\Specification\LanguageClassSpecification;
+use oat\tao\model\Language\Service\LanguageListElementSortService;
 
 class ElementMapFactory extends ConfigurableService
 {
+    use OntologyAwareTrait;
+
     public const SERVICE_ID = 'tao/ElementMapFactory';
 
     /** @var core_kernel_classes_Resource */
@@ -60,8 +66,11 @@ class ElementMapFactory extends ConfigurableService
         return $this;
     }
 
-    public function create(core_kernel_classes_Property $property): ?tao_helpers_form_FormElement
-    {
+    public function create(
+        core_kernel_classes_Property $property,
+        string $language = DEFAULT_LANG)
+    : ?tao_helpers_form_FormElement {
+
         // Create the element from the right widget
         $property->feed();
 
@@ -72,7 +81,6 @@ class ElementMapFactory extends ConfigurableService
 
         $widgetUri   = $widgetResource->getUri();
         $propertyUri = $property->getUri();
-
         // Authoring widget is not used in standalone mode
         if (
             $widgetUri === Authoring::WIDGET_ID
@@ -119,12 +127,7 @@ class ElementMapFactory extends ConfigurableService
             return null;
         }
 
-        // Use the property label as element description
-        $propDesc = (trim($property->getLabel()) !== '')
-            ? $property->getLabel()
-            : str_replace(LOCAL_NAMESPACE, '', $propertyUri);
-
-        $element->setDescription($propDesc);
+        $element->setDescription($this->getDescriptionFromTranslatedPropertyLabel($property, $language));
 
         if (method_exists($element, 'setOptions')) {
             // Multi elements use the property range as options
@@ -142,6 +145,11 @@ class ElementMapFactory extends ConfigurableService
 
                     if ($this->isList($range)) {
                         $values = $this->getListValues($property, $range, $parentProperty);
+
+                        if ($this->getLanguageClassSpecification()->isSatisfiedBy($range))
+                        {
+                            $values = $this->getLanguageListElementSortService()->getSortedListCollectionValues($values);
+                        }
 
                         foreach ($values as $value) {
                             $encodedUri = tao_helpers_Uri::encode($value->getUri());
@@ -184,11 +192,24 @@ class ElementMapFactory extends ConfigurableService
             }
         }
 
+        if ($this->isBlockedForModification($property)) {
+            $element->disable();
+        }
+
         foreach (ValidationRuleRegistry::getRegistry()->getValidators($property) as $validator) {
             $element->addValidator($validator);
         }
 
         return $element;
+    }
+
+    private function isBlockedForModification(core_kernel_classes_Property $property): bool
+    {
+        if ($this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_STATISTIC_METADATA_IMPORT')) {
+            return $property->isStatistical();
+        }
+
+        return false;
     }
 
     private function isList($range): bool
@@ -231,7 +252,6 @@ class ElementMapFactory extends ConfigurableService
                 foreach ($this->instance->getPropertyValuesCollection($parentProperty) as $parentPropertyValue) {
                     $parentPropertyValues[] = (string)$parentPropertyValue;
                 }
-
                 $searchRequest->setPropertyUri($property->getUri());
                 $searchRequest->setParentListValues(...$parentPropertyValues);
             }
@@ -250,8 +270,40 @@ class ElementMapFactory extends ConfigurableService
         return $this->getContainer()->get(FeatureFlagChecker::class);
     }
 
+    private function getLanguageClassSpecification(): LanguageClassSpecification
+    {
+        return $this->getContainer()->get(LanguageClassSpecification::class);
+    }
+
+    private function getLanguageListElementSortService(): ListElementSorterInterface
+    {
+        return $this->getContainer()->get(LanguageListElementSortService::class);
+    }
+
     private function getContainer(): ContainerInterface
     {
         return $this->getServiceManager()->getContainer();
+    }
+
+    private function getDescriptionFromTranslatedPropertyLabel(
+        core_kernel_classes_Property $property,
+        string $language
+    ) {
+        $propertyLabel = current(
+            $property->getPropertyValues(
+                $this->getProperty(OntologyRdfs::RDFS_LABEL),
+                ['lg' => $language, 'one' => true]
+            )
+        );
+
+        if (empty($propertyLabel)) {
+            $propertyLabel = $property->getLabel();
+        }
+
+        if (empty(trim($propertyLabel))) {
+            return str_replace(LOCAL_NAMESPACE, '', $property->getUri());
+        }
+
+        return $propertyLabel;
     }
 }

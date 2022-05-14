@@ -20,14 +20,44 @@
 
 declare(strict_types=1);
 
-namespace oat\tao\model\StatisticalMetadata\Contract;
+namespace oat\tao\model\Observer;
 
-use oat\tao\model\StatisticalMetadata\Model\MetadataProperty;
+use SplObserver;
 
-interface StatisticalMetadataRepositoryInterface
+class Subject implements SubjectInterface
 {
-    /**
-     * @return MetadataProperty[]
-     */
-    public function findProperties(array $filters): array;
+    /** @var SplObserver[] */
+    private $observers;
+
+    /** @var array */
+    private $data;
+
+    public function __construct(array $data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function attach(SplObserver $observer)
+    {
+        $this->observers[spl_object_hash($observer)] = $observer;
+    }
+
+    public function detach(SplObserver $observer)
+    {
+        unset($this->observers[spl_object_hash($observer)]);
+    }
+
+    public function notify()
+    {
+        foreach ($this->observers as $observer) {
+            $observer->update($this);
+        }
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->data;
+    }
 }
