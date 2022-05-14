@@ -78,13 +78,8 @@ class tao_actions_Import extends tao_actions_CommonModule
             $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
 
             $task = $queueDispatcher->createTask(
-                new ImportByHandler(),
-                [
-                    ImportByHandler::PARAM_IMPORT_HANDLER => get_class($importer),
-                    ImportByHandler::PARAM_FORM_VALUES => $importer instanceof TaskParameterProviderInterface ? $importer->getTaskParameters($importForm) : [],
-                    ImportByHandler::PARAM_PARENT_CLASS => $this->getCurrentClass()->getUri(),
-                    ImportByHandler::PARAM_OWNER => \common_session_SessionManager::getSession()->getUser()->getIdentifier(),
-                ],
+                $this->getImportByHandler(),
+                $this->createTaskData($importer, $importForm),
                 __('Import a %s into "%s"', $importer->getLabel(), $this->getCurrentClass()->getLabel())
             );
 
@@ -97,8 +92,13 @@ class tao_actions_Import extends tao_actions_CommonModule
         $this->setData('import_action', $context->getActionName());
 
         $this->setData('myForm', $importForm->render());
-        $this->setData('formTitle', __('Import '));
+        $this->setData('formTitle', $this->getFormTitle());
         $this->setView('form/import.tpl', 'tao');
+    }
+
+    protected function getFormTitle(): string
+    {
+        return __('Import');
     }
 
     /**
@@ -143,6 +143,11 @@ class tao_actions_Import extends tao_actions_CommonModule
         return $this->availableHandlers;
     }
 
+    protected function getImportByHandler(): ImportByHandler
+    {
+        return new ImportByHandler();
+    }
+
     /**
      * Helper to get the selected class, needs to be passed as hidden field in the form
      */
@@ -154,5 +159,39 @@ class tao_actions_Import extends tao_actions_CommonModule
     protected function getValidators()
     {
         return [];
+    }
+
+    protected function getImportHandlerServiceIdMap(): array
+    {
+        return [];
+    }
+
+    private function createTaskData($importer, $importForm): array
+    {
+        $data = [
+            ImportByHandler::PARAM_PARENT_CLASS => $this->getCurrentClass()->getUri(),
+            ImportByHandler::PARAM_OWNER => common_session_SessionManager::getSession()->getUser()->getIdentifier(),
+            ImportByHandler::PARAM_FORM_VALUES => $this->getTaskParams($importer, $importForm),
+        ];
+
+        $map = $this->getImportHandlerServiceIdMap();
+        $importerClass = get_class($importer);
+
+        if (isset($map[$importerClass])) {
+            $data[ImportByHandler::PARAM_IMPORT_HANDLER_SERVICE_ID] = $map[$importerClass];
+
+            return $data;
+        }
+
+        $data[ImportByHandler::PARAM_IMPORT_HANDLER] = $importerClass;
+
+        return $data;
+    }
+
+    private function getTaskParams($importer, $importForm): array
+    {
+        return $importer instanceof TaskParameterProviderInterface
+            ? $importer->getTaskParameters($importForm)
+            : [];
     }
 }

@@ -18,7 +18,7 @@
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013-2021 (update and modification) Open Assessment Technologies SA;
+ *               2013-2022 (update and modification) Open Assessment Technologies SA.
  */
 
 use oat\oatbox\user\User;
@@ -27,6 +27,7 @@ use oat\generis\model\OntologyRdfs;
 use oat\tao\model\lock\LockManager;
 use oat\tao\model\menu\MenuService;
 use oat\tao\model\menu\ActionService;
+use oat\tao\model\task\CopyClassTask;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\search\tasks\IndexTrait;
 use oat\tao\model\event\ResourceMovedEvent;
@@ -34,14 +35,18 @@ use oat\tao\model\resources\ResourceService;
 use oat\tao\model\security\SecurityException;
 use oat\tao\model\security\SignatureGenerator;
 use oat\tao\model\security\SignatureValidator;
+use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\controller\SignedFormInstance;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\tao\model\accessControl\PermissionChecker;
 use tao_helpers_form_FormContainer as FormContainer;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
+use oat\generis\model\resource\Service\ResourceDeleter;
 use oat\tao\model\ClassProperty\RemoveClassPropertyService;
 use oat\tao\model\resources\Contract\ClassDeleterInterface;
 use oat\tao\model\ClassProperty\AddClassPropertyFormFactory;
 use oat\tao\model\resources\Exception\ClassDeletionException;
+use oat\generis\model\resource\Contract\ResourceDeleterInterface;
 use oat\tao\model\metadata\exception\InconsistencyConfigException;
 use oat\tao\model\resources\Exception\PartialClassDeletionException;
 
@@ -56,6 +61,7 @@ use oat\tao\model\resources\Exception\PartialClassDeletionException;
 abstract class tao_actions_RdfController extends tao_actions_CommonModule
 {
     use OntologyAwareTrait;
+    use TaskLogActionTrait;
     use IndexTrait;
 
     /** @var SignatureValidator */
@@ -736,6 +742,80 @@ abstract class tao_actions_RdfController extends tao_actions_CommonModule
     }
 
     /**
+     * @requiresRight uri READ
+     * @requiresRight destinationClassUri WRITE
+     */
+    public function copyClass(): void
+    {
+        $parsedBody = $this->getPsrRequest()->getParsedBody();
+
+        if (empty($parsedBody['destinationClassUri']) || empty($parsedBody['uri'])) {
+            $this->returnJson(
+                [
+                    'success' => false,
+                    'errorCode' => 412,
+                    'errorMessage' => __('Missing Parameters'),
+                ],
+                412
+            );
+
+            return;
+        }
+
+        try {
+            $this->validateCsrf();
+        } catch (common_exception_Unauthorized $e) {
+            $this->response = $this->getPsrResponse()->withStatus(403, __('Unable to process your request'));
+
+            return;
+        }
+
+        $this->validateInstanceRoot($parsedBody['uri']);
+        $this->signatureValidator->checkSignature($parsedBody['signature'] ?? null, $parsedBody['uri']);
+
+        $currentClass = $this->getClass($parsedBody['uri']);
+        $destinationClass = $this->getClass($parsedBody['destinationClassUri']);
+
+        if (!$this->hasWriteAccess($destinationClass->getUri())) {
+            $this->returnJson(
+                [
+                    'success' => false,
+                    'errorCode' => 401,
+                    'errorMessage' =>  __('Permission denied to write in the selected class'),
+                ],
+                401
+            );
+
+            return;
+        }
+
+        try {
+            $task = $this->getQueueDispatcher()->createTask(
+                new CopyClassTask(),
+                [
+                    CopyClassTask::PARAM_CLASS_URI => $currentClass->getUri(),
+                    CopyClassTask::PARAM_DESTINATION_CLASS_URI => $destinationClass->getUri(),
+                ],
+                __(
+                    'Copying class "%s" to "%s"',
+                    $currentClass->getLabel(),
+                    $destinationClass->getLabel()
+                )
+            );
+
+            $this->returnTaskJson($task);
+        } catch (Throwable $exception) {
+            $this->logError($exception->getMessage());
+            $this->returnJson(
+                [
+                    'success' => false,
+                    'errorMessage' => __('Failed to copy class.'),
+                ]
+            );
+        }
+    }
+
+    /**
      * Move an instance from a class to another
      * @return void
      * @requiresRight uri WRITE
@@ -1009,11 +1089,20 @@ abstract class tao_actions_RdfController extends tao_actions_CommonModule
         );
 
         $resource = $this->getResource($this->getRequestParameter('id'));
-        $deleted = $this->getClassService()->deleteResource($resource);
+
+        try {
+            $this->getResourceDeleter()->delete($resource);
+            $deleted = true;
+            $message = __('Successfully deleted %s', $resource->getLabel());
+        } catch (ResourceDeletionException $exception) {
+            $deleted = false;
+            $message = $exception->getUserMessage();
+        }
+
         return $this->returnJson([
             'success' => $deleted,
-            'message' => __('Successfully deleted %s', $resource->getLabel()),
-            'deleted' => $deleted
+            'message' => $message,
+            'deleted' => $deleted,
         ]);
     }
 
@@ -1447,5 +1536,15 @@ abstract class tao_actions_RdfController extends tao_actions_CommonModule
     private function getClassDeleter(): ClassDeleterInterface
     {
         return $this->getPsrContainer()->get(ClassDeleter::class);
+    }
+
+    private function getResourceDeleter(): ResourceDeleterInterface
+    {
+        return $this->getPsrContainer()->get(ResourceDeleter::class);
+    }
+
+    private function getQueueDispatcher(): QueueDispatcherInterface
+    {
+        return $this->getPsrContainer()->get(QueueDispatcherInterface::SERVICE_ID);
     }
 }

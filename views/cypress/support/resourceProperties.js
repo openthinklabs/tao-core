@@ -38,7 +38,8 @@
         .get(formSelector).should('exist')
         .get(`${formSelector} ${selectors.labelSelector}`).should('have.value', newName)
         .wait('@treeRender')
-        .wait('@editClassLabel');
+        .wait('@editClassLabel')
+        .getSettled(`li[title="${newName}"]`);
 });
 
 /**
@@ -62,6 +63,7 @@ Cypress.Commands.add('renameSelectedNode', (formSelector, editUrl, newName) => {
         .wait('@treeRender')
         .wait('@edit')
         .get(`${formSelector} ${selectors.labelSelector}`).should('have.value', newName)
+        .getSettled(`li[title="${newName}"]`);
 });
 
 /**
@@ -136,6 +138,17 @@ Cypress.Commands.add('assignValueToSelect2Property', (property, value) => {
 Cypress.Commands.add('assignValueToTextProperty', (property, value) => {
     cy.log('COMMAND: assignValueToTextProperty', property.name);
     cy.get(`[data-testid="${property.name}"]`).clear().type(value);
+});
+
+/**
+ * Assigns value to the calendar property
+ * @param {Object} property - property to assign value to
+ * @param {String} property.name - name of the property
+ * @param {String} value - value to assign
+*/
+Cypress.Commands.add('assignValueToCalendarProperty', (property, value) => {
+    cy.log('COMMAND: assignValueToCalendarProperty', property.name);
+    cy.get(`[id^="${property.name}_calendar_"]`).clear().type(value);
 });
 
 /**

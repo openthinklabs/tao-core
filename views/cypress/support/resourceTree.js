@@ -96,6 +96,7 @@ Cypress.Commands.add('addClassToRoot', (
 ) => {
     cy.log('COMMAND: addClassToRoot', name)
         .getSettled(`${rootSelector} a:nth(0)`)
+        .scrollIntoView()
         .click()
         .intercept('POST', `**/${editClassLabelUrl}`).as('editClassLabel')
         .addClass(formSelector, treeRenderUrl, addSubClassUrl)
@@ -127,8 +128,8 @@ Cypress.Commands.add('moveClass', (
         .getSettled(moveSelector)
         .click()
         .wait('@classToMove')
-        .getSettled(`.destination-selector a[title="${nameWhereMove}"]`)
-        .click()
+        .getSettled(`.destination-selector a[title="${nameWhereMove}"]`).last()
+        .click({force: true})
         .intercept('POST', `**/${moveClassUrl}*`).as('moveClass')
         .intercept('GET', '**/getOntologyData*').as('treeRenderAfterMove')
         .get('.actions button')
@@ -136,7 +137,8 @@ Cypress.Commands.add('moveClass', (
         .get(moveConfirmSelector)
         .click()
         .wait('@moveClass').its('response.body').its('success').should('eq', true)
-        .wait('@treeRenderAfterMove');
+        .wait('@treeRenderAfterMove')
+        .getSettled(`.section-trees li[title="${name}"]`);
 });
 
 /**
@@ -174,6 +176,7 @@ Cypress.Commands.add('moveClassFromRoot', (
  * @param {String} deleteClassUrl - url for the deleting class POST request
  * @param {String} name - name of the class which will be deleted
  * @param {Boolean} isConfirmCheckbox = false - if true also checks confirmation checkbox
+ * @param {Boolean} isAsset = false - if true handles confirmation checkbox differently (works different for asset)
  */
 Cypress.Commands.add('deleteClass', (
     rootSelector,
@@ -182,25 +185,31 @@ Cypress.Commands.add('deleteClass', (
     confirmSelector,
     deleteClassUrl,
     name,
-    isConfirmCheckbox = false
+    isConfirmCheckbox = false,
+    isAsset = false
 ) => {
     cy.log('COMMAND: deleteClass', name)
-        .getSettled(`${rootSelector} a:nth(0)`)
-        .get(`li[title="${name}"] a:nth(0)`).click()
-        .get(formSelector)
+        .getSettled(`li[title="${name}"] > a`).last().click()
+        .getSettled(`${formSelector} input[value="${name}"]`)
         .should('exist')
     cy.get(deleteSelector).click();
 
     if (isConfirmCheckbox) {
-        cy.get('.modal-body label[for=confirm]')
-            .click();
+        if(isAsset){
+            cy.get('button[data-control="ok"]')
+                .click();
+        } else {
+            cy.get('.modal-body label[for=confirm]')
+                .click();
+        }
     }
-
     cy.intercept('POST', `**/${deleteClassUrl}`).as('deleteClass')
     cy.intercept('POST', '**/edit*').as('edit')
-    cy.get(confirmSelector)
-        .click();
-    cy.wait('@deleteClass');
+    if (!isAsset) {
+        cy.get(confirmSelector)
+            .click();
+        cy.wait('@deleteClass');
+    }
     cy.wait('@edit');
 });
 
@@ -213,6 +222,7 @@ Cypress.Commands.add('deleteClass', (
  * @param {String} deleteClassUrl - url for the deleting class POST request
  * @param {String} name - name of the class which will be deleted
  * @param {Boolean} isConfirmCheckbox = false - if true also checks confirmation checkbox
+ * @param {Boolean} isAsset = false - if true handles confirmation checkbox differently (works different for asset)
  */
 Cypress.Commands.add('deleteClassFromRoot', (
     rootSelector,
@@ -221,16 +231,18 @@ Cypress.Commands.add('deleteClassFromRoot', (
     confirmSelector,
     name,
     deleteClassUrl,
-    isConfirmCheckbox
+    isConfirmCheckbox,
+    isAsset
 ) => {
 
     cy.log('COMMAND: deleteClassFromRoot', name)
         .intercept('POST', '**/edit*').as('edit')
-        .getSettled(`${rootSelector} a:nth(0)`)
+        .getSettled(`${rootSelector} > a`)
+        .scrollIntoView()
         .click()
-        .get(`li[title="${name}"] a`)
+        .get(`li[title="${name}"] > a`)
         .wait('@edit')
-        .deleteClass(rootSelector, formSelector, deleteSelector, confirmSelector, deleteClassUrl, name, isConfirmCheckbox)
+        .deleteClass(rootSelector, formSelector, deleteSelector, confirmSelector, deleteClassUrl, name, isConfirmCheckbox, isAsset)
 });
 
 /**
@@ -242,7 +254,7 @@ Cypress.Commands.add('addNode', (formSelector, addSelector) => {
     cy.log('COMMAND: addNode');
     cy.intercept('GET', `**/getOntologyData**`).as('treeRender');
     cy.intercept('POST', '**/edit*').as('edit');
-    cy.getSettled(addSelector).click();
+    cy.getSettled(addSelector).scrollIntoView().click();
     cy.get(formSelector).should('exist');
     cy.wait('@treeRender');
     cy.wait('@edit');
@@ -257,7 +269,7 @@ Cypress.Commands.add('addNode', (formSelector, addSelector) => {
 Cypress.Commands.add('selectNode', (rootSelector, formSelector, name) => {
     cy.log('COMMAND: selectNode', name);
     cy.getSettled(`${rootSelector} a:nth(0)`).click();
-    cy.get(`li[title="${name}"] a:nth(0)`).click()
+    cy.get(`li[title="${name}"] a:nth(0)`).scrollIntoView().click();
     cy.get(formSelector).should('exist');
 });
 
@@ -286,24 +298,56 @@ Cypress.Commands.add('deleteNode', (
 });
 
 /**
+ * Deletes downloaded files if any
+ */
+Cypress.Commands.add('clearDownloads', () => {
+    cy.log('COMMAND: clearDownloads')
+
+    return cy.task('getDownloads')
+        .then(files => {
+            // Skip if nothing to delete
+            if(!files) {
+                cy.log('Nothing to delete in downloads');
+                return null;
+            }
+
+            return Promise.all(files.map((file) => {
+                cy.log('Deleting', file);
+                cy.task('removeDownload', file);
+            }));
+        });
+});
+
+/**
  * Imports resource in class (class should already be selected before running this command)
  * @param {String} importSelector - css selector for the import button
  * @param {String} importFilePath - path to the file to import
  * @param {String} importUrl - url for the resource import POST request
  * @param {String} className
+ * @param {String} [format] - select format to import, if diffident than selected by default
  */
 Cypress.Commands.add('importToSelectedClass', (
     importSelector,
     importFilePath,
     importUrl,
-    className) => {
+    className,
+    format = null) => {
 
     cy.log('COMMAND: import', importUrl);
     cy.get(importSelector).click();
 
+    if (format) {
+        cy.intercept('POST', `**/${importUrl}**`).as('itemImport');
+        cy.get('#import .form_radlst label')
+            .contains(format)
+            .should('be.visible')
+            .click();
+        cy.wait('@itemImport');
+    }
+
     cy.readFile(importFilePath, 'binary')
         .then(fileContent => {
-            cy.get('input[type="file"][name="content"]')
+            cy.getSettled('input[type="file"][name="content"]')
                 .attachFile({
                         fileContent,
                         filePath: importFilePath,
@@ -312,16 +356,19 @@ Cypress.Commands.add('importToSelectedClass', (
                     }
                 );
 
-            cy.get('.progressbar.success').should('exist');
+            cy.getSettled('.progressbar.success').should('exist');
 
-            cy.intercept('POST', `**/${importUrl}**`).as('import').get('.form-toolbar button')
+            cy.intercept('POST', `**/${importUrl}**`).as('import').getSettled('.form-toolbar button')
                 .click()
-                .wait('@import')
+                .wait('@import');
 
             return cy.isElementPresent('.task-report-container')
                 .then(isTaskStatus => {
                     if (isTaskStatus) {
-                        cy.get('.feedback-success.hierarchical').should('exist');
+                        cy.get('.feedback-success.hierarchical')
+                            .should('exist')
+                            .find('button[data-trigger="continue"]')
+                            .click();
                     } else {
                         // task was moved to the task queue (background)
                         cy.get('.badge-component').click();
@@ -338,29 +385,78 @@ Cypress.Commands.add('importToSelectedClass', (
  * @param {String} exportSelector - css selector for the export button
  * @param {String} exportUrl - url for the resource export POST request
  * @param {String} className
+ * @param {String} [format] - select format to export, if diffident than selected by default
  */
 Cypress.Commands.add('exportFromSelectedClass', (
     exportSelector,
     exportUrl,
-    className) => {
+    className,
+    format = null) => {
 
     cy.log('COMMAND: export', exportUrl);
 
     cy.get(exportSelector).click();
     cy.get('#exportChooser .form-toolbar button').click();
 
-    cy.task('getDownloads').then(
-        files => {
-            expect(files.length).to.equal(1);
+    if (format) {
+        cy.intercept('POST', `**/${exportUrl}**`).as('exportImport');
+        cy.get('#exportChooser .form_radlst label').contains(format).click();
+        cy.wait('@exportImport');
+    }
 
-            cy.task('readDownload', files[0]).then(fileContent => {
-                expect(files[0]).to.contain(className.replaceAll(' ', '_').toLowerCase());
+    cy.task('getDownloads')
+        .then(files => {
+            expect(files.length).to.be.gt(0);
+            cy.task('readDownload', files[0])
+                .then(fileContent => {
+                    expect(files[0]).to.contain(className.replaceAll(' ', '_').toLowerCase());
+                    cy.wrap(fileContent.length).should('be.gt', 0);
 
-                cy.wrap(fileContent.length).should('be.gt', 0);
-
-                // remove file as cypress doesn't remove downloads in the open mode
-                cy.task('removeDownload', files[0]);
-            });
+                    // remove file as cypress doesn't remove downloads in the open mode
+                    cy.task('removeDownload', files[0]);
+                });
         }
     );
+});
+
+
+/**
+ * Import tree to tree root
+ * @param {String} filePath - path to RDF tree file
+ */
+ Cypress.Commands.add('importToRootTree', (filePath) => {
+    cy.intercept('POST', `**/tao/Import/index*`).as('loadImport');
+    cy.getSettled('#tree-import a').click();
+    cy.wait('@loadImport');
+
+    cy.readFile(filePath, 'binary')
+        .then(fileContent => {
+            cy.get('input[type="file"][name="content"]')
+                .attachFile({
+                        fileContent,
+                        filePath,
+                        encoding: 'binary',
+                        lastModified: new Date().getTime()
+                    }
+                );
+
+            cy.get('.progressbar.success').should('exist');
+
+            cy.intercept('POST', `**/tao/Import/index`).as('import').get('.form-toolbar button')
+                .click()
+                .wait('@import')
+
+            return cy.isElementPresent('.task-report-container')
+                .then(isTaskStatus => {
+                    if (isTaskStatus) {
+                        cy.get('.feedback-success.hierarchical').should('exist');
+                    } else {
+                        // task was moved to the task queue (background)
+                        cy.get('.badge-component').should('be.visible').click();
+                        cy.get('.task-element.completed').first().contains(className);
+                        // close the task manager
+                        cy.get('.badge-component').click();
+                    }
+                })
+        });
 });
