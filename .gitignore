@@ -76,6 +76,7 @@ node_modules
 vendor/
 
 composer.lock
+package-lock.json
 
 # E2E testing files
 views/cypress/videos

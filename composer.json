@@ -90,7 +90,7 @@
         "openthinklabs/jig": "0.1.1",
         "openthinklabs/composer-npm-bridge": "0.4.3.2",
         "openthinklabs/oatbox-extension-installer": "1.2.2",
-        "openthinklabs/generis": "~15.11.0.5",
+        "openthinklabs/generis": "~15.19.2.1",
         "composer/package-versions-deprecated": "^1.11",
         "paragonie/random_compat": "^2.0",
         "phpdocumentor/reflection-docblock": "2.*",
