@@ -6,7 +6,7 @@ use oat\tao\helpers\ApplicationHelper;
 <footer aria-label="<?=__('About')?>" class="dark-bar">
     <div class="lft">
         © 2013 - <?= date('Y') ?> · <span class="tao-version"><?= ApplicationHelper::getVersionName() ?></span> ·
-        <a href="#" target="_blank">Universitas Andalas</a>
+        <a href="#" target="_blank">Lembaga Bahasa Internasional FIB UI </a>
         · <?= __('All rights reserved.') ?>
         <?php $releaseMsgData = Layout::getReleaseMsgData();
         if ($releaseMsgData['msg'] && ($releaseMsgData['is-unstable'] || $releaseMsgData['is-sandbox'])): ?>

@@ -20,6 +20,7 @@ module.exports = function(grunt) {
                     '../css/tao-main-style.css' : '../scss/tao-main-style.scss',
                     '../css/tao-3.css' : '../scss/tao-3.scss',
                     '../css/unand-theme/unand-3.css' : '../scss/unand-theme/unand-3.scss',
+                    '../css/lbi-theme/lbi.css' : '../scss/lbi-theme/lbi.scss',
                     '../css/layout.css' : '../scss/layout.scss',
                     '../css/error-page.css': '../scss/error-page.scss',
                     '../js/lib/jsTree/themes/css/style.css' : '../js/lib/jsTree/themes/scss/style.scss'
