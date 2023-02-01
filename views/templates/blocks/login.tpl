@@ -5,12 +5,12 @@ use oat\tao\model\theme\Theme;
 <main id="login-box" class="entry-point entry-point-container">
     <?=Layout::renderThemeTemplate(Theme::CONTEXT_BACKOFFICE, 'login-message')?>
     <div id="login-box-inner-container"></div>
-
-    <?php foreach(get_data('entryPoints') as $entrypoint): ?>
     <div>
-        <a class="entry-point-link" href="<?= $entrypoint->getUrl() ?>" role="button"><?= $entrypoint->getTitle() ?></a>
-    </div>
+    <?php foreach(get_data('entryPoints') as $entrypoint): ?>
+        <a class="entry-point-link" href="<?= $entrypoint->getUrl() ?>" role="button"><?= $entrypoint->getTitle() ?></a> |
     <?php endforeach;?>
+    <a href="https://test.mabesad.army/myCBTPassword"><?=__('Your CBT Token')?></a>
+    </div>
 </main>
 <?php if(get_data('show_gdpr')): ?>
 <?=Layout::renderThemeTemplate(Theme::CONTEXT_BACKOFFICE, 'gdpr')?>
