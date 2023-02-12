@@ -15,8 +15,19 @@
   overflow-y:auto;
 }
 #question {
-  height:800px;
+  height:600px;
   overflow:auto;
+}
+div.qti-itemBody div.grid-row div.col-7 {
+  height:600px;
+  overflow:auto;
+}
+.qti-item .col-6 {
+  margin-left: 1.4285714286%;
+  width: 48.5714285714%;
+  margin-bottom: 12px;
+  height: 600px;
+  overflow: auto;
 }
 span.hottext-content {
   border-bottom: 2px solid currentColor;
@@ -2186,10 +2197,28 @@ html a {
 .progress-box {
   color: #2A58A3;
 }
-div.qti-itemBody div.grid-row div.col-6 {
-  height:600px;
-  overflow:auto;
+li[data-control=move-forward] {
+  font-size: 18px !important;
+  font-weight: bolder;
 }
-.small.btn-info.action.rendered.disabled.key-navigation-highlight {
-  font-weight:bolder;background-color:#32c86b !important ;color:#2A58A3 ;
+li[data-control=move-backward] {
+  font-size: 18px !important;
+  font-weight: bolder;
+}
+table.matrix {
+  border: 1px solid #000 !important;
+}
+table.matrix  thead  tr  th {
+  border: 1px solid #000 !important;
+  z-index: -1;
+}
+table.matrix thead tr th.qti-choice {
+  z-index: auto;
+}
+table.matrix tbody th {
+  border-bottom: 1px solid #000 !important;
+  display: block;
+}
+table.matrix tbody tr td {
+border: 1px solid #000 !important;
 }
