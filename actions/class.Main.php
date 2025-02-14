@@ -15,34 +15,38 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
+ *                         (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
  *               2012-2018 (update and modification) Open Assessment Technologies SA;
  *
  */
 
 use oat\generis\model\user\UserRdf;
 use oat\oatbox\event\EventManager;
+use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\user\LoginService;
 use oat\tao\helpers\TaoCe;
 use oat\tao\model\accessControl\ActionResolver;
 use oat\tao\model\accessControl\func\AclProxy as FuncProxy;
 use oat\tao\model\action\ActionBlackList;
+use oat\tao\model\DynamicConfig\DynamicConfigProviderInterface;
 use oat\tao\model\entryPoint\EntryPointService;
 use oat\tao\model\event\LoginFailedEvent;
 use oat\tao\model\event\LoginSucceedEvent;
 use oat\tao\model\event\LogoutSucceedEvent;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\menu\MenuService;
 use oat\tao\model\menu\Perspective;
+use oat\tao\model\menu\SectionVisibilityByRoleFilter;
 use oat\tao\model\menu\SectionVisibilityFilter;
 use oat\tao\model\menu\SectionVisibilityFilterInterface;
 use oat\tao\model\mvc\DefaultUrlService;
 use oat\tao\model\notification\Notification;
 use oat\tao\model\notification\NotificationServiceInterface;
 use oat\tao\model\user\UserLocks;
-use oat\oatbox\log\LoggerAwareTrait;
 use tao_helpers_Display as DisplayHelper;
 
 /**
@@ -105,11 +109,22 @@ class tao_actions_Main extends tao_actions_CommonModule
             }
             $this->setData('logout', $this->getServiceLocator()->get(DefaultUrlService::SERVICE_ID)->getLogoutUrl());
             $this->setData('userLabel', $this->getSession()->getUserLabel());
+            $this->setData(
+                'portalUrl',
+                $this->getDynamicConfigProvider()->getConfigByName(
+                    DynamicConfigProviderInterface::PLATFORM_URL_CONFIG_NAME
+                )
+            );
             $this->setData('settings-menu', $naviElements);
             $this->setData('current-section', $this->getRequestParameter('section'));
             $this->setData('content-template', ['blocks/entry-points.tpl', 'tao']);
             $this->setView('layout.tpl', 'tao');
         }
+    }
+
+    public function getDynamicConfigProvider(): DynamicConfigProviderInterface
+    {
+        return $this->getServiceLocator()->getContainer()->get(DynamicConfigProviderInterface::class);
     }
 
     /**
@@ -180,7 +195,10 @@ class tao_actions_Main extends tao_actions_CommonModule
                                 $diffInSeconds = $endTime->getTimestamp() - $reference->getTimestamp();
 
                                 $humanDiff = $diffInSeconds > 60
-                                    ? tao_helpers_Date::displayInterval($statusDetails['remaining'], tao_helpers_Date::FORMAT_INTERVAL_LONG)
+                                    ? tao_helpers_Date::displayInterval(
+                                        $statusDetails['remaining'],
+                                        tao_helpers_Date::FORMAT_INTERVAL_LONG
+                                    )
                                     : $diffInSeconds . ' ' . ($diffInSeconds === 1 ? __('second') : __('seconds'));
 
                                 $msg .= __('Please try in %s.', $humanDiff);
@@ -198,7 +216,10 @@ class tao_actions_Main extends tao_actions_CommonModule
 
                             $this->logInfo("Successful login of user '" . $form->getValue('login') . "'.");
 
-                            if ($this->hasRequestParameter('redirect') && tao_models_classes_accessControl_AclProxy::hasAccessUrl($_REQUEST['redirect'])) {
+                            if (
+                                $this->hasRequestParameter('redirect')
+                                && tao_models_classes_accessControl_AclProxy::hasAccessUrl($_REQUEST['redirect'])
+                            ) {
                                 $this->redirect($_REQUEST['redirect']);
                             } else {
                                 $this->forward('entry');
@@ -211,15 +232,22 @@ class tao_actions_Main extends tao_actions_CommonModule
                             $msg = __('Invalid login or password. Please try again.');
 
                             if ($userLocksService->getOption(UserLocks::OPTION_USE_HARD_LOCKOUT)) {
-                                $remainingAttempts = $userLocksService->getLockoutRemainingAttempts($form->getValue('login'));
+                                $remainingAttempts = $userLocksService->getLockoutRemainingAttempts(
+                                    $form->getValue('login')
+                                );
                                 if ($remainingAttempts !== false) {
                                     if ($remainingAttempts === 0) {
+                                        // phpcs:disable Generic.Files.LineLength
                                         $msg = __('Invalid login or password. Your account has been locked, please contact your administrator.');
+                                    // phpcs:enable Generic.Files.LineLength
                                     } else {
-                                        $msg = $msg . ' ' .
-                                            ($remainingAttempts === 1
+                                        $msg .= ' ' . (
+                                            $remainingAttempts === 1
+                                                // phpcs:disable Generic.Files.LineLength
                                                 ? __('Last attempt before your account is locked.')
-                                                : __('%d attempts left before your account is locked.', $remainingAttempts));
+                                                : __('%d attempts left before your account is locked.', $remainingAttempts)
+                                            // phpcs:enable Generic.Files.LineLength
+                                        );
                                     }
                                 }
                             }
@@ -272,12 +300,14 @@ class tao_actions_Main extends tao_actions_CommonModule
         $logins = $this->getSession()->getUser()->getPropertyValues(UserRdf::PROPERTY_LOGIN);
         $eventManager->trigger(new LogoutSucceedEvent(current($logins)));
 
+        /* @var $urlRouteService DefaultUrlService */
+        $urlRouteService = $this->getServiceLocator()->get(DefaultUrlService::SERVICE_ID);
 
-        common_session_SessionManager::endSession();
-                /* @var $urlRouteService DefaultUrlService */
-                $urlRouteService = $this->getServiceLocator()->get(DefaultUrlService::SERVICE_ID);
-
-        $this->redirect($urlRouteService->getRedirectUrl('logout'));
+        try {
+            $this->redirect((string)$urlRouteService->getRedirectUrl('logout'));
+        } finally {
+            common_session_SessionManager::endSession();
+        }
     }
 
     /**
@@ -312,10 +342,12 @@ class tao_actions_Main extends tao_actions_CommonModule
             );
 
             $sections = $this->getSections($extension, $structure);
+
             if (count($sections) > 0) {
                 $this->setData('sections', $sections);
             } else {
                 $this->logWarning('no sections');
+                $this->redirect($this->getDefaultPageUrl());
             }
         } else {
             //check if the user is a noob, otherwise redirect him to his last visited extension.
@@ -328,6 +360,11 @@ class tao_actions_Main extends tao_actions_CommonModule
                 }
             }
         }
+
+        $this->setData(
+            'taoAsATool',
+            $this->getDynamicConfigProvider()->hasConfig(DynamicConfigProviderInterface::PLATFORM_URL_CONFIG_NAME)
+        );
 
         $perspectiveTypes = [Perspective::GROUP_DEFAULT, 'settings', 'persistent'];
         foreach ($perspectiveTypes as $perspectiveType) {
@@ -359,6 +396,12 @@ class tao_actions_Main extends tao_actions_CommonModule
 
         $this->setData('user_lang', $this->getSession()->getDataLanguage());
         $this->setData('userLabel', DisplayHelper::htmlEscape($this->getSession()->getUserLabel()));
+        $this->setData(
+            'portalUrl',
+            $this->getDynamicConfigProvider()->getConfigByName(
+                DynamicConfigProviderInterface::PLATFORM_URL_CONFIG_NAME
+            )
+        );
         // re-added to highlight selected extension in menu
         $this->setData('shownExtension', $extension);
         $this->setData('shownStructure', $structure);
@@ -385,7 +428,22 @@ class tao_actions_Main extends tao_actions_CommonModule
     private function getNavigationElementsByGroup($groupId)
     {
         $entries = [];
+
+        /**
+         * @var int $i
+         * @var  Perspective $perspective
+         */
         foreach (MenuService::getPerspectivesByGroup($groupId) as $i => $perspective) {
+            if ($this->isRestricted($perspective)) {
+                $this->logDebug(
+                    sprintf(
+                        "Perspective %s has been ignored base on Section Visibility Filter",
+                        $perspective->getId()
+                    )
+                );
+                continue;
+            }
+
             $binding = $perspective->getBinding();
             $children = $this->getMenuElementChildren($perspective);
 
@@ -397,6 +455,16 @@ class tao_actions_Main extends tao_actions_CommonModule
                 if (!is_null($binding)) {
                     $entry['binding'] = $perspective->getExtension() . '/' . $binding;
                 }
+                $entries[$i] = $entry;
+            }
+
+            //We want to always keep user settings menu dropdown even if there is no children to place logout button.
+            if (empty($children) && $perspective->getId() === 'user_settings') {
+                $entry = [
+                    'perspective' => $perspective,
+                    'children'    => []
+                ];
+
                 $entries[$i] = $entry;
             }
         }
@@ -418,6 +486,15 @@ class tao_actions_Main extends tao_actions_CommonModule
                 $resolver = new ActionResolver($section->getUrl());
 
                 if (!$this->getSectionVisibilityFilter()->isVisible($section->getId())) {
+                    continue;
+                }
+
+                if (
+                    !$this->getSectionVisibilityByRoleFilter()->isVisible(
+                        $this->getSession()->getUserRoles(),
+                        $section->getId()
+                    )
+                ) {
                     continue;
                 }
 
@@ -444,19 +521,44 @@ class tao_actions_Main extends tao_actions_CommonModule
         $sections = [];
         $user = $this->getSession()->getUser();
         $structure = MenuService::getPerspective($shownExtension, $shownStructure);
+        $sectionVisibilityFilter = $this->getSectionVisibilityFilter();
+
         if (!is_null($structure)) {
             foreach ($structure->getChildren() as $section) {
                 $resolver = new ActionResolver($section->getUrl());
 
-                if (!$this->getSectionVisibilityFilter()->isVisible($section->getId())) {
+                if (!$sectionVisibilityFilter->isVisible($section->getId())) {
+                    continue;
+                }
+
+                if (
+                    !$this->getSectionVisibilityByRoleFilter()->isVisible(
+                        $this->getSession()->getUserRoles(),
+                        $section->getId()
+                    )
+                ) {
                     continue;
                 }
 
                 if (FuncProxy::accessPossible($user, $resolver->getController(), $resolver->getAction())) {
                     foreach ($section->getActions() as $action) {
+                        $sectionPath = $sectionVisibilityFilter->createSectionPath(
+                            [
+                                $section->getId(),
+                                $action->getId()
+                            ]
+                        );
+
+                        if (!$sectionVisibilityFilter->isVisible($sectionPath)) {
+                            $section->removeAction($action);
+
+                            continue;
+                        }
+
                         $this->propagate($action);
                         $resolver = new ActionResolver($action->getUrl());
-                        if (!FuncProxy::accessPossible($user, $resolver->getController(), $resolver->getAction()) ||
+                        if (
+                            !FuncProxy::accessPossible($user, $resolver->getController(), $resolver->getAction()) ||
                             $this->getServiceLocator()->get(ActionBlackList::SERVICE_ID)->isDisabled($action->getId())
                         ) {
                             $section->removeAction($action);
@@ -493,12 +595,39 @@ class tao_actions_Main extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(tao_models_classes_UserService::SERVICE_ID);
     }
 
-    private function getSectionVisibilityFilter(): SectionVisibilityFilterInterface
+    private function getSectionVisibilityFilter(): SectionVisibilityFilter
     {
         if (empty($this->sectionVisibilityFilter)) {
             $this->sectionVisibilityFilter = $this->getServiceLocator()->get(SectionVisibilityFilter::SERVICE_ID);
         }
-        
+
         return $this->sectionVisibilityFilter;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getDefaultPageUrl(): string
+    {
+        $firstItem = current(MenuService::getPerspectivesByGroup(Perspective::GROUP_DEFAULT));
+        if (!$firstItem instanceof Perspective) {
+            throw new Exception('Item should be instance of Perspective');
+        }
+
+        return $firstItem->getUrl();
+    }
+
+    private function getSectionVisibilityByRoleFilter(): SectionVisibilityByRoleFilter
+    {
+        return $this->getPsrContainer()->get(SectionVisibilityByRoleFilter::class);
+    }
+
+    private function isRestricted(Perspective $perspective)
+    {
+        return !$this->getSectionVisibilityFilter()->isVisible($perspective->getId())
+            || !$this->getSectionVisibilityByRoleFilter()->isVisible(
+                $this->getSession()->getUserRoles(),
+                $perspective->getId()
+            );
     }
 }

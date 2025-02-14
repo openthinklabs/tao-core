@@ -46,7 +46,6 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Contract\DependencyRepositoryInterface;
 use oat\tao\model\Lists\Business\Contract\ValueCollectionRepositoryInterface;
-use function Webmozart\Assert\Tests\StaticAnalysis\throws;
 
 class RdsValueCollectionRepository extends InjectionAwareService implements ValueCollectionRepositoryInterface
 {
@@ -345,7 +344,7 @@ class RdsValueCollectionRepository extends InjectionAwareService implements Valu
                     ':label'
                 )
             )
-            ->setParameter('label', '%' . $searchRequest->getSubject() .'%');
+            ->setParameter('label', '%' . $searchRequest->getSubject() . '%');
     }
 
     private function enrichQueryWithExcludedValueUris(

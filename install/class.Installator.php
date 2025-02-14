@@ -15,13 +15,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
+ *                         (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013-2017 (update and modification) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 use oat\generis\persistence\DriverConfigurationFeeder;
+use oat\oatbox\cache\SetupFileCache;
 use oat\tao\helpers\InstallHelper;
 use oat\oatbox\install\Installer;
 use oat\oatbox\service\ServiceManager;
@@ -35,6 +39,7 @@ use oat\generis\model\GenerisRdf;
 use oat\tao\model\user\TaoRoles;
 use oat\tao\model\service\ApplicationService;
 use oat\oatbox\service\ServiceNotFoundException;
+
 /**
  *
  *
@@ -53,7 +58,7 @@ class tao_install_Installator
     /**
      * Installator related dependencies will be reached under this offset.
      */
-    const CONTAINER_INDEX = 'taoInstallInstallator';
+    public const CONTAINER_INDEX = 'taoInstallInstallator';
 
     protected $options = [];
 
@@ -205,7 +210,7 @@ class tao_install_Installator
                 $this->getGenerisConfig()
             );
 
-            $session_name = (isset($installData['session_name'])) ? $installData['session_name'] : self::generateSessionName();
+            $session_name = $installData['session_name'] ?? self::generateSessionName();
             $generisConfigWriter->createConfig();
             $constants = [
                 'LOCAL_NAMESPACE'           => $installData['module_namespace'],
@@ -219,11 +224,14 @@ class tao_install_Installator
                 'TIME_ZONE'                 => $installData['timezone']
             ];
 
-            $constants['DEFAULT_ANONYMOUS_INTERFACE_LANG'] = (isset($installData['anonymous_lang'])) ? $installData['anonymous_lang'] : $installData['module_lang'];
-
+            $constants['DEFAULT_ANONYMOUS_INTERFACE_LANG'] = $installData['anonymous_lang']
+                ?? $installData['module_lang'];
 
             $generisConfigWriter->writeConstants($constants);
-            $this->log('d', 'The following constants were written in generis config:' . PHP_EOL . var_export($constants, true));
+            $this->log(
+                'd',
+                'The following constants were written in generis config:' . PHP_EOL . var_export($constants, true)
+            );
 
             /*
              * 4b - Prepare the file/cache folder (FILES_PATH) not yet defined)
@@ -242,12 +250,11 @@ class tao_install_Installator
                     throw new Exception($file_path . ' directory creation was failed!');
                 }
             }
+
+            $setupFileCache = $this->getServiceManager()->get(SetupFileCache::class);
             $cachePath = $file_path . 'generis' . DIRECTORY_SEPARATOR . 'cache';
-            if (mkdir($cachePath, 0700, true)) {
-                $this->log('d', $cachePath . ' directory was created!');
-            } else {
-                throw new Exception($cachePath . ' directory creation was failed!');
-            }
+            $setupFileCache->createDirectory($cachePath);
+            $this->log('d', $cachePath . ' directory was created!');
 
             foreach ((array)$installData['extra_persistences'] as $k => $persistence) {
                 $persistenceManager->registerPersistence($k, $persistence);
@@ -263,11 +270,7 @@ class tao_install_Installator
              * 5b - Create cache persistence
             */
             $this->log('d', 'Creating cache persistence..');
-            $persistenceManager->registerPersistence('cache', [
-                'driver' => 'phpfile'
-            ]);
-            $persistenceManager->getPersistenceById('cache')->purge();
-            $this->getServiceManager()->register(PersistenceManager::SERVICE_ID, $persistenceManager);
+            $setupFileCache->createPersistence();
 
             /*
              * 6 - Finish Generis Install
@@ -315,7 +318,11 @@ class tao_install_Installator
             $userpwd = core_kernel_users_Service::getPasswordHash()->encrypt($installData['user_pass1']);
             $userLang = 'http://www.tao.lu/Ontologies/TAO.rdf#Lang' . $installData['module_lang'];
 
-            $superUser = $userClass->createInstance('Super User', 'super user created during the TAO installation', $userid);
+            $superUser = $userClass->createInstance(
+                'Super User',
+                'super user created during the TAO installation',
+                $userid
+            );
             $superUser->setPropertiesValues([
                 GenerisRdf::PROPERTY_USER_ROLES => [
                     TaoRoles::GLOBAL_MANAGER,
@@ -342,11 +349,11 @@ class tao_install_Installator
                 // 11.0 Protect TAO dist
                 $shield = new tao_install_utils_Shield(array_keys($extensions));
                 $shield->disableRewritePattern(["!/test/", "!/doc/"]);
-                                $shield->denyAccessTo([
-                                    'views/sass',
-                                    'views/js/test',
-                                    'views/build'
-                                ]);
+                $shield->denyAccessTo([
+                    'views/sass',
+                    'views/js/test',
+                    'views/build'
+                ]);
                 $shield->protectInstall();
             }
 
@@ -410,7 +417,13 @@ class tao_install_Installator
              */
 
             $this->log('e', 'Error Occurs : ' . $err . PHP_EOL . $exception->getTraceAsString());
-            throw new tao_install_utils_Exception("Error in mysql system variable 'thread_stack':<br>It is required to change its value in my.ini as following<br>'192K' on 32bit windows<br>'256K' on 64bit windows.<br><br>Note that such configuration changes will only take effect after server restart.<br><br>", 0, $exception);
+            throw new tao_install_utils_Exception(
+                "Error in mysql system variable 'thread_stack':<br>It is required to change its value in "
+                    . "my.ini as following<br>'192K' on 32bit windows<br>'256K' on 64bit windows.<br><br>Note that "
+                    . "such configuration changes will only take effect after server restart.<br><br>",
+                0,
+                $exception
+            );
         }
 
         if (!$returnValue) {
@@ -460,7 +473,8 @@ class tao_install_Installator
             $msg = "Malformed install parameter 'instance_name'. It must be a string.";
             throw new tao_install_utils_MalformedParameterException($msg);
         } elseif (1 === preg_match('/\s/u', $installData['instance_name'])) {
-            $msg = "Malformed install parameter 'instance_name'. It cannot contain spacing characters (tab, backspace).";
+            $msg = "Malformed install parameter 'instance_name'. It cannot contain spacing characters "
+                . "(tab, backspace).";
             throw new tao_install_utils_MalformedParameterException($msg);
         }
     }
@@ -546,7 +560,9 @@ class tao_install_Installator
             call_user_func('common_Logger::' . $logLevel, $message, $tags);
         }
         if (is_array($message)) {
-            $this->log[$logLevel] = (isset($this->log[$logLevel])) ? array_merge($this->log[$logLevel], $message) : $message;
+            $this->log[$logLevel] = (isset($this->log[$logLevel]))
+                ? array_merge($this->log[$logLevel], $message)
+                : $message;
         } else {
             $this->log[$logLevel][] = $message;
         }
@@ -568,7 +584,7 @@ class tao_install_Installator
      */
     protected function getGenerisConfig()
     {
-         return $this->getConfigPath() . 'generis.conf.php';
+        return $this->getConfigPath() . 'generis.conf.php';
     }
 
     /**
@@ -599,8 +615,6 @@ class tao_install_Installator
 
     private function recreateDependencyInjectionContainerCache(): void
     {
-        ServiceManager::getServiceManager()
-            ->getContainerBuilder()
-            ->forceBuild();
+        ServiceManager::getServiceManager()->rebuildContainer();
     }
 }

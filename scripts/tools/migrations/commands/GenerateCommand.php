@@ -28,7 +28,8 @@ class GenerateCommand extends DoctrineCommand
                 InputOption::VALUE_REQUIRED,
                 'The namespace to use for the migration (must be in the list of configured namespaces)'
             )
-            ->setHelp(<<<EOT
+            ->setHelp(
+                <<<EOT
 The <info>%command.name%</info> command generates a blank migration class:
 
     <info>%command.full_name%</info>
@@ -77,12 +78,14 @@ EOT
             sprintf('Generated new migration class to "<info>%s</info>"', realpath($path)),
             '',
             sprintf(
-                'To run just this migration for testing purposes, you can use <info>sudo -u www-data php index.php \'\oat\tao\scripts\tools\Migrations\' -c execute -v \'%s\'</info>',
+                'To run just this migration for testing purposes, you can use <info>sudo -u www-data php '
+                . 'index.php \'\oat\tao\scripts\tools\Migrations\' -c execute -v \'%s\'</info>',
                 $fqcn
             ),
             '',
             sprintf(
-                'To revert the migration you can use <info>sudo -u www-data php index.php \'\oat\tao\scripts\tools\Migrations\' -c rollback -v \'%s\'</info>',
+                'To revert the migration you can use <info>sudo -u www-data php index.php '
+                . '\'\oat\tao\scripts\tools\Migrations\' -c rollback -v \'%s\'</info>',
                 $fqcn
             ),
         ];

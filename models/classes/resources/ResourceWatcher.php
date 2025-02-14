@@ -15,14 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017-2021 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2017-2022 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\tao\model\resources;
 
 use common_http_Request;
 use core_kernel_classes_Class;
+use core_kernel_classes_Literal;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\event\ResourceCreated;
 use oat\generis\model\data\event\ResourceDeleted;
@@ -31,12 +31,16 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\AdvancedSearch\AdvancedSearchChecker;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\search\index\IndexUpdaterInterface;
 use oat\tao\model\search\Search;
 use oat\tao\model\search\tasks\UpdateClassInIndex;
 use oat\tao\model\search\tasks\UpdateResourceInIndex;
+use oat\tao\model\search\tasks\UpdateTestResourceInIndex;
 use oat\tao\model\TaoOntology;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
+use oat\tao\model\Translation\Service\TranslationDeletionService;
 
 /**
  * @author Aleksej Tikhanovich, <aleksej@taotesting.com>
@@ -45,10 +49,10 @@ class ResourceWatcher extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-    const SERVICE_ID = 'tao/ResourceWatcher';
+    public const SERVICE_ID = 'tao/ResourceWatcher';
 
     /** Time in seconds for updatedAt threshold */
-    const OPTION_THRESHOLD = 'threshold';
+    public const OPTION_THRESHOLD = 'threshold';
 
     /** @var array */
     protected $updatedAtCache = [];
@@ -75,7 +79,8 @@ class ResourceWatcher extends ConfigurableService
     {
         $resource = $event->getResource();
         $updatedAt = $this->getUpdatedAt($resource);
-        if ($updatedAt && $updatedAt instanceof \core_kernel_classes_Literal) {
+
+        if ($updatedAt instanceof core_kernel_classes_Literal) {
             $updatedAt = (int) $updatedAt->literal;
         }
 
@@ -83,22 +88,27 @@ class ResourceWatcher extends ConfigurableService
         $threshold = $this->getOption(self::OPTION_THRESHOLD);
 
         if ($updatedAt === null || ($now - $updatedAt) > $threshold) {
-            $this->getLogger()->debug('triggering index update on resourceUpdated event');
-
-            $taskMessage = __('Adding/updating search index for updated resource');
-            $this->createResourceIndexingTask($resource, $taskMessage);
+            $this->getLogger()->debug(
+                'triggering index update on resourceUpdated event'
+            );
 
             $property = $this->getProperty(TaoOntology::PROPERTY_UPDATED_AT);
             $this->updatedAtCache[$resource->getUri()] = $now;
             $resource->editPropertyValues($property, $now);
+
+            $taskMessage = __('Adding/updating search index for updated resource');
+            $this->createResourceIndexingTask($resource, $taskMessage);
         }
     }
 
     public function catchDeletedResourceEvent(ResourceDeleted $event): void
     {
-        $searchService = $this->getServiceLocator()->get(Search::SERVICE_ID);
         try {
-            $searchService->remove($event->getId());
+            $this->getSearch()->remove($event->getId());
+
+            if ($this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_TRANSLATION_ENABLED')) {
+                $this->getTranslationDeletionService()->deleteByOriginResourceUri($event->getId());
+            }
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $this->getLogger()->error(
@@ -118,7 +128,7 @@ class ResourceWatcher extends ConfigurableService
         } else {
             $property = $this->getProperty(TaoOntology::PROPERTY_UPDATED_AT);
             $updatedAt = $resource->getOnePropertyValue($property);
-            if ($updatedAt && $updatedAt instanceof \core_kernel_classes_Literal) {
+            if ($updatedAt && $updatedAt instanceof core_kernel_classes_Literal) {
                 $updatedAt = (int) $updatedAt->literal;
             }
             $this->updatedAtCache[$resource->getUri()] = $updatedAt;
@@ -131,46 +141,46 @@ class ResourceWatcher extends ConfigurableService
      */
     private function createResourceIndexingTask(core_kernel_classes_Resource $resource, string $message): void
     {
-        if ($this->getServiceLocator()->get(AdvancedSearchChecker::class)->isEnabled()) {
+        if ($this->getServiceManager()->get(AdvancedSearchChecker::class)->isEnabled()) {
             /** @var QueueDispatcherInterface $queueDispatcher */
-            $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+            $queueDispatcher = $this->getServiceManager()->get(QueueDispatcherInterface::SERVICE_ID);
 
             if ($this->hasClassSupport($resource) && !$this->ignoreEditIemClassUpdates()) {
                 $queueDispatcher->createTask(new UpdateClassInIndex(), [$resource->getUri()], $message);
                 return;
             }
 
-            if ($this->hasResourceSupport($resource)) {
-                $queueDispatcher->createTask(new UpdateResourceInIndex(), [$resource->getUri()], $message);
-
-                return;
+            $rootIndexClass = $this->getResourceIndexType($resource);
+            if ($rootIndexClass) {
+                $isTest = TaoOntology::CLASS_URI_TEST === $rootIndexClass;
+                $queueDispatcher->createTask(
+                    $isTest ? new UpdateTestResourceInIndex() : new UpdateResourceInIndex(),
+                    [$resource->getUri()],
+                    $message
+                );
             }
         }
     }
 
-    private function hasResourceSupport(core_kernel_classes_Resource $resource): bool
+    /**
+     * This method actually finds a root class that is supported by used tao/IndexUpdater
+     */
+    private function getResourceIndexType(core_kernel_classes_Resource $resource): ?string
     {
-        $resourceTypeIds = array_map(
-            function (core_kernel_classes_Class $resourceType): string {
-                return $resourceType->getUri();
-            },
-            $resource->getTypes()
-        );
-
+        $resourceTypeIds = $this->getResourceTypes($resource);
         $checkedResourceTypes = [OntologyRdfs::RDFS_RESOURCE, TaoOntology::CLASS_URI_OBJECT];
         $resourceTypeIds = array_diff($resourceTypeIds, [OntologyRdfs::RDFS_RESOURCE, TaoOntology::CLASS_URI_OBJECT]);
 
         while (!empty($resourceTypeIds)) {
             $classUri = array_pop($resourceTypeIds);
-
-            $hasClassSupport = $this->getServiceLocator()
+            $hasClassSupport = $this->getServiceManager()
                 ->get(IndexUpdaterInterface::SERVICE_ID)
                 ->hasClassSupport(
                     $classUri
                 );
 
             if ($hasClassSupport) {
-                return true;
+                return $classUri;
             }
 
             $class = $this->getClass($classUri);
@@ -183,7 +193,17 @@ class ResourceWatcher extends ConfigurableService
             $checkedResourceTypes[] = $class->getUri();
         }
 
-        return false;
+        return null;
+    }
+
+    private function getResourceTypes(core_kernel_classes_Resource $resource): array
+    {
+        return array_map(
+            function (core_kernel_classes_Class $resourceType): string {
+                return $resourceType->getUri();
+            },
+            $resource->getTypes()
+        );
     }
 
     private function hasClassSupport(core_kernel_classes_Resource $resource): bool
@@ -200,5 +220,20 @@ class ResourceWatcher extends ConfigurableService
         }
 
         return isset($url['path']) && $url['path'] === '/taoItems/Items/editItemClass';
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(FeatureFlagChecker::class);
+    }
+
+    private function getTranslationDeletionService(): TranslationDeletionService
+    {
+        return $this->getServiceManager()->getContainer()->get(TranslationDeletionService::class);
+    }
+
+    private function getSearch(): Search
+    {
+        return $this->getServiceManager()->getContainer()->get(Search::SERVICE_ID);
     }
 }

@@ -35,9 +35,9 @@ use oat\oatbox\service\ConfigurableService;
  */
 class StateMigration extends ConfigurableService
 {
-    const SERVICE_ID = 'tao/migrationState';
+    public const SERVICE_ID = 'tao/migrationState';
 
-    const OPTION_FILESYSTEM = 'fileSystem';
+    public const OPTION_FILESYSTEM = 'fileSystem';
 
     /**
      * @var FileSystem
@@ -67,7 +67,9 @@ class StateMigration extends ConfigurableService
 
         $state = $stateStorage->get($userId, $callId);
 
-        return (!is_null($state)) ? $this->getFileSystem()->write($this->generateSerial($userId, $callId), $state) : false;
+        return (!is_null($state))
+            ? $this->getFileSystem()->write($this->generateSerial($userId, $callId), $state)
+            : false;
     }
 
     public function restore($userId, $callId)
@@ -91,8 +93,7 @@ class StateMigration extends ConfigurableService
 
     public function removeBackup($userId, $callId)
     {
-
-        return $this->getFileSystem()->delete($this->generateSerial($userId, $callId));
+        $this->getFileSystem()->delete($this->generateSerial($userId, $callId));
     }
 
     private function generateSerial($userId, $callId)

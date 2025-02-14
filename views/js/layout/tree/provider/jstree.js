@@ -28,7 +28,7 @@ define([
     'context',
     'core/store',
     'core/promise',
-    'util/url',
+    'layout/tree/helpers',
     'layout/generisRouter',
     'layout/actions',
     'layout/section',
@@ -36,7 +36,7 @@ define([
     'ui/feedback',
     'uri',
     'jquery.tree'
-], function($, _, __, context, store, Promise, urlUtil, generisRouter, actionManager, sectionManager, permissionsManager, feedback, uri){
+], function($, _, __, context, store, Promise, helpers, generisRouter, actionManager, sectionManager, permissionsManager, feedback, uri){
     'use strict';
 
     var pageRange = 30;
@@ -361,6 +361,24 @@ define([
                     },
 
                     /**
+                     * Once the data of a node parsed
+                     * Used to modify html data
+                     *
+                     * @param {string} html - the html contents of node
+                     */
+                    onparse: function(html) {
+                        const $node = $(html);
+                        helpers.setALevelVar($node);
+
+                        //add open/close icon
+                        $node.find('a').each(function() {
+                            $(this).prepend('<dfn class="open-close">&nbsp</dfn>');
+                        })
+
+                        return $node;
+                    },
+
+                    /**
                      * Once the data are loaded and the tree is ready
                      * Used to modify them before building the tree.
                      *
@@ -483,7 +501,7 @@ define([
                             nodeContext.context = ['class', 'resource'];
 
                             //Check if any class-level action is defined in the structures.xml file
-                            classActions = _.intersection(_.pluck(options.actions, 'context'), ['class', 'resource', '*']);
+                            classActions = _.intersection(_.map(options.actions, 'context'), ['class', 'resource', '*']);
                             if (classActions.length > 0) {
                                 generisRouter.pushNodeState(location.href, uri.decode(nodeContext.classUri));
                                 executePossibleAction(options.actions, nodeContext, ['delete']);
@@ -521,6 +539,7 @@ define([
 
                     //when a node is move by drag n'drop
                     onmove: function onmove(node, refNode, type, tree, rollback) {
+
                         if (!options.actions.moveInstance) {
                             return false;
                         }
@@ -542,6 +561,12 @@ define([
 
                         //set the rollback data
                         setTreeState(_.merge($container.data('tree-state'), {rollback : rollback}));
+
+                        //update levels
+                        const $node = $(node)
+                        const $refNode = $(refNode);
+                        $node.attr('data-level', parseInt($refNode.attr('data-level')) + 1);
+                        helpers.setALevelVar($node);
 
                         //execute the selectInstance action
                         actionManager.exec(options.actions.moveInstance, {
@@ -692,7 +717,7 @@ define([
             /**
              * Add a title attribute to the nodes
              * @private
-             * @param {Object} node - the tree node as recevied from the server
+             * @param {Object} node - the tree node as received from the server
              */
             function addTitle(node){
                 if(_.isArray(node)){
@@ -780,8 +805,8 @@ define([
                 }
 
                 possibleActions = _.filter(actions, function (action, name) {
-                    var possible = _.contains(nodeContext.context, action.context);
-                    return possible && !_.contains(exclude, name);
+                    var possible = _.includes(nodeContext.context, action.context);
+                    return possible && !_.includes(exclude, name);
                 });
                 //execute the first allowed action
                 if(possibleActions.length > 0){
@@ -811,6 +836,8 @@ define([
             function getTreeData(response){
                 var treeData = response.tree || response;
                 var currentRights;
+
+                helpers.setTreeLevels(response);
 
                 if(response.permissions){
                     currentRights = permissionsManager.getRights();

@@ -17,14 +17,23 @@
  *
  *  Copyright (c) 2016 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
+
 namespace oat\tao\model\mvc;
 
+use common_Exception;
+use common_exception_Error;
+use common_Logger;
+use Laminas\ServiceManager\ServiceLocatorAwareInterface;
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\exception\InvalidServiceManagerException;
+use oat\tao\model\DynamicConfig\DynamicConfigProviderInterface;
 use oat\tao\model\mvc\DefaultUrlModule\RedirectResolveInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class DefaultUrlService extends ConfigurableService
 {
-    const SERVICE_ID = 'tao/urlroute';
+    public const SERVICE_ID = 'tao/urlroute';
 
     /**
      *
@@ -44,11 +53,15 @@ class DefaultUrlService extends ConfigurableService
 
     /**
      *
-     * @return string
+     * @throws ContainerExceptionInterface
+     * @throws InvalidServiceManagerException
+     * @throws NotFoundExceptionInterface
      */
-    public function getLoginUrl(array $params = [])
+    public function getLoginUrl(array $params = []): ?string
     {
-        return $this->getUrl('login', $params);
+        return $this->getDynamicConfigProvider()->getConfigByName(
+            DynamicConfigProviderInterface::LOGIN_URL_CONFIG_NAME
+        ) ?? $this->getUrl('login', $params);
     }
 
     /**
@@ -74,12 +87,12 @@ class DefaultUrlService extends ConfigurableService
      *
      * @param $name
      * @return mixed
-     * @throws \common_Exception
+     * @throws common_Exception
      */
     public function getRoute($name)
     {
-        if (! $this->hasOption($name)) {
-            throw new \common_Exception('Route ' . $name . ' not found into UrlService config');
+        if (!$this->hasOption($name)) {
+            throw new common_Exception('Route ' . $name . ' not found into UrlService config');
         }
         return $this->getOption($name);
     }
@@ -107,19 +120,16 @@ class DefaultUrlService extends ConfigurableService
 
     /**
      * @param string $name
-     * @return string
+     * @throws ContainerExceptionInterface
+     * @throws InvalidServiceManagerException
+     * @throws NotFoundExceptionInterface
+     * @throws common_exception_Error
      */
-    public function getRedirectUrl($name)
+    public function getRedirectUrl($name): ?string
     {
         if ($this->hasOption($name)) {
-            $options = $this->getOption($name);
-            if (array_key_exists('redirect', $options)) {
-                if (is_string($options['redirect']) && filter_var($options['redirect'], FILTER_VALIDATE_URL)) {
-                    \common_Logger::w('deprecated usage or redirect');
-                    return $options['redirect'];
-                }
-                return $this->resolveRedirect($options['redirect']);
-            }
+            return $this->getRedirectByDynamicConfigProvider($name)
+                ?? $this->getRedirectByOptionConfig($name);
         }
         return '';
     }
@@ -127,7 +137,8 @@ class DefaultUrlService extends ConfigurableService
     /**
      * @param array $redirectParams
      * @return string
-     * @throws \common_exception_Error
+     * @throws common_exception_Error
+     * @throws InvalidServiceManagerException
      */
     protected function resolveRedirect(array $redirectParams)
     {
@@ -137,8 +148,64 @@ class DefaultUrlService extends ConfigurableService
              * @var RedirectResolveInterface $redirectAdapter
              */
             $redirectAdapter = new $redirectAdapterClass();
+            if ($redirectAdapter instanceof ServiceLocatorAwareInterface) {
+                $redirectAdapter->setServiceLocator($this->getServiceManager());
+            }
+
             return $redirectAdapter->resolve($redirectParams['options']);
         }
-        throw new \common_exception_Error('invalid redirect resolver class ' . $redirectAdapterClass . '. it must implements ' . RedirectResolveInterface::class);
+        throw new common_exception_Error(
+            'invalid redirect resolver class ' . $redirectAdapterClass . '. it must implements '
+            . RedirectResolveInterface::class
+        );
+    }
+
+    /**
+     * @param string|array $redirect
+     * @return string
+     * @throws common_exception_Error
+     * @throws InvalidServiceManagerException
+     */
+    public function createRedirect($redirect)
+    {
+        if (is_string($redirect) && filter_var($redirect, FILTER_VALIDATE_URL)) {
+            common_Logger::w('deprecated usage or redirect');
+            return $redirect;
+        }
+        return $this->resolveRedirect($redirect);
+    }
+
+    /**
+     * @throws InvalidServiceManagerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function getRedirectByDynamicConfigProvider(string $name): ?string
+    {
+        return $this->getDynamicConfigProvider()->getConfigByName($name);
+    }
+
+    /**
+     * @throws InvalidServiceManagerException
+     * @throws common_exception_Error
+     */
+    private function getRedirectByOptionConfig(string $name): ?string
+    {
+        $options = $this->getOption($name);
+        if (array_key_exists('redirect', $options)) {
+            return $this->createRedirect($options['redirect']);
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws InvalidServiceManagerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function getDynamicConfigProvider(): DynamicConfigProviderInterface
+    {
+        return $this->getServiceManager()->getContainer()->get(DynamicConfigProviderInterface::class);
     }
 }

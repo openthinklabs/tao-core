@@ -22,8 +22,8 @@
 namespace oat\tao\model\websource;
 
 use GuzzleHttp\Psr7\Stream;
-use League\Flysystem\FileNotFoundException;
 use oat\oatbox\Configurable;
+use oat\oatbox\filesystem\FilesystemException;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ServiceManager;
 use Psr\Http\Message\StreamInterface;
@@ -34,8 +34,8 @@ use tao_helpers_File;
  */
 abstract class BaseWebsource extends Configurable implements Websource
 {
-    const OPTION_ID = 'id';
-    const OPTION_FILESYSTEM_ID = 'fsUri';
+    public const OPTION_ID = 'id';
+    public const OPTION_FILESYSTEM_ID = 'fsUri';
     private const ALLOWED_SVGZ_MIMETYPES = ['text/plain', 'image/svg', 'application/x-gzip'];
 
     /**
@@ -107,10 +107,10 @@ abstract class BaseWebsource extends Configurable implements Websource
         $fs = $this->getFileSystem();
         try {
             $resource = $fs->readStream($filePath);
-        } catch (FileNotFoundException $e) {
+        } catch (FilesystemException $e) {
             throw new \tao_models_classes_FileNotFoundException($filePath);
         }
-        return new Stream($resource, ['size' => $fs->getSize($filePath)]);
+        return new Stream($resource, ['size' => $fs->fileSize($filePath)]);
     }
 
     /**
@@ -119,29 +119,34 @@ abstract class BaseWebsource extends Configurable implements Websource
      * @return string|false The file mime-type or false on failure.
      * @throws \common_exception_Error
      * @throws \common_exception_NotFound
+     * @throws FilesystemException
      */
     public function getMimetype($filePath)
     {
-        $mimeType = $this->getFileSystem()->getMimetype($filePath);
+        $mimeType = $this->getFileSystem()->mimeType($filePath);
 
         $pathParts = pathinfo($filePath);
         if (isset($pathParts['extension'])) {
             //manage bugs in finfo
             switch ($pathParts['extension']) {
                 case 'js':
-                    if (in_array($mimeType, ['text/plain', 'text/html', 'text/x-asm', 'text/x-c', 'text/x-java'], true)) {
+                    if (
+                        in_array($mimeType, ['text/plain', 'text/html', 'text/x-asm', 'text/x-c', 'text/x-java'], true)
+                    ) {
                         return 'text/javascript';
                     }
                     break;
                 case 'css':
-                    //for css files mime type can be 'text/plain' due to bug in finfo (see more: https://bugs.php.net/bug.php?id=53035)
+                    // for css files mime type can be 'text/plain' due to bug in finfo
+                    // (see more: https://bugs.php.net/bug.php?id=53035)
                     if ($mimeType === 'text/plain' || $mimeType === 'text/x-asm') {
                         return 'text/css';
                     }
                     break;
                 case 'svg':
                 case 'svgz':
-                    //when there are more than one image in svg file - finfo recognizes it as `image/svg`, while it should be `image/svg+xml` or at least `text/plain` for a previous hack to work
+                    // when there are more than one image in svg file - finfo recognizes it as `image/svg`, while it
+                    // should be `image/svg+xml` or at least `text/plain` for a previous hack to work
                     if (in_array($mimeType, self::ALLOWED_SVGZ_MIMETYPES, true)) {
                         return tao_helpers_File::MIME_SVG;
                     }

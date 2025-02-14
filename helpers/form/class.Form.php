@@ -1,5 +1,6 @@
 <?php
 
+// phpcs:disable Generic.Files.LineLength
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,10 +16,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2021 (original work) Open Assessment Technologies SA
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ *               2021-2022 (original work) Open Assessment Technologies SA
  */
+// phpcs:enable
 
 declare(strict_types=1);
 
@@ -39,9 +43,9 @@ declare(strict_types=1);
  * @package tao
 
  */
+// phpcs:ignore
 abstract class tao_helpers_form_Form
 {
-
     /**
      * the form name
      *
@@ -313,7 +317,9 @@ abstract class tao_helpers_form_Form
 
         foreach ($actions as $action) {
             if (!$action instanceof tao_helpers_form_FormElement) {
-                throw new Exception('The actions parameter must only contains instances of tao_helpers_form_FormElement');
+                throw new Exception(
+                    'The actions parameter must only contains instances of tao_helpers_form_FormElement'
+                );
             }
             $this->actions[$context][] = $action;
         }
@@ -439,6 +445,9 @@ abstract class tao_helpers_form_Form
             if (!$this->isValid() && $element->getError()) {
                 $element->addClass('error');
             }
+
+            //Pass Resource Type
+            $element->addAttribute('resourceType', $this->options['resourceType'] ?? null);
 
             //render element
             $returnValue .= $element->render();
@@ -657,17 +666,34 @@ abstract class tao_helpers_form_Form
         foreach ($values as $key => $value) {
             foreach ($this->elements as $element) {
                 if ($element->getName() === $key) {
-                    if (
-                        $element instanceof tao_helpers_form_elements_Checkbox ||
-                        (method_exists($element, 'setValues') && is_array($value))
-                    ) {
-                        $element->setValues($value);
-                    } else {
-                        $element->setValue($value);
-                    }
+                    $this->setElementValue($element, $value);
+
                     break;
                 }
             }
+        }
+    }
+
+    public function setElementValue(tao_helpers_form_FormElement $element, $value): void
+    {
+        if (
+            $element instanceof tao_helpers_form_elements_Checkbox
+            || (method_exists($element, 'setValues') && is_array($value))
+        ) {
+            $element->setValues($value);
+
+            return;
+        }
+
+        $element->setValue($value);
+    }
+
+    public function setValue(string $name, $value): void
+    {
+        $element = $this->getElement($name);
+
+        if ($element) {
+            $this->setElementValue($element, $value);
         }
     }
 

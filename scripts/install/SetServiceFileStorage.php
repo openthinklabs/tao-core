@@ -25,7 +25,6 @@ use oat\tao\model\websource\TokenWebSource;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\model\websource\TokenWebSourceService;
 use tao_models_classes_service_FileStorage;
-use League\Flysystem\Adapter\Local;
 use oat\tao\model\websource\FlyTokenWebSource;
 
 /**
@@ -37,7 +36,7 @@ class SetServiceFileStorage extends \common_ext_action_InstallAction
     {
         $publicDataPath = FILES_PATH . 'tao' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR;
         $privateDataPath = FILES_PATH . 'tao' . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR;
-        
+
         if (file_exists($publicDataPath)) {
             \helpers_File::emptyDirectory($publicDataPath);
         }

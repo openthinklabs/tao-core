@@ -15,14 +15,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
+use oat\generis\model\GenerisRdf;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\user\UserLanguageServiceInterface;
 use oat\oatbox\user\UserTimezoneServiceInterface;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
+use oat\tao\model\user\UserSettingsInterface;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -140,6 +146,25 @@ class tao_actions_form_UserSettings extends tao_helpers_form_FormContainer
         }
 
         $this->addTimezoneEl($this->form);
+
+        if (
+            $this->getFeatureFlagChecker()->isEnabled(
+                FeatureFlagCheckerInterface::FEATURE_FLAG_SOLAR_DESIGN_ENABLED
+            )
+        ) {
+            $this->addInterfaceModeElement($this->form);
+        }
+    }
+
+    private function addInterfaceModeElement(tao_helpers_form_Form $form): void
+    {
+        $interfaceModeElement = tao_helpers_form_FormFactory::getElement(
+            UserSettingsInterface::INTERFACE_MODE,
+            'Radiobox'
+        );
+        $interfaceModeElement->setDescription(__('Interface Mode'));
+        $interfaceModeElement->setOptions($this->getInterfaceModeOptions());
+        $form->addElement($interfaceModeElement);
     }
 
     private function addTimezoneEl($form): void
@@ -178,6 +203,13 @@ class tao_actions_form_UserSettings extends tao_helpers_form_FormContainer
         return $this->languageService;
     }
 
+    private function getFeatureFlagChecker(): FeatureFlagChecker
+    {
+        return $this
+            ->getContainer()
+            ->get(FeatureFlagChecker::class);
+    }
+
     private function getContainer(): ContainerInterface
     {
         if (!$this->container) {
@@ -185,5 +217,19 @@ class tao_actions_form_UserSettings extends tao_helpers_form_FormContainer
         }
 
         return $this->container;
+    }
+
+    private function getInterfaceModeOptions(): array
+    {
+        $options = [];
+        $property = new core_kernel_classes_Property(GenerisRdf::PROPERTY_USER_INTERFACE_MODE);
+
+        foreach ($property->getRange()->getInstances(true) as $rangeInstance) {
+            $options[tao_helpers_Uri::encode($rangeInstance->getUri())] = $rangeInstance->getLabel();
+        }
+
+        krsort($options);
+
+        return $options;
     }
 }

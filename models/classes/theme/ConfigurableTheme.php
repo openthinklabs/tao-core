@@ -50,26 +50,28 @@ use oat\tao\helpers\Template;
  * @package oat\tao\model\theme
  * @deprecated use oat\tao\model\theme\ConfigurablePlatformTheme instead
  */
-class ConfigurableTheme extends Configurable implements Theme
+class ConfigurableTheme extends Configurable implements Theme, SolarDesignCheckerInterface
 {
+    use SolarDesignCheckerTrait;
+
     /** Theme id offset in the options. */
-    const THEME_ID    = 'id';
+    public const THEME_ID    = 'id';
 
     /** Theme label offset in the options. */
-    const THEME_LABEL = 'label';
+    public const THEME_LABEL = 'label';
 
     /** Theme data offset in the options. */
-    const THEME_DATA  = 'data';
+    public const THEME_DATA  = 'data';
 
     /** Theme css offset in the options. */
-    const THEME_CSS   = 'stylesheet';
+    public const THEME_CSS   = 'stylesheet';
 
     /** Theme data logo url offset in the options under the data offset. */
-    const THEME_DATA_LOGO_URL = 'logo-url';
+    public const THEME_DATA_LOGO_URL = 'logo-url';
     /** Theme data logo link offset in the options under the data offset. */
-    const THEME_DATA_LINK     = 'link';
+    public const THEME_DATA_LINK     = 'link';
     /** Theme data logo title offset in the options under the data offset. */
-    const THEME_DATA_MESSAGE  = 'message';
+    public const THEME_DATA_MESSAGE  = 'message';
 
     /**
      * Defined custom texts
@@ -157,6 +159,9 @@ class ConfigurableTheme extends Configurable implements Theme
             case 'login':
                 $template = Template::getTemplate('blocks/login.tpl', 'tao');
                 break;
+            case 'logout':
+                $template = Template::getTemplate('blocks/logout.tpl', 'tao');
+                break;
             default:
                 \common_Logger::d('Unknown template ' . $id);
                 $template = null;
@@ -175,7 +180,7 @@ class ConfigurableTheme extends Configurable implements Theme
         if ($this->hasOption(static::THEME_DATA) && is_array($this->getOption(static::THEME_DATA))) {
             return $this->getOption(static::THEME_DATA);
         }
-        
+
         return [];
     }
 
@@ -190,7 +195,7 @@ class ConfigurableTheme extends Configurable implements Theme
         if ($this->hasOption(static::THEME_CSS)) {
             return $this->getOption(static::THEME_CSS);
         }
-        
+
         return Template::css('tao-3.css', 'tao');
     }
 
@@ -206,7 +211,7 @@ class ConfigurableTheme extends Configurable implements Theme
         if (isset($data[static::THEME_DATA_LOGO_URL])) {
             return $data[static::THEME_DATA_LOGO_URL];
         }
-        
+
         return Template::img('tao-logo.png', 'tao');
     }
 
@@ -223,7 +228,7 @@ class ConfigurableTheme extends Configurable implements Theme
         if (isset($data[static::THEME_DATA_LINK])) {
             return $data[static::THEME_DATA_LINK];
         }
-        
+
         return 'http://taotesting.com';
     }
 
@@ -240,7 +245,7 @@ class ConfigurableTheme extends Configurable implements Theme
         if (isset($data[static::THEME_DATA_MESSAGE])) {
             return $data[static::THEME_DATA_MESSAGE];
         }
-        
+
         return '';
     }
 

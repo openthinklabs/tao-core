@@ -1,20 +1,28 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint157\n"
-"PO-Revision-Date: 2021-06-18T08:53:58\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-12-05 09:23\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: lt-LT\n"
+"Language: lt\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: lt-LT\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-GB\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : (n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: lt\n"
+"X-Crowdin-File: /[oat-sa.tao-core] develop/locales/en-GB/messages.po\n"
+"X-Crowdin-File-ID: 617\n"
+"Language-Team: Lithuanian\n"
 
 msgid ""
 msgstr ""
+""
 
 msgid " and "
 msgstr " ir "
@@ -71,7 +79,7 @@ msgid "%s %s selected"
 msgstr "%s %s pasirinkta"
 
 msgid "%s (%s kb)"
-msgstr "%s (%s kb)"
+msgstr ""
 
 msgid "%s Class saved"
 msgstr "%s Klasė išsaugota"
@@ -161,13 +169,13 @@ msgid "About"
 msgstr ""
 
 msgid "abs"
-msgstr "abs"
+msgstr ""
 
 msgid "Absolute value"
 msgstr "Absoliuti reikšmė"
 
 msgid "AC"
-msgstr "AC"
+msgstr ""
 
 msgid "Access Denied"
 msgstr "Prieiga Atmesta"
@@ -288,7 +296,7 @@ msgid "an instance"
 msgstr "instancija"
 
 msgid "Ans"
-msgstr "Ans"
+msgstr ""
 
 msgid "Apply"
 msgstr "Taikyti"
@@ -399,7 +407,7 @@ msgid "Browse..."
 msgstr "Naršyti..."
 
 msgid "C"
-msgstr "C"
+msgstr ""
 
 msgid "C file"
 msgstr ""
@@ -441,7 +449,7 @@ msgid "Case sensitive"
 msgstr "Skiriamos didžiosios-mažosios raidės"
 
 msgid "ceil"
-msgstr "ceil"
+msgstr ""
 
 #, tao-public
 msgid "Change password"
@@ -577,10 +585,10 @@ msgid "Copy to clipboard"
 msgstr "Kopijuoti į iškarpinę"
 
 msgid "cos"
-msgstr "cos"
+msgstr ""
 
 msgid "cosh"
-msgstr "cosh"
+msgstr ""
 
 msgid "Cosine"
 msgstr "Kosinusas"
@@ -604,7 +612,7 @@ msgid "CSP Header settings were saved successfully!"
 msgstr ""
 
 msgid "CSV"
-msgstr "CSV"
+msgstr ""
 
 msgid "CSV file"
 msgstr ""
@@ -824,7 +832,7 @@ msgid "Examples:"
 msgstr ""
 
 msgid "Exclusive (OR)"
-msgstr "Exclusive (OR)"
+msgstr ""
 
 msgid "Execute"
 msgstr "Vykdyti"
@@ -833,7 +841,7 @@ msgid "Executing task %s failed"
 msgstr "Užduoties %s vykdymas nepavyko"
 
 msgid "exp"
-msgstr "exp"
+msgstr ""
 
 msgid "Exponent"
 msgstr "Eksponentas"
@@ -877,7 +885,7 @@ msgid "Failed to delete index for %s"
 msgstr "Nepavyko ištrinti %s indekso"
 
 msgid "False"
-msgstr "False"
+msgstr ""
 
 msgid "Field delimiter"
 msgstr "Lauko atskyriklis"
@@ -934,7 +942,7 @@ msgid "Flash video"
 msgstr ""
 
 msgid "floor"
-msgstr "floor"
+msgstr ""
 
 msgid "Flowchart-based programming environment & TI Interactive Workbook"
 msgstr ""
@@ -1087,7 +1095,7 @@ msgid "In progress"
 msgstr "Vykdoma"
 
 msgid "Inclusive (AND)"
-msgstr "Inclusive (AND)"
+msgstr ""
 
 msgid "Index has been deleted for %s"
 msgstr "Indeksas buvo pašalintas iš %s"
@@ -1395,7 +1403,7 @@ msgid "Missing Parameters"
 msgstr "Trūkstami Parametrai"
 
 msgid "modulo"
-msgstr "modulo"
+msgstr ""
 
 msgid "More"
 msgstr "Daugiau"
@@ -1533,7 +1541,7 @@ msgstr "Tusčias sąrašas!"
 msgid "Notifications"
 msgstr "Pranešimai"
 
-msgid "notifications drivers aren\'t persistent. use a persistent database storage driver"
+msgid "notifications drivers aren\\'t persistent. use a persistent database storage driver"
 msgstr ""
 
 msgid "Nth root"
@@ -1766,7 +1774,7 @@ msgid "RAR archive"
 msgstr ""
 
 msgid "RDF"
-msgstr "RDF"
+msgstr ""
 
 msgid "RealMedia file"
 msgstr ""
@@ -2036,13 +2044,13 @@ msgid "Sign change"
 msgstr "Ženklo keitimas"
 
 msgid "sin"
-msgstr "sin"
+msgstr ""
 
 msgid "Sine"
 msgstr "Sinusas"
 
 msgid "sinh"
-msgstr "sinh"
+msgstr ""
 
 msgid "Size"
 msgstr "Dydis"
@@ -2117,13 +2125,13 @@ msgid "Tagged image file"
 msgstr ""
 
 msgid "tan"
-msgstr "tan"
+msgstr ""
 
 msgid "Tangent"
 msgstr "Tangentas"
 
 msgid "tanh"
-msgstr "tanh"
+msgstr ""
 
 msgid "Tao Default Theme"
 msgstr "Tao Numatyta Tema"
@@ -2348,7 +2356,7 @@ msgid "True"
 msgstr "Teisingas"
 
 msgid "trunc"
-msgstr "trunc"
+msgstr ""
 
 msgid "Type"
 msgstr "Tipas"

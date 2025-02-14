@@ -20,11 +20,14 @@
 
 declare(strict_types=1);
 
+use oat\generis\model\data\Ontology;
 use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\oatbox\event\EventManager;
 use oat\tao\model\dataBinding\GenerisInstanceDataBindingException;
 use oat\tao\model\event\MetadataModified;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 class GenerisInstanceDataBinderTest extends TestCase
@@ -62,9 +65,19 @@ class GenerisInstanceDataBinderTest extends TestCase
     /** @var core_kernel_classes_ContainerCollection|MockObject */
     private $nonEmptyCollectionMock;
 
+    /** @var FeatureFlagCheckerInterface|MockObject */
+    private $featureFlagChecker;
+
+    /** @var Ontology|MockObject */
+    private $ontology;
+
+    /** @var core_kernel_classes_Property|MockObject */
+    private $widget;
+
     public function setUp(): void
     {
         $this->eventManagerMock = $this->createMock(EventManager::class);
+        $this->widget = $this->createMock(core_kernel_classes_Property::class);
 
         $this->classType1 = $this->createMock(core_kernel_classes_Class::class);
         $this->classType1
@@ -97,6 +110,14 @@ class GenerisInstanceDataBinderTest extends TestCase
             ->method('getUri')
             ->willReturn(self::URI_PROPERTY_2);
 
+        $this->property1
+            ->method('getWidget')
+            ->willReturn($this->widget);
+
+        $this->property2
+            ->method('getWidget')
+            ->willReturn($this->widget);
+
         $this->target
             ->method('getUri')
             ->willReturn('http://test/resource');
@@ -121,7 +142,34 @@ class GenerisInstanceDataBinderTest extends TestCase
             $this->target
         );
 
+        $this->featureFlagChecker = $this->createMock(FeatureFlagCheckerInterface::class);
+        $this->featureFlagChecker
+            ->method('isEnabled')
+            ->willReturn(false);
+
+        $this->ontology = $this->createMock(Ontology::class);
+        $this->ontology
+            ->method('getClass')
+            ->willReturnMap([
+                [self::URI_TYPE_1, $this->classType1],
+                [self::URI_TYPE_2, $this->classType2],
+            ]);
+        $this->ontology
+            ->method('getProperty')
+            ->willReturnMap([
+                [self::URI_PROPERTY_1, $this->property1],
+                [self::URI_PROPERTY_2, $this->property2],
+            ]);
+
         $this->sut->withEventManager($this->eventManagerMock);
+        $this->sut->withServiceManager(
+            $this->getServiceLocatorMock(
+                [
+                    FeatureFlagChecker::class => $this->featureFlagChecker,
+                    Ontology::SERVICE_ID => $this->ontology
+                ]
+            )
+        );
     }
 
     public function testBindScalarWithPreviousValue(): void

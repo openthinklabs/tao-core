@@ -1,14 +1,11 @@
 @import "inc/bootstrap";
 
-$navHeight: 64;
-$footerHeight: 34;
-
 @mixin menu-states($state: normal) {
     @if($state == 'hover') {
         @include vendor-prefix(transition, opacity .1s, top 0s);
         @include vendor-prefix(transition-delay, .2s);
         opacity: 1;
-        top: $navHeight * 1px;
+        top: var(--header-bar-height);
     }
     @else {
         top: -5000px;
@@ -29,7 +26,7 @@ $footerHeight: 34;
     border: none;
     padding: 0 20px 0 45px !important;
     line-height: 2;
-    border-bottom: 1px $uiGeneralContentBorder solid;
+    border-bottom: 1px solid var(--header-bar-border-color);
     span {
         top: 5px !important;
     }
@@ -55,14 +52,28 @@ $footerHeight: 34;
 //Navigation
 .dark-bar {
     // requires extra space for bottom border
-    max-height: ($navHeight + 1) * 1px;
-    background: $darkBar;
-    color: $darkBarTxt;
+    max-height: calc(var(--header-bar-height) + 1px);
+    background: var(--header-bar-background);
+    color: var(--header-bar-color);
+
+    .portal-back {
+        width: 75px;
+        padding: 26px 24px 18px 37px;
+        span {
+            &.icon-untab {
+                font-size: 2em;
+            }
+        }
+    }
+    .header-title {
+        @include font-size(20);
+        padding: 20px 22px 16px 0;
+    }
 
     a {
-        color: $darkBarTxt;
+        color: var(--header-bar-color);
         &:hover {
-            color: white;
+            color: var(--header-bar-hover-color);
             text-decoration: none;
         }
     }
@@ -78,7 +89,7 @@ $footerHeight: 34;
             & > a, & > .a {
                 text-align: center;
                 display: block;
-                height: $navHeight * 1px;
+                height: var(--header-bar-height);
                 outline: 0 !important;
                 [class^="icon-"], [class*=" icon-"] {
                     text-shadow: 0 0 0 transparent !important;
@@ -98,7 +109,7 @@ $footerHeight: 34;
             & > a {
                 &:hover {
                     @include vendor-prefix(transition, background-color 0.2s ease);
-                    background-color: rgba($info, .5);
+                    background-color: var(--header-bar-hover-background);
                     text-decoration: none;
                     span {
                         color: inherit;
@@ -110,11 +121,12 @@ $footerHeight: 34;
             }
             &.active {
                 & > a {
-                    background-color: whiten($info, .05);
+                    background-color: var(--header-bar-active-background);
                     opacity: 1;
-                    color: white(.9);
-                    &.hover {
-                        color: white;
+                    color: var(--header-bar-active-color);
+                    &:hover {
+                        background-color: var(--header-bar-hover-background);
+                        color: var(--header-bar-hover-color);
                     }
                 }
             }
@@ -132,25 +144,25 @@ $footerHeight: 34;
 
             &[data-control="logout"] .logout:focus {
                 outline-offset: -5px;
-                outline: 3px solid $uiGeneralContentBorder !important;
+                outline: 3px solid var(--header-bar-border-color) !important;
             }
 
             // sub menu
             ul {
-                background: $darkBar;
+                background: var(--header-bar-background);
                 position: absolute;
                 li {
                     display: block;
                     width: 100%;
                     a {
-                        background: $darkBar;
+                        background: var(--header-bar-background);
                         padding: 6px 20px !important;
                         text-align: left;
                         display: block;
                         height: auto;
                         white-space: nowrap;
                         &:hover {
-                            background: rgba($info, .5);
+                            background: var(--header-bar-hover-background);
                         }
                     }
                 }
@@ -182,7 +194,7 @@ $footerHeight: 34;
                     background:inherit;
                     position: absolute;
                     left: 0px;
-                    border-top: 1px solid #666;
+                    border-top: 1px solid var(--header-bar-menu-border-color);
                     padding: 5px 0 !important;
                     @include menu-states(normal);
                     li {
@@ -283,14 +295,14 @@ $footerHeight: 34;
 
 .content-wrap > header, body > header {
     position: relative;
-    border-bottom: 1px $uiGeneralContentBorder solid;
+    border-bottom: 1px solid var(--header-bar-border-color);
     z-index: 1000;
 }
 
 // Footer
 body > footer, .content-wrap:after {
     // must be the same height as footer
-    height: $footerHeight * 1px;
+    height: var(--footer-bar-height);
 }
 
 body > footer {
@@ -298,7 +310,7 @@ body > footer {
     position: relative;
     font-size: 11px;
     padding: 10px;
-    border-top: 1px $uiGeneralContentBorder solid;
+    border-top: 1px solid var(--footer-bar-border-color);
     a {
         text-decoration: underline
     }
@@ -314,7 +326,7 @@ body > footer {
 .content-wrap {
     min-height: 100%;
     // equal to footer height
-    margin-bottom: -1px * $footerHeight;
+    margin-bottom: calc(var(--footer-bar-height) * -1);
 }
 
 .content-wrap:after {
@@ -330,7 +342,7 @@ body[dir="rtl"] {
 
 // everything required for mobile navi
 @mixin mobile-navi () {
-    .dark-bar {
+    .dark-bar, .red-bar {
         .nav,
         nav {
 
@@ -357,31 +369,32 @@ body[dir="rtl"] {
                 .reduced-menu-trigger {
                     text-align: center;
                     display: block;
-                    height: $navHeight * 1px;
+                    height: var(--header-bar-height);
                     outline: 0 !important;
                     cursor:pointer;
                     min-width: 70px;
                     padding: 13px 10px 11px;
 
                     &.active {
-                        background-color: whiten($info, .05);
+                        background-color: var(--header-bar-active-background);
                         opacity: 1;
-                        color: white(.9) !important;
+                        color: var(--header-bar-active-color);
                         &.hover {
-                            color: white !important;
+                            background-color: var(--header-bar-hover-background);
+                            color: var(--header-bar-hover-color);
                         }
                     }
                     &:hover {
-                        background: rgba($info, .5);
+                        background: var(--header-bar-hover-background);
                         text-decoration: none;
                         span {
-                            color: white;
+                            color: var(--header-bar-hover-color);
                         }
                     }
                     [class^="icon-"], [class*=" icon-"] {
                         text-shadow: 0 0 0 transparent !important;
                         line-height: 1;
-                        color: $darkBarIcon;
+                        color: var(--header-bar-icon-color);
                         position: relative;
                         top: 2px;
                         @include font-size(20);
@@ -391,13 +404,13 @@ body[dir="rtl"] {
                     }
                 }
                 & > ul {
-                    border-top: 1px #666 solid;
+                    border-top: 1px solid var(--header-bar-menu-border-color);
                     position: absolute;
                     @include menu-states(normal);
                     left: -20000px;
                     right: auto;
                     white-space: nowrap;
-                    background: $darkBar;
+                    background: var(--header-bar-background);
                     padding: 5px 0;
                     .username {
                         display:none;
@@ -431,7 +444,6 @@ body[dir="rtl"] {
                         }
                     }
                 }
-
             }
 
             .persistent-menu {
@@ -439,6 +451,107 @@ body[dir="rtl"] {
                 position: absolute;
             }
         }
+    }
+}
+
+body.qc-wins {
+    header {
+        &.red-bar {
+            @extend .dark-bar;
+            --header-bar-background: #176998;
+            --header-bar-active-color: #121212;
+            --header-bar-active-background: #FFFFFF;
+            --header-bar-hover-background: #F6F2E7;
+            --action-bar-hover-color: #121212;
+            --header-bar-hover-color: #121212;
+
+            border: none;
+
+            .main-menu {
+                font-weight: 600;
+
+                &__item {
+                    &.active {
+                        font-weight: 600;
+                    }
+                    a {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 1.6rem;
+
+                        &:hover {
+                            color: #121212;
+                        }
+
+                        .glyph {
+                            font-size: 1.6rem;
+                            margin-right: .5rem;
+                        }
+                    }
+                }
+            }
+
+            .setting-menu {
+                &__item {
+                    &:before {
+                        display: none;
+                    }
+
+                    a {
+                        font-weight: 600;
+                        font-size: 1.2rem;
+                        &:hover {
+                            color: #121212;
+                        }
+                    }
+
+                    .menu-dropdown {
+                        background-color: #FFFFFF;
+                        border: 1px solid #919191;
+
+                        li {
+                            a {
+                                background-color: #FFFFFF;
+                                color: #505050;
+
+                                &:hover {
+                                    font-weight: 600;
+                                    color: #121212;
+                                    background-color: #F6F2E7;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .persistent-menu {
+                .task-manager-container {
+                    .task-list {
+                        position: relative;
+                        top: 0;
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+
+    &.oversized-nav {
+        .setting-menu {
+            &__item {
+                a {
+                    span {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+    }
+
+    #item-editor-panel .item-editor-bar,
+    .item-editor-sidebar ._accordion {
+        border-top: none;
     }
 }
 

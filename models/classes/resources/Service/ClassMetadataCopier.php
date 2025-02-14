@@ -26,34 +26,59 @@ namespace oat\tao\model\resources\Service;
 
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
+use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyRdfs;
 use oat\tao\model\resources\Contract\ClassMetadataCopierInterface;
+use oat\tao\model\resources\Contract\ClassMetadataMapperInterface;
 
 class ClassMetadataCopier implements ClassMetadataCopierInterface
 {
+    /** @var ClassMetadataMapperInterface */
+    private $classMetadataMapper;
+
+    /** @var string[] */
+    private $copiedProperties = [];
+
+    public function __construct(ClassMetadataMapperInterface $classMetadataMapper)
+    {
+        $this->classMetadataMapper = $classMetadataMapper;
+    }
+
     public function copy(core_kernel_classes_Class $class, core_kernel_classes_Class $destinationClass): void
     {
-        $classPropertiesUris = $this->getClassPropertiesUris($destinationClass);
+        $allClassProperties = $class->getProperties(true);
+        $destinationClassProperties = $destinationClass->getProperties(true);
+        $properties = array_diff_key($allClassProperties, $destinationClassProperties);
 
-        foreach ($class->getProperties() as $property) {
-            if (in_array($property->getUri(), $classPropertiesUris, true)) {
+        foreach ($properties as $propertyUri => $property) {
+            if (in_array($propertyUri, $this->copiedProperties, true)) {
                 continue;
             }
 
-            $newPropertyResource = $property->duplicate();
-            $newProperty = $newPropertyResource->getProperty($newPropertyResource->getUri());
-            $newProperty->removePropertyValues($newProperty->getProperty(OntologyRdfs::RDFS_DOMAIN));
-            $newProperty->setDomain($destinationClass);
+            $newProperty = $this->copyProperty($property, $destinationClass);
+
+            $this->copiedProperties[] = $propertyUri;
+            $this->classMetadataMapper->add($property, $newProperty);
         }
     }
 
-    private function getClassPropertiesUris(core_kernel_classes_Class $class): array
+    private function copyProperty(
+        core_kernel_classes_Property $property,
+        core_kernel_classes_Class $destinationClass
+    ): core_kernel_classes_Property {
+        $newPropertyResource = $property->duplicate();
+        $newProperty = $newPropertyResource->getProperty($newPropertyResource->getUri());
+
+        $newProperty->removePropertyValues($newProperty->getProperty(OntologyRdfs::RDFS_DOMAIN));
+        $newProperty->setDomain($destinationClass);
+
+        $this->skipAlias($newProperty);
+
+        return $newProperty;
+    }
+
+    private function skipAlias(core_kernel_classes_Property $newProperty)
     {
-        return array_map(
-            static function (core_kernel_classes_Property $property) {
-                return $property->getUri();
-            },
-            $class->getProperties(true)
-        );
+        $newProperty->removePropertyValues($newProperty->getProperty(GenerisRdf::PROPERTY_ALIAS));
     }
 }

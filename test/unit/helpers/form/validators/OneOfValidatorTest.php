@@ -32,7 +32,6 @@ use tao_helpers_Uri;
 
 class OneOfValidatorTest extends TestCase
 {
-
     private const STRING_REFERENCE = 'stringref';
     private const OBJECT_REFERENCE = 'objref';
 
@@ -43,7 +42,7 @@ class OneOfValidatorTest extends TestCase
     /**
      * @dataProvider evaluationValues
      */
-    public function testEvaluate(array $options, string $value1 = '', string $value2 = '', $isValid): void
+    public function testEvaluate(array $options, string $value1, string $value2, $isValid): void
     {
         $subject = $this->createSubject($options, $value1, $value2);
         $this->assertEquals($isValid, $subject->evaluate($value1));

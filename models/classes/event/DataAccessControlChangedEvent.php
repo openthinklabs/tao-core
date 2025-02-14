@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2023 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -26,17 +26,15 @@ use oat\oatbox\event\Event;
 
 class DataAccessControlChangedEvent implements Event
 {
-    /** @var string */
-    private $resourceId;
+    private string $resourceId;
+    private array $addRemove;
+    private bool $isRecursive;
 
-    /** @var array */
-    private $addRemove;
-
-    /** @var bool */
-    private $isRecursive;
-
-    public function __construct(string $resourceId, array $addRemove, bool $isRecursive = false)
-    {
+    public function __construct(
+        string $resourceId,
+        array $addRemove,
+        bool $isRecursive = false
+    ) {
         $this->resourceId = $resourceId;
         $this->addRemove = $addRemove;
         $this->isRecursive = $isRecursive;

@@ -21,6 +21,8 @@
 
 namespace oat\tao\scripts\install;
 
+use oat\tao\model\search\tasks\UpdateTestResourceInIndex;
+use oat\tao\model\task\CopyClassTask;
 use oat\oatbox\extension\InstallAction;
 use oat\oatbox\reporting\Report;
 use oat\oatbox\service\ConfigurableService;
@@ -40,6 +42,16 @@ use oat\tao\model\taskQueue\TaskLogInterface;
  */
 class SetUpQueueTasks extends InstallAction
 {
+    public const QUEUE_TASK_IGNORE = [
+        UpdateTestResourceInIndex::class,
+        UpdateResourceInIndex::class,
+        UpdateClassInIndex::class,
+        DeleteIndexProperty::class,
+        RenameIndexProperties::class,
+        UpdateDataAccessControlInIndex::class,
+        AddSearchIndexFromArray::class,
+    ];
+
     public function __invoke($params)
     {
         /** @var TaskLogInterface|ConfigurableService $taskLogService */
@@ -47,18 +59,12 @@ class SetUpQueueTasks extends InstallAction
 
         $taskLogService->linkTaskToCategory(ImportByHandler::class, TaskLogInterface::CATEGORY_IMPORT);
         $taskLogService->linkTaskToCategory(ExportByHandler::class, TaskLogInterface::CATEGORY_EXPORT);
+        $taskLogService->linkTaskToCategory(CopyClassTask::class, TaskLogInterface::CATEGORY_COPY);
         $taskLogService->linkTaskToCategory(
             UnrelatedResourceImportByHandler::class,
             TaskLogInterface::CATEGORY_UNRELATED_RESOURCE
         );
-        $taskLogService->setOption(TaskLogInterface::OPTION_TASK_IGNORE_LIST, [
-            UpdateResourceInIndex::class,
-            UpdateClassInIndex::class,
-            DeleteIndexProperty::class,
-            RenameIndexProperties::class,
-            UpdateDataAccessControlInIndex::class,
-            AddSearchIndexFromArray::class,
-        ]);
+        $taskLogService->setOption(TaskLogInterface::OPTION_TASK_IGNORE_LIST, self::QUEUE_TASK_IGNORE);
 
         $this->registerService(TaskLogInterface::SERVICE_ID, $taskLogService);
 

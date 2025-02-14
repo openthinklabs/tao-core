@@ -31,6 +31,7 @@ use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
 use oat\tao\model\taskQueue\TaskLog\TasksLogsStats;
 use oat\tao\model\datatable\DatatableRequest as DatatableRequestInterface;
 use Psr\Log\LoggerAwareInterface;
+use Datetime;
 
 /**
  * @author Gyula Szucs <gyula@taotesting.com>
@@ -65,9 +66,13 @@ interface TaskLogInterface extends LoggerAwareInterface
     public const CATEGORY_CREATE = 'create';
     public const CATEGORY_UPDATE = 'update';
     public const CATEGORY_DELETE = 'delete';
+    public const CATEGORY_COPY = 'copy';
     public const CATEGORY_UNRELATED_RESOURCE = 'unrelated_resource';
 
     public const DEFAULT_LIMIT = 20;
+
+    public const OPTION_DEFAULT_BATCH_SIZE = 'default_batch_size';
+    public const DEFAULT_BATCH_SIZE = 1000;
 
     /**
      * It's not related to the user management, just a placeholder to distinguish the user running the script from CLI.
@@ -246,4 +251,14 @@ interface TaskLogInterface extends LoggerAwareInterface
      * @return array
      */
     public function getTaskCategories();
+
+    /**
+     * Fetch task execution times for given date range
+     * Formatted with task id as key and execution time as value
+     *
+     * @param DateTime $from
+     * @param DateTime $to
+     * @return array [ 'task1'=> 'time-in-second', 'task-id-1' => 10]`
+     */
+    public function getTaskExecutionTimesByDateRange(DateTime $from, DateTime $to): array;
 }

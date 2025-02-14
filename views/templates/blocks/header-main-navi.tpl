@@ -1,17 +1,20 @@
 <?php
 use oat\tao\helpers\Layout;
+use oat\tao\model\theme\Theme;
+
 $mainMenu     = get_data('main-menu');
 $settingsMenu = get_data('settings-menu');
 $persistentMenu = get_data('persistent-menu');
 $userLabel    = get_data('userLabel');
+$taoAsATool   = get_data('taoAsATool');
 ?>
 <nav>
     <ul class="plain clearfix lft main-menu">
         <?php if($mainMenu): ?>
             <?php foreach ($mainMenu as $item): ?>
                 <?php $entry = $item['perspective']; ?>
-                <li <?php if (get_data('shownExtension') === $entry->getExtension()
-                && get_data('shownStructure') === $entry->getId()): ?>class="active"<?php endif ?>>
+                <li class="main-menu__item <?php if (get_data('shownExtension') === $entry->getExtension()
+                && get_data('shownStructure') === $entry->getId()): ?>active<?php endif ?>">
                     <a href="<?= $entry->getUrl() ?>" title="<?= __($entry->getDescription()) ?>">
                         <?= Layout::renderIcon($entry->getIcon(), 'icon-extension') ?>
                         <?= __($entry->getName()) ?></a>
@@ -47,14 +50,20 @@ $userLabel    = get_data('userLabel');
                         ) === $entry->getId()
                             ? 'active li-' . $entry->getId()
                             : 'li-' . $entry->getId();?>
-                        <li class="<?= $className ?>">
+                        <li class="<?= $className ?> setting-menu__item">
                             <a id="<?= $entry->getId() ?>" <?php
                             if (!is_null($entry->getBinding())): ?> href="#" data-action="<?= $entry->getBinding() ?>"
                             <?php else : ?>
                                 href="<?= $entry->getUrl() ?>"
                             <?php endif ?> title="<?= __($entry->getName()) ?>">
-
-                                <?= is_null($entry->getIcon()) ? '' : Layout::renderIcon($entry->getIcon(), 'icon-extension') ?>
+                                <?php if(!Layout::isQuickWinsDesignEnabled()): ?>
+                                    <?= is_null($entry->getIcon()) ? '' : Layout::renderIcon($entry->getIcon(), 'icon-extension') ?>
+                                <?php endif; ?>
+                                <?php if(Layout::isQuickWinsDesignEnabled()): ?>
+                                    <?php if ($entry->getId() !== 'user_settings'): ?>
+                                        <span> <?= $entry->getName() ?> </span>
+                                    <?php endif ?>
+                                <?php endif; ?>
 
                                 <?php $description = $entry->getDescription();
                                 if ($description): ?>
@@ -62,12 +71,16 @@ $userLabel    = get_data('userLabel');
                                 <?php endif ?>
 
                                 <?php if ($entry->getId() === 'user_settings'): ?>
-
-                                    <span class="username"><?= get_data('userLabel') ?></span>
+                                    <?php if(Layout::isQuickWinsDesignEnabled()): ?>
+                                        <?= is_null($entry->getIcon()) ? '' : Layout::renderIcon($entry->getIcon(), 'icon-extension') ?>
+                                    <?php endif; ?>
+                                    <?php if(!Layout::isQuickWinsDesignEnabled()): ?>
+                                        <span class="username"><?= get_data('userLabel') ?></span>
+                                    <?php endif; ?>
                                 <?php endif; ?>
 
                             </a>
-                            <?php if (count($item['children']) > 1): ?>
+                            <?php if (count($item['children']) > 1 || $taoAsATool): ?>
                                 <ul class="plain menu-dropdown">
                                     <?php foreach ($item['children'] as $child): ?>
                                         <?php if(!$child->getDisabled()) : ?>
@@ -76,7 +89,16 @@ $userLabel    = get_data('userLabel');
                                             </li>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
+                                    <?php if ($entry->getId() === 'user_settings'): ?>
+                                        <?= Layout::renderThemeTemplate(Theme::CONTEXT_BACKOFFICE, 'logout-menu-settings', ['logout' => get_data('logout')]); ?>
+                                    <?php endif; ?>
                                 </ul>
+                            <?php elseif ($entry->getId() === 'user_settings'): ?>
+                                <?php if(Layout::renderThemeTemplate(Theme::CONTEXT_BACKOFFICE, 'logout-menu-settings', ['logout' => get_data('logout')])) : ?>
+                                    <ul class="plain menu-dropdown">
+                                            <?= Layout::renderThemeTemplate(Theme::CONTEXT_BACKOFFICE, 'logout-menu-settings', ['logout' => get_data('logout')]); ?>
+                                    </ul>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </li>
 
@@ -100,12 +122,7 @@ $userLabel    = get_data('userLabel');
                         </a>
                     </li>
                 <?php endif; ?>
-                <li data-env="user" class="li-logout<?php if(!empty($userLabel) && print ' sep-before')?>">
-                    <a id="logout" href="<?= get_data('logout') ?>" title="<?= __('Log Out') ?>">
-                        <span class="icon-logout glyph"></span>
-                        <span class="text hidden logout-text"><?= __("Logout"); ?></span>
-                    </a>
-                </li>
+                <?= Layout::renderThemeTemplate(Theme::CONTEXT_BACKOFFICE, 'logout', ['userLabel' => $userLabel, 'logout' => get_data('logout')]); ?>
             </ul>
         </div>
 

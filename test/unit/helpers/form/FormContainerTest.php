@@ -1,4 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
+ */
 
 namespace oat\tao\helpers\test\unit\helpers\form;
 
@@ -11,6 +29,7 @@ use oat\generis\test\GenerisTestCase;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\session\SessionService;
 use oat\oatbox\user\User;
+use oat\tao\helpers\form\Feeder\SanitizerValidationFeeder;
 use oat\tao\helpers\form\WidgetRegistry;
 use oat\tao\model\security\xsrf\Token;
 use oat\tao\model\security\xsrf\TokenService;
@@ -39,6 +58,7 @@ class FormContainerTest extends GenerisTestCase
         $config->set(TokenService::SERVICE_ID, $this->createTokenServiceTestDouble());
         $config->set(common_cache_Cache::SERVICE_ID, $this->createCacheTestDouble());
         $config->set(SessionService::SERVICE_ID, $this->createSessionServiceDouble());
+        $config->set(SanitizerValidationFeeder::class, new SanitizerValidationFeeder());
 
         ServiceManager::setServiceManager(new ServiceManager($config));
 
@@ -56,8 +76,8 @@ class FormContainerTest extends GenerisTestCase
             ->getPersistenceById(self::PERSISTENCE_KEY);
 
         $persistence->hSet(
-            self::TEST_USER_SESSION_ID . '_tao_tokens',
-            'form_token',
+            self::TEST_USER_SESSION_ID . '_' . TokenStoreKeyValue::TOKENS_STORAGE_KEY,
+            TokenService::FORM_TOKEN_NAMESPACE,
             json_encode(
                 [
                     Token::TOKEN_KEY => self::TOKEN_VALUE,
@@ -94,11 +114,11 @@ class FormContainerTest extends GenerisTestCase
     public function dataProvider(): array
     {
         $token = self::TOKEN_VALUE;
-
+        // phpcs:disable Generic.Files.LineLength
         return [
             'Simple form' => [
                 'expected' => <<<HTML
-<div class='xhtml_form'>
+<div class='xhtml_form'> 
     <form method='post' id='test' name='test' action=''>
     <input type='hidden' class='global' name='test_sent' value='1'/>
         <div class='form-toolbar'>
@@ -115,9 +135,9 @@ HTML
     <form method='post' id='test' name='test' action=''>
     <input type='hidden' class='global' name='test_sent' value='1'/>
     <div>
-        <input id="test" name="test" type="text" value="" data-testid="Test"/>
+        <input id="test" name="test" resourceType="" type="text" value="" data-testid="Test"/>
     </div>
-    <input id="X-CSRF-Token" name="X-CSRF-Token" type="hidden" value="$token"/>
+    <input id="X-CSRF-Token" name="X-CSRF-Token" resourceType="" type="hidden" value="$token"/>
         <div class='form-toolbar'>
             <button type='submit' name='Save' id='Save' class='form-submitter btn-success small' value="Save" data-testid="save">
                 <span class="icon-save"></span> Save</button>
@@ -136,7 +156,7 @@ HTML
 <div class='xhtml_form'>
     <form method='post' id='test' name='test' action=''>
     <input type='hidden' class='global' name='test_sent' value='1'/>
-    <input id="X-CSRF-Token" name="X-CSRF-Token" type="hidden" value="$token"/>
+    <input id="X-CSRF-Token" name="X-CSRF-Token" resourceType="" type="hidden" value="$token"/>
         <div class='form-toolbar'>
             <button type='submit' name='Save' id='Save' class='form-submitter btn-success small' value="Save" data-testid="save">
                 <span class="icon-save"></span> Save</button>
@@ -171,7 +191,7 @@ HTML
 <div class='xhtml_form'>
     <form method='post' id='test' name='test' action=''>
     <input type='hidden' class='global' name='test_sent' value='1'/>
-    <input id="X-CSRF-Token" name="X-CSRF-Token" type="hidden" value="$token"/>
+    <input id="X-CSRF-Token" name="X-CSRF-Token" resourceType="" type="hidden" value="$token"/>
         <div class='form-toolbar'>
             <button disabled="disabled" type='submit' name='Save' id='Save' class='form-submitter btn-success small' value="Save" data-testid="save">
                 <span class="icon-save"></span> Save</button>
@@ -191,9 +211,9 @@ HTML
     <form method='post' id='test' name='test' action=''>
     <input type='hidden' class='global' name='test_sent' value='1'/>
     <div>
-        <input disabled="disabled" id="test" name="test" type="text" value="" data-testid="Test"/>
+        <input disabled="disabled" id="test" name="test" resourceType="" type="text" value="" data-testid="Test"/>
     </div>
-    <input id="X-CSRF-Token" name="X-CSRF-Token" type="hidden" value="$token"/>
+    <input id="X-CSRF-Token" name="X-CSRF-Token" resourceType="" type="hidden" value="$token"/>
         <div class='form-toolbar'>
             <button disabled="disabled" type='submit' name='Save' id='Save' class='form-submitter btn-success small' value="Save" data-testid="save">
                 <span class="icon-save"></span> Save</button>
@@ -209,6 +229,7 @@ HTML
                 new tao_helpers_form_elements_xhtml_Textbox('test'),
             ],
         ];
+        // phpcs:enable
     }
 
     private function createApplicationServiceTestDouble(): ApplicationService

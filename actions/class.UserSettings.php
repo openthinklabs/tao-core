@@ -15,9 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
+ *                         (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013-2021 (update and modification) Open Assessment Technologies SA;
  *
  */
@@ -27,8 +30,11 @@ declare(strict_types=1);
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\user\UserLanguageServiceInterface;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\service\ApplicationService;
 use oat\tao\model\user\UserSettingsFormFactory;
+use oat\tao\model\user\UserSettingsInterface;
 use oat\tao\model\user\UserSettingsServiceInterface;
 use oat\tao\model\user\implementation\UserSettingsService;
 use tao_helpers_form_FormContainer as FormContainer;
@@ -55,7 +61,10 @@ class tao_actions_UserSettings extends tao_actions_CommonModule
         if ($this->isDemoMode()) {
             $this->setData('myForm', __('Unable to change passwords in demo mode'));
         } else {
-            $passwordFormContainer = new tao_actions_form_UserPassword([], [FormContainer::CSRF_PROTECTION_OPTION => true]);
+            $passwordFormContainer = new tao_actions_form_UserPassword(
+                [],
+                [FormContainer::CSRF_PROTECTION_OPTION => true]
+            );
             $passwordForm = $passwordFormContainer->getForm();
 
             if ($passwordForm->isSubmited() && $passwordForm->isValid()) {
@@ -102,6 +111,15 @@ class tao_actions_UserSettings extends tao_actions_CommonModule
             if ($this->getUserLanguageService()->isDataLanguageEnabled()) {
                 $dataLang = $this->getResource($settingsForm->getValue('data_lang'));
                 $userSettingsData[GenerisRdf::PROPERTY_USER_DEFLG] = $dataLang->getUri();
+            }
+
+            if (
+                $this->getFeatureFlagChecker()->isEnabled(
+                    FeatureFlagCheckerInterface::FEATURE_FLAG_SOLAR_DESIGN_ENABLED
+                )
+            ) {
+                $interfaceMode = $this->getResource($settingsForm->getValue(UserSettingsInterface::INTERFACE_MODE));
+                $userSettingsData[GenerisRdf::PROPERTY_USER_INTERFACE_MODE] = $interfaceMode->getUri();
             }
 
             $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($userResource);
@@ -156,6 +174,13 @@ class tao_actions_UserSettings extends tao_actions_CommonModule
     private function getLanguageService(): tao_models_classes_LanguageService
     {
         return tao_models_classes_LanguageService::singleton();
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this
+            ->getPsrContainer()
+            ->get(FeatureFlagChecker::class);
     }
 
     private function isDemoMode(): bool

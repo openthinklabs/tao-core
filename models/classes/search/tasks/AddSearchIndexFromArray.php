@@ -23,7 +23,7 @@
 namespace oat\tao\model\search\tasks;
 
 use oat\oatbox\action\Action;
-use oat\tao\model\search\index\IndexService;
+use oat\tao\model\search\index\DocumentBuilder\IndexDocumentBuilderInterface;
 use oat\tao\model\search\SearchService;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
@@ -56,21 +56,29 @@ class AddSearchIndexFromArray implements Action, ServiceLocatorAwareInterface, T
         }
         $id = array_shift($params);
         $body = array_shift($params);
-        /** @var IndexService $indexService */
-        $indexService = $this->getServiceLocator()->get(IndexService::SERVICE_ID);
 
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS, __('Adding search index for %s', $id));
 
         try {
-            $document = $indexService->createDocumentFromArray([
+            $document = $this->getIndexDocumentBuilder()->createDocumentFromArray([
                 'id' => $id,
                 'body' => $body
             ]);
             SearchService::getSearchImplementation()->index([$document]);
         } catch (\Exception $e) {
-            $report->add(new \common_report_Report(\common_report_Report::TYPE_ERROR, __('Error adding search index for %s with message %s', $id, $e->getMessage())));
+            $report->add(
+                new \common_report_Report(
+                    \common_report_Report::TYPE_ERROR,
+                    __('Error adding search index for %s with message %s', $id, $e->getMessage())
+                )
+            );
         }
 
         return $report;
+    }
+
+    private function getIndexDocumentBuilder(): IndexDocumentBuilderInterface
+    {
+        return $this->getServiceLocator()->getContainer()->get(IndexDocumentBuilderInterface::class);
     }
 }

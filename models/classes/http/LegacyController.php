@@ -39,7 +39,8 @@ use function GuzzleHttp\Psr7\stream_for;
  */
 abstract class LegacyController extends Controller
 {
-    protected $response, $request;
+    protected $response;
+    protected $request;
 
     /**
      * @deprecated Use getPsrRequest() instead
@@ -111,7 +112,7 @@ abstract class LegacyController extends Controller
      *
      * @param string $paramName
      * @throws \common_exception_MissingParameter
-     * @return string
+     * @return string|array
      */
     protected function getRawParameter($paramName)
     {

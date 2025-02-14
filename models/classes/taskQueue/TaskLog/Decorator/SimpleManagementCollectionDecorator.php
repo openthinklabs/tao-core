@@ -49,6 +49,11 @@ class SimpleManagementCollectionDecorator extends TaskLogCollectionDecorator
     private $fileSystemService;
 
     /**
+     * @var TaskLogEntityDecorateProcessor
+     */
+    private $taskLogEntityDecorateProcessor;
+
+    /**
      * @var bool
      */
     private $reportIncluded;
@@ -58,8 +63,14 @@ class SimpleManagementCollectionDecorator extends TaskLogCollectionDecorator
      */
     private $fileReferenceSerializer;
 
-    public function __construct(CollectionInterface $collection, TaskLogInterface $taskLogService, FileSystemService $fileSystemService, FileReferenceSerializer $fileReferenceSerializer, $reportIncluded)
-    {
+    public function __construct(
+        CollectionInterface $collection,
+        TaskLogInterface $taskLogService,
+        FileSystemService $fileSystemService,
+        FileReferenceSerializer $fileReferenceSerializer,
+        TaskLogEntityDecorateProcessor $taskLogEntityDecorateProcessor,
+        $reportIncluded
+    ) {
         parent::__construct($collection);
 
         $this->fileSystemService = $fileSystemService;
@@ -67,6 +78,7 @@ class SimpleManagementCollectionDecorator extends TaskLogCollectionDecorator
         $this->taskLogService = $taskLogService;
         $this->reportIncluded = (bool) $reportIncluded;
         $this->fileReferenceSerializer = $fileReferenceSerializer;
+        $this->taskLogEntityDecorateProcessor = $taskLogEntityDecorateProcessor;
     }
 
     /**
@@ -87,7 +99,10 @@ class SimpleManagementCollectionDecorator extends TaskLogCollectionDecorator
                     $this->taskLogService,
                     \common_session_SessionManager::getSession()->getUser()
                 )
-            )->toArray();
+            );
+
+            $this->taskLogEntityDecorateProcessor->setEntity($entityData);
+            $entityData = $this->taskLogEntityDecorateProcessor->toArray();
 
             if (!$this->reportIncluded && array_key_exists('report', $entityData)) {
                 unset($entityData['report']);
@@ -99,10 +114,7 @@ class SimpleManagementCollectionDecorator extends TaskLogCollectionDecorator
         return $data;
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

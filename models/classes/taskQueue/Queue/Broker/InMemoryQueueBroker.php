@@ -30,7 +30,7 @@ use oat\tao\model\taskQueue\Task\TaskInterface;
  */
 class InMemoryQueueBroker extends AbstractQueueBroker implements SyncQueueBrokerInterface
 {
-    public const ID ='memory';
+    public const ID = 'memory';
 
     /**
      * @var \SplQueue
@@ -60,7 +60,7 @@ class InMemoryQueueBroker extends AbstractQueueBroker implements SyncQueueBroker
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return $this->getQueue()->count();
     }

@@ -23,6 +23,7 @@ namespace oat\tao\model\taskQueue\TaskLog;
 
 use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
 use oat\tao\model\taskQueue\TaskLog\Entity\TaskLogEntity;
+use Traversable;
 
 class TaskLogCollection implements CollectionInterface
 {
@@ -62,9 +63,6 @@ class TaskLogCollection implements CollectionInterface
         return new static([]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function jsonSerialize()
     {
         return $this->toArray();
@@ -87,7 +85,7 @@ class TaskLogCollection implements CollectionInterface
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->taskLogs);
     }
@@ -95,7 +93,7 @@ class TaskLogCollection implements CollectionInterface
     /**
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->taskLogs);
     }

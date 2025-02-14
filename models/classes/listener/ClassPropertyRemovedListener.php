@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,6 +23,7 @@ declare(strict_types=1);
 
 namespace oat\tao\model\listener;
 
+use oat\generis\model\data\event\ClassPropertyDeletedEvent;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\AdvancedSearch\AdvancedSearchChecker;
 use oat\tao\model\event\ClassPropertyRemovedEvent;
@@ -30,7 +32,7 @@ use oat\tao\model\taskQueue\QueueDispatcherInterface;
 
 class ClassPropertyRemovedListener extends ConfigurableService
 {
-    const SERVICE_ID = 'tao/ClassPropertyRemovedListener';
+    public const SERVICE_ID = 'tao/ClassPropertyRemovedListener';
 
     public function handleEvent(ClassPropertyRemovedEvent $event): void
     {
@@ -50,5 +52,13 @@ class ClassPropertyRemovedListener extends ConfigurableService
             ],
             $taskMessage
         );
+    }
+
+    public function handleDeletedEvent(ClassPropertyDeletedEvent $event): void
+    {
+        foreach ($event->getProperties() as $uri) {
+            $classProperty = new \core_kernel_classes_Property($uri);
+            $classProperty->clearCachedValues();
+        }
     }
 }

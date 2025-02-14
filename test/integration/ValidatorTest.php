@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -15,23 +15,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ *               2022 (update and modification) Open Assessment Technologies SA;
  *
  */
+
 use oat\tao\test\TaoPhpUnitTestRunner;
-use \oat\generis\model\user\PasswordConstraintsService;
 
 /**
  * This class enable you to test the validators
  *
  * @author Joel Bout, <taosupport@tudor.lu>
  * @package tao
-
  */
 class ValidatorTest extends TaoPhpUnitTestRunner
 {
-
     public static function staticMirror($value)
     {
         return $value;
@@ -51,7 +52,6 @@ class ValidatorTest extends TaoPhpUnitTestRunner
      */
     public function testAlphaNum()
     {
-
         //@todo  fix "\n" in validator and add to test
 
         // test getValidator
@@ -111,7 +111,6 @@ class ValidatorTest extends TaoPhpUnitTestRunner
 
     public function testCallback()
     {
-
         // global function
         // wrong parameters
         $callback = new tao_helpers_form_validators_Callback([
@@ -134,10 +133,10 @@ class ValidatorTest extends TaoPhpUnitTestRunner
             'function' => 'ValidatorTestCaseGlobalInstanceOf'
         ]);
         $this->assertTrue($callback->evaluate([
-                'tao_helpers_form_validators_Callback' => $callback
+            'tao_helpers_form_validators_Callback' => $callback
         ]));
         $this->assertFalse($callback->evaluate([
-                'tao_helpers_form_validators_AlphaNum' => $callback
+            'tao_helpers_form_validators_AlphaNum' => $callback
         ]));
 
         // static function
@@ -159,13 +158,21 @@ class ValidatorTest extends TaoPhpUnitTestRunner
 
     public function testDateTime()
     {
-
-        //@todo:  doublecheck empty string and null treatment
+        //@todo: doublecheck empty string and null treatment
 
         $dateTime = new tao_helpers_form_validators_DateTime();
         $this->exec(
             $dateTime,
-            ['April 17, 1790', '2008-07-01T22:35:17.03+08:00', '10/Oct/2000:13:55:36 -700', 'today', '04:08', 'a week ago', 'yesterday', 'tomorrow'],
+            [
+                'April 17, 1790',
+                '2008-07-01T22:35:17.03+08:00',
+                '10/Oct/2000:13:55:36 -700',
+                'today',
+                '04:08',
+                'a week ago',
+                'yesterday',
+                'tomorrow'
+            ],
             ['abc'],
             'simple Datetimes'
         );
@@ -211,59 +218,58 @@ class ValidatorTest extends TaoPhpUnitTestRunner
         //XML
         $val = ['uploaded_file' => dirname(__FILE__) . '/samples/events.xml'];
         $filemime = new tao_helpers_form_validators_FileMimeType([
-                'mimetype' => ['text/xml', 'application/xml', 'application/x-xml'],
-                'extension' => ['xml']
+            'mimetype' => ['text/xml', 'application/xml', 'application/x-xml'],
+            'extension' => ['xml']
         ]);
         $this->assertTrue($filemime->evaluate($val));
 
         //ZIP
         $val = ['uploaded_file' => dirname(__FILE__) . '/samples/zip/test.zip'];
         $filemime = new tao_helpers_form_validators_FileMimeType([
-                'mimetype' => ['application/zip'],
-                'extension' => ['zip']
+            'mimetype' => ['application/zip'],
+            'extension' => ['zip']
         ]);
         $this->assertTrue($filemime->evaluate($val));
 
         //CSS
         $val = ['uploaded_file' => dirname(__FILE__) . '/samples/css/test.css'];
         $filemime = new tao_helpers_form_validators_FileMimeType([
-                'mimetype' => ['text/css', 'text/plain'],
-                'extension' => ['css']
+            'mimetype' => ['text/css', 'text/plain'],
+            'extension' => ['css']
         ]);
         $this->assertTrue($filemime->evaluate($val));
 
         //Error
         $val = ['uploaded_file' => dirname(__FILE__) . '/samples/sample_sort.po'];
         $filemime = new tao_helpers_form_validators_FileMimeType([
-                'mimetype' => ['text/css'],
-                'extension' => ['po']
+            'mimetype' => ['text/css'],
+            'extension' => ['po']
         ]);
         $this->assertFalse($filemime->evaluate($val));
     }
 
     public function testFileSize()
     {
-
         $smallfile = [
-                'name'     => 'testname',
-                'tmp_name' => '/tmp/doesnotexists',
-                'error'    => UPLOAD_ERR_OK,
-                'size'     => 500,
+            'name'     => 'testname',
+            'tmp_name' => '/tmp/doesnotexists',
+            'error'    => UPLOAD_ERR_OK,
+            'size'     => 500,
         ];
         $mediumfile = [
-                'name'     => 'testname',
-                'tmp_name' => '/tmp/doesnotexists',
-                'error'    => UPLOAD_ERR_OK,
-                'size'     => 1000000,
+            'name'     => 'testname',
+            'tmp_name' => '/tmp/doesnotexists',
+            'error'    => UPLOAD_ERR_OK,
+            'size'     => 1000000,
         ];
         $bigfile = [
-                'name'     => 'testname',
-                'tmp_name' => '/tmp/doesnotexists',
-                'error'    => UPLOAD_ERR_OK,
-                'size'     => 50000000,
+            'name'     => 'testname',
+            'tmp_name' => '/tmp/doesnotexists',
+            'error'    => UPLOAD_ERR_OK,
+            'size'     => 50000000,
         ];
         $errorfile = [
-                'error'    => UPLOAD_ERR_NO_FILE,
+            'error'    => UPLOAD_ERR_NO_FILE,
         ];
 
         //option test
@@ -327,11 +333,6 @@ class ValidatorTest extends TaoPhpUnitTestRunner
         );
     }
 
-    public function testLabel()
-    {
-        //@todo implement test cases
-    }
-
     public function testLength()
     {
         $minlenght = new tao_helpers_form_validators_Length(['min' => 3]);
@@ -360,7 +361,10 @@ class ValidatorTest extends TaoPhpUnitTestRunner
 
         $utf8 = 'ää';
         $umls = iconv("UTF-8", mb_internal_encoding(), $utf8);
-        $this->assertFalse($minlenght->evaluate($umls), 'Error during length validation of special characters \'' . $utf8 . '\' using encoding ' . mb_internal_encoding());
+        $this->assertFalse(
+            $minlenght->evaluate($umls),
+            "Error during length validation of special characters '{$utf8}' using encoding " . mb_internal_encoding()
+        );
     }
 
     /**
@@ -368,7 +372,6 @@ class ValidatorTest extends TaoPhpUnitTestRunner
      */
     public function testNotEmpty($value, $expected)
     {
-
         $validator = tao_helpers_form_FormFactory::getValidator('NotEmpty');
         $this->assertEquals($expected, $validator->evaluate($value));
     }
@@ -385,7 +388,7 @@ class ValidatorTest extends TaoPhpUnitTestRunner
             'valid_int_zero' => [1, true],
             'valid_float'      => [1.5, true],
             'valid_float_zero' => [0.0, true],
-            'valid_object'     => [$validObject, true],
+            'valid_object'     => [$validObject, false],
             'valid_bool_t'     => [true, true],
             'valid_bool_f'     => [false, true],
 
@@ -454,7 +457,10 @@ class ValidatorTest extends TaoPhpUnitTestRunner
     {
         $this->expectException(common_Exception::class);
         $this->expectExceptionMessage('Please set the reference of the second password element');
-        $validator = tao_helpers_form_FormFactory::getValidator('Password', ['password2_ref' => 'invalid_form_element']);
+        $validator = tao_helpers_form_FormFactory::getValidator(
+            'Password',
+            ['password2_ref' => 'invalid_form_element']
+        );
         $validator->evaluate('something');
     }
 
@@ -532,72 +538,27 @@ class ValidatorTest extends TaoPhpUnitTestRunner
         ];
     }
 
-    public function testPasswordStrength()
+    /**
+     * @dataProvider passwordDataProvider
+     */
+    public function testPasswordStrength(string $password, bool $expected)
     {
         $validator = tao_helpers_form_FormFactory::getValidator('PasswordStrength');
 
         $this->assertInstanceOf('tao_helpers_form_Validator', $validator);
-        $this->assertTrue($validator->evaluate($this->buildValidPassword()));
-        $this->assertFalse($validator->evaluate($this->buildInvalidPassword()));
+        $this->assertEquals($validator->evaluate($password), $expected, $validator->getMessage());
     }
 
-    //Helpers
 
-    protected function buildValidPassword()
+    public function passwordDataProvider(): array
     {
-        $validPassword = '';
-
-        $constaintsService = PasswordConstraintsService::singleton();
-
-        $config = $this->invokeProtectedMethod($constaintsService, 'getConfig');
-
-        if ($config['upper'] === true) {
-            $validPassword .= 'A';
-        }
-
-        if ($config['lower'] === true) {
-            $validPassword .= 'b';
-        }
-
-        if ($config['number'] === true) {
-            $validPassword .= '3';
-        }
-
-        if ($config['spec'] === true) {
-            $validPassword .= '@';
-        }
-
-        $validPassword = str_pad($validPassword, $config['length'], 'c');
-
-        return $validPassword;
-    }
-
-    protected function buildInvalidPassword()
-    {
-        $constaintsService = PasswordConstraintsService::singleton();
-        $config = $this->invokeProtectedMethod($constaintsService, 'getConfig');
-
-        $invalidPassword = $this->buildValidPassword();
-
-        if ($config['upper'] === true) {
-            $invalidPassword = str_replace('A', '', $invalidPassword);
-        }
-
-        if ($config['lower'] === true) {
-            $invalidPassword = str_replace('b', '', $invalidPassword);
-        }
-
-        if ($config['number'] === true) {
-            $invalidPassword = str_replace('3', '', $invalidPassword);
-        }
-
-        if ($config['spec'] === true) {
-            $invalidPassword = str_replace('@', '', $invalidPassword);
-        }
-
-        $invalidPassword = substr($invalidPassword, 0, $config['length'] - 1);
-
-        return $invalidPassword;
+        //this data provider valid according default config tao/config/default/passwordConstraints.conf.php
+        return [
+            ['aaaa', true],
+            ['aBBBB', true],
+            ['BBBBB', false],
+            ['aaa', false],
+        ];
     }
 
     public function testUnique()
@@ -609,7 +570,7 @@ class ValidatorTest extends TaoPhpUnitTestRunner
         $this->assertInstanceOf('tao_helpers_form_Validator', $validator);
 
         $options = [
-            'property'      => new kernel_property_Stub(kernel_class_Stub::TEST_PROPERTY_NAME),
+            'property' => new kernel_property_Stub(kernel_class_Stub::TEST_PROPERTY_NAME),
         ];
         $validator->setOptions($options);
 
@@ -641,11 +602,10 @@ class ValidatorTest extends TaoPhpUnitTestRunner
 
 class kernel_class_Stub
 {
-
-    const TEST_PROPERTY_NAME          = 'testProperty';
-    const PROPERTY_EXISTS_FIRST_LEVEL = 'exists_first_level';
-    const PROPERTY_EXISTS_RECURSIVE   = 'exists_recursive';
-    const PROPERTY_NOT_EXISTS         = 'not_exists';
+    public const TEST_PROPERTY_NAME          = 'testProperty';
+    public const PROPERTY_EXISTS_FIRST_LEVEL = 'exists_first_level';
+    public const PROPERTY_EXISTS_RECURSIVE   = 'exists_recursive';
+    public const PROPERTY_NOT_EXISTS         = 'not_exists';
 
     public function searchInstances($propertyFilters = [], $options = [])
     {
@@ -654,16 +614,15 @@ class kernel_class_Stub
         $returnValue = [];
 
         switch ($propertyFilters[self::TEST_PROPERTY_NAME]) {
-            case self::PROPERTY_EXISTS_FIRST_LEVEL: {
+            case self::PROPERTY_EXISTS_FIRST_LEVEL:
                 $returnValue[] = 'some_found_value';
                 break;
-            }
-            case self::PROPERTY_EXISTS_RECURSIVE: {
+
+            case self::PROPERTY_EXISTS_RECURSIVE:
                 if ($recursive === true) {
                     $returnValue[] = 'some_found_value';
                 }
                 break;
-            }
         }
 
         return $returnValue;
@@ -678,7 +637,8 @@ class kernel_property_Stub extends core_kernel_classes_Property
     }
 }
 
-//Global function
+// Global function
+// phpcs:disable PSR1.Files.SideEffects
 function ValidatorTestCaseGlobalInstanceOf($values)
 {
     $return = true;
@@ -688,8 +648,10 @@ function ValidatorTestCaseGlobalInstanceOf($values)
         }
     }
     return $return;
-};
+}
+
 function ValidatorTestCaseGlobalMirror($values)
 {
     return $values;
-};
+}
+// phpcs:enable PSR1.Files.SideEffects

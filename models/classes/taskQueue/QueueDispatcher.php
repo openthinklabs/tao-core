@@ -68,7 +68,10 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
 
         $this->assertTasks();
 
-        if (!$this->hasOption(self::OPTION_TASK_SELECTOR_STRATEGY) || empty($this->getOption(self::OPTION_TASK_SELECTOR_STRATEGY))) {
+        if (
+            !$this->hasOption(self::OPTION_TASK_SELECTOR_STRATEGY)
+            || empty($this->getOption(self::OPTION_TASK_SELECTOR_STRATEGY))
+        ) {
             // setting default strategy
             $this->selectorStrategy = new WeightStrategy();
         } else {
@@ -91,10 +94,15 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
      */
     protected function getQueueForTask(TaskInterface $task)
     {
-        $action = $task instanceof CallbackTaskInterface && is_object($task->getCallable()) ? $task->getCallable() : $task;
+        $action = $task instanceof CallbackTaskInterface && is_object($task->getCallable())
+            ? $task->getCallable()
+            : $task;
 
         // getting queue name using the implemented getter function
-        if ($action instanceof QueueAssociableInterface && ($queueName = $action->getQueueName($task->getParameters()))) {
+        if (
+            $action instanceof QueueAssociableInterface
+            && ($queueName = $action->getQueueName($task->getParameters()))
+        ) {
             return $this->getQueue($queueName);
         }
 
@@ -152,6 +160,21 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
         return $this;
     }
 
+    public function removeQueue(string $queueName): self
+    {
+        $queues = $this->getQueues();
+
+        foreach ($queues as $key => $queue) {
+            if ($queue->getName() === $queueName) {
+                unset($queues[$key]);
+            }
+        }
+
+        $this->setQueues(array_values($queues));
+
+        return $this;
+    }
+
     /**
      * @inheritdoc
      */
@@ -205,7 +228,9 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
         }
 
         if (!$this->hasQueue($queueName)) {
-            throw new \LogicException('Task "' . $taskName . '" cannot be added to "' . $queueName . '". Queue is not registered.');
+            throw new \LogicException(
+                'Task "' . $taskName . '" cannot be added to "' . $queueName . '". Queue is not registered.'
+            );
         }
 
         $tasks = $this->getLinkedTasks();
@@ -275,8 +300,13 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
     /**
      * @inheritdoc
      */
-    public function createTask(callable $callable, array $parameters = [], $label = null, TaskInterface $parent = null, $masterStatus = false)
-    {
+    public function createTask(
+        callable $callable,
+        array $parameters = [],
+        $label = null,
+        TaskInterface $parent = null,
+        $masterStatus = false
+    ) {
         $id = \common_Utils::getNewUri();
         $owner = $parent ? $parent->getOwner() : $this->getOwner();
 
@@ -367,7 +397,7 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
      *
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         $counts = array_map(function (QueueInterface $queue) {
             return $queue->count();
@@ -393,6 +423,14 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
     public function getWaitTime()
     {
         return $this->selectorStrategy->getWaitTime();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasPreFetchedMessages(): bool
+    {
+        return true;
     }
 
     /**
@@ -435,8 +473,13 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
             return;
         }
 
-        if (count($this->getOption(self::OPTION_QUEUES)) != count(array_unique($this->getOption(self::OPTION_QUEUES)))) {
-            throw new \InvalidArgumentException('There are duplicated Queue names. Please check the values of "' . self::OPTION_QUEUES . '" in your queue dispatcher settings.');
+        if (
+            count($this->getOption(self::OPTION_QUEUES)) != count(array_unique($this->getOption(self::OPTION_QUEUES)))
+        ) {
+            throw new \InvalidArgumentException(
+                'There are duplicated Queue names. Please check the values of "' . self::OPTION_QUEUES
+                . '" in your queue dispatcher settings.'
+            );
         }
     }
 
@@ -453,7 +496,11 @@ class QueueDispatcher extends ConfigurableService implements QueueDispatcherInte
         $notRegisteredQueues = array_diff(array_values($this->getLinkedTasks()), $this->getQueueNames());
 
         if (count($notRegisteredQueues)) {
-            throw new \LogicException('Found not registered queue(s) linked to task(s): "' . implode('", "', $notRegisteredQueues) . '". Please check the values of "' . self::OPTION_TASK_TO_QUEUE_ASSOCIATIONS . '" in your queue dispatcher settings.');
+            throw new \LogicException(
+                'Found not registered queue(s) linked to task(s): "' . implode('", "', $notRegisteredQueues)
+                    . '". Please check the values of "' . self::OPTION_TASK_TO_QUEUE_ASSOCIATIONS
+                    . '" in your queue dispatcher settings.'
+            );
         }
     }
 }

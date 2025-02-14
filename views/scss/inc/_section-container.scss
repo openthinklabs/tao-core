@@ -6,7 +6,7 @@
     // some variations of flex children
     $flexCols: full, half, third, quarter;
     @for $i from 1 through length($flexCols) {
-        $width: (100 / ($i)) * 1%;
+        $width: calc((100 / ($i)) * 1%);
         $flexCol: #{nth($flexCols, $i)};
         .flex-container-#{$flexCol} {
             @include simple-flex-box($width);
@@ -221,6 +221,43 @@
         }
         [class^="btn-"], [class*=" btn-"] {
             margin: 0 2px;
+        }
+    }
+
+    .translations-container {
+        .translations-create {
+            padding-top: 8px;
+
+            label {
+                padding-inline-end: 0;
+            }
+            select {
+                margin-inline-start: 16px;
+            }
+            button {
+                margin-inline-start: 16px;
+                margin-bottom: 3px;
+            }
+        }
+        .translations-list {
+            padding-top: 16px;
+        }
+        .translations-not-ready {
+            @include font-size(14);
+            text-align: center;
+            padding: 40px 0;
+
+            &::before {
+                content: 'B';
+                @include font-size(70);
+                @include tao-icon-setup();
+                @include icon-info();
+                color: #{whiten($info, .05)};
+                opacity: .2;
+                display: inline-block;
+                width: 80px;
+                height: 80px;
+            }
         }
     }
 }

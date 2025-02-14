@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2024 (original work) Open Assessment Technologies SA;
  *
  *
  */
@@ -29,11 +29,19 @@ use oat\tao\model\theme\ConfigurablePlatformTheme;
 use oat\tao\model\theme\ConfigurableTheme;
 use oat\tao\model\theme\Theme;
 use oat\tao\model\theme\ThemeService;
+use oat\tao\model\theme\ThemeServiceAbstract;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\layout\AmdLoader;
+use oat\tao\model\theme\SolarDesignCheckerInterface;
 
 class Layout
 {
+    protected static string $templateClass = Template::class;
+
+    public static function setTemplate(string $templateClass): void
+    {
+        self::$templateClass = $templateClass;
+    }
 
     /**
      * Compute the parameters for the release message
@@ -127,7 +135,10 @@ class Layout
             case 'gif':
                 return $isBase64
                     ? '<img src="' . $icon->getSource() . '" alt="" class="glyph" />'
-                    : '<img src="' . Template::img($icon->getSource(), $icon->getExtension()) . '" alt="" class="glyph" />';
+                    : '<img src="' . Template::img(
+                        $icon->getSource(),
+                        $icon->getExtension()
+                    ) . '" alt="" class="glyph" />';
                 break;
 
             case 'svg':
@@ -137,9 +148,69 @@ class Layout
                     $icon->getId()
                 );
 
-            case ''; // no source means an icon font is used
+            case '': // no source means an icon font is used
                 return sprintf('<span class="%s glyph"></span>', $iconClass);
         }
+    }
+
+    /**
+     * Create the AMD loader to load a bundle for the current context.
+     *
+     * @param string $bundle the bundle URL
+     * @param string $controller the controller module id
+     * @param array $params additional parameters
+     * @param string $type the type of bundle, can be: '', 'es5', 'standalone' (default: '')
+     * @return string the script tag
+     */
+    public static function getBundleLoader(
+        string $bundle,
+        string $controller,
+        array $params = [],
+        string $type = ''
+    ): string {
+        $configUrl = get_data('client_config_url');
+        $requireJsUrl = Template::js('lib/require.js', 'tao');
+        $bootstrapUrl = Template::js('loader/bootstrap.js', 'tao');
+
+        switch (strtolower($type)) {
+            case 'es5':
+                $vendor = 'loader/vendor.es5.min.js';
+                break;
+
+            case 'standalone':
+                $vendor = '';
+                break;
+
+            default:
+                $vendor = 'loader/vendor.min.js';
+        }
+
+        $dependency = '';
+        if ($vendor) {
+            $dependency = "<script src='" . Template::js($vendor, 'tao') . "'></script>\n";
+        }
+
+        $loader = new AmdLoader($configUrl, $requireJsUrl, $bootstrapUrl);
+
+        return $dependency . $loader->getBundleLoader($bundle, $controller, $params);
+    }
+
+    /**
+     * Create the AMD loader to load modules for the current context.
+     *
+     * @param string $controller the controller module id
+     * @param array $params additional parameters
+     * @return string the script tag
+     */
+    public static function getModuleLoader(string $controller, array $params = []): string
+    {
+        $configUrl = get_data('client_config_url');
+        $requireJsUrl = Template::js('lib/require.js', 'tao');
+        $bootstrapUrl = Template::js('loader/bootstrap.js', 'tao');
+
+        $loader = new AmdLoader($configUrl, $requireJsUrl, $bootstrapUrl);
+
+        return $loader->getDynamicLoader($controller, $params);
     }
 
     /**
@@ -149,30 +220,28 @@ class Layout
      *
      * @param string $bundle the bundle URL
      * @param string $controller the controller module id
-     * @param array  $params additional parameters
+     * @param array $params additional parameters
+     * @param bool $allowAnonymous allows to load the bundle in anonymous mode.
+     * @param string $type the type of bundle, can be: '', 'es5', 'standalone' (default: '')
      * @return string the script tag
      */
-    public static function getAmdLoader($bundle = null, $controller = null, $params = null, $allowAnonymous = false)
-    {
-
-        $bundleMode   = \tao_helpers_Mode::is('production');
-        $configUrl    = get_data('client_config_url');
-        $requireJsUrl = Template::js('lib/require.js', 'tao');
-        $bootstrapUrl = Template::js('loader/bootstrap.js', 'tao');
-
-        $loader = new AmdLoader($configUrl, $requireJsUrl, $bootstrapUrl);
-
+    public static function getAmdLoader(
+        string $bundle,
+        string $controller,
+        array $params = [],
+        bool $allowAnonymous = false,
+        string $type = ''
+    ): string {
         if (\common_session_SessionManager::isAnonymous() && !$allowAnonymous) {
             $controller = 'controller/login';
             $bundle = Template::js('loader/login.min.js', 'tao');
         }
 
-        if ($bundleMode) {
-            return "<script src='" . Template::js('loader/vendor.min.js', 'tao') . "'></script>\n" .
-                    $loader->getBundleLoader($bundle, $controller, $params);
+        if (\tao_helpers_Mode::is('production')) {
+            return self::getBundleLoader($bundle, $controller, $params, $type);
         }
 
-        return $loader->getDynamicLoader($controller, $params);
+        return self::getModuleLoader($controller, $params);
     }
 
     /**
@@ -195,6 +264,33 @@ class Layout
         return empty(get_data('main-menu')) && empty($settingsMenu) || count($settingsMenu) < 3;
     }
 
+    /**
+     * Tells if the Solar Design System should apply.
+     */
+    public static function isSolarDesignEnabled(): bool
+    {
+        // if FEATURE_FLAG_SOLAR_DESIGN_ENABLED is active, the feature is always on
+        if (self::getThemeService()->isSolarDesignEnabled()) {
+            return true;
+        }
+
+        // a theme can also require the feature based on an option
+        $theme = self::getCurrentTheme();
+        if ($theme instanceof SolarDesignCheckerInterface) {
+            return $theme->isSolarDesignEnabled();
+        }
+
+        return false;
+    }
+
+    public static function isQuickWinsDesignEnabled(): bool
+    {
+        // if FEATURE_FLAG_QUICK_WINS_ENABLED is active, the feature is always on
+        if (self::getThemeService()->isQuickWinsDesignEnabled()) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Retrieve the template with the actual content
@@ -221,13 +317,16 @@ class Layout
      */
     public static function getLogoUrl()
     {
+        if (self::getThemeService()->isQuickWinsDesignEnabled()) {
+            return $logoFile = Template::img('logo.svg', 'tao');
+        }
         $theme = self::getCurrentTheme();
         if (
             $theme instanceof ConfigurableTheme ||
             $theme instanceof ConfigurablePlatformTheme
         ) {
             $logoFile = $theme->getLogoUrl();
-            if (! empty($logoFile)) {
+            if (!empty($logoFile)) {
                 return $logoFile;
             }
         }
@@ -295,7 +394,7 @@ class Layout
             $theme instanceof ConfigurablePlatformTheme
         ) {
             $link = $theme->getLink();
-            if (! empty($link)) {
+            if (!empty($link)) {
                 return $link;
             }
         }
@@ -334,7 +433,7 @@ class Layout
             $theme instanceof ConfigurablePlatformTheme
         ) {
             $message = $theme->getMessage();
-            if (! empty($message)) {
+            if (!empty($message)) {
                 return $message;
             }
         }
@@ -522,12 +621,53 @@ class Layout
     }
 
     /**
+     * Returns the necessary analytics code.
+     */
+    public static function printAnalyticsCode(): void
+    {
+        $gaTag = $_ENV['GA_TAG'] ?? '';
+        $environment = isset($_ENV['NODE_ENV']) && $_ENV['NODE_ENV'] === 'production' ? 'Production' : 'Internal';
+
+        if ($gaTag && method_exists(self::$templateClass, 'inc')) {
+            call_user_func(
+                [self::$templateClass, 'inc'],
+                'blocks/analytics.tpl',
+                'tao',
+                ['gaTag' => $gaTag, 'environment' => $environment]
+            );
+        }
+    }
+
+    /**
      * Get the current theme configured into tao/theming config
      *
      * @return Theme
      */
     protected static function getCurrentTheme()
     {
-        return ServiceManager::getServiceManager()->get(ThemeService::SERVICE_ID)->getTheme();
+        return self::getThemeService()->getTheme();
+    }
+
+    private static function getThemeService(): ThemeServiceAbstract
+    {
+        return ServiceManager::getServiceManager()->get(ThemeService::SERVICE_ID);
+    }
+
+    /**
+     * Get data from the request context with sorting by weight.
+     *
+     * @param string $key A key to identify the data.
+     * @return mixed The data bound to the key. If no data is bound to the provided key, null is return.
+     */
+
+    public static function getSortedActionsByWeight($key)
+    {
+        $data = get_data($key);
+
+        usort($data, function ($a, $b) {
+            return $a->getWeight() < $b->getWeight();
+        });
+
+        return $data;
     }
 }

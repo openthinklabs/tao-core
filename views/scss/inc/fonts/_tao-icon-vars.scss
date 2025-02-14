@@ -13,11 +13,28 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@mixin icon-restricted { content: "\e92c"; }
+@mixin icon-blocked { content: "\e92d"; }
+@mixin icon-copy { content: "\e92b"; }
+@mixin icon-align-center { content: "\e92a"; }
+@mixin icon-multiple-magicwand { content: "\e929"; }
+@mixin icon-sd-import { content: "\e91f"; }
+@mixin icon-sd-export { content: "\e924"; }
+@mixin icon-browse { content: "\e925"; }
+@mixin icon-minus { content: "\e926"; }
+@mixin icon-plus { content: "\e927"; }
+@mixin icon-sd-save { content: "\e928"; }
+@mixin icon-back-button { content: "\e91e"; }
+@mixin icon-japan-incorrect { content: "\e91b"; }
+@mixin icon-japan-correct { content: "\e91c"; }
+@mixin icon-japan-partial { content: "\e91d"; }
+@mixin icon-score-partial { content: "\e91a"; }
+@mixin icon-furigana { content: "\e919"; }
+@mixin icon-add-subsection { content: "\e918"; }
 @mixin icon-info-bare { content: "\e923"; }
 @mixin icon-bookmark-outline { content: "\e922"; }
 @mixin icon-bookmark { content: "\e921"; }
 @mixin icon-indicator { content: "\e920"; }
-@mixin icon-add-subsection { content: "\e918"; }
 @mixin icon-wrap-inline { content: "\e915"; }
 @mixin icon-wrap-left { content: "\e916"; }
 @mixin icon-wrap-right { content: "\e917"; }
@@ -133,7 +150,7 @@
 @mixin icon-templates { content: "\e656"; }
 @mixin icon-cut { content: "\e657"; }
 @mixin icon-replace { content: "\e658"; }
-@mixin icon-copy { content: "\e659"; }
+@mixin icon-duplicate { content: "\e659"; }
 @mixin icon-paste { content: "\e65a"; }
 @mixin icon-select-all { content: "\e65b"; }
 @mixin icon-paste-text { content: "\e65c"; }

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020-2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -24,24 +24,32 @@ use oat\generis\model\data\Ontology;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
+use oat\tao\model\Language\Business\Contract\LanguageRepositoryInterface;
+use oat\tao\model\Language\Filter\LanguageAllowedFilter;
 use oat\tao\model\routing\Contract\ActionInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class tao_actions_Languages implements ActionInterface
 {
-    /** @var ResponseFormatter */
-    private $responseFormatter;
+    private ResponseFormatter $responseFormatter;
+    private LanguageRepositoryInterface $languageRepository;
+    private Ontology $ontology;
+    private LanguageAllowedFilter $languageAllowedFilter;
 
-    /** @var Ontology */
-    private $ontology;
-
-    public function __construct(ResponseFormatter $responseFormatter, Ontology $ontology)
-    {
+    public function __construct(
+        ResponseFormatter $responseFormatter,
+        LanguageRepositoryInterface $languageRepository,
+        Ontology $ontology,
+        LanguageAllowedFilter $languageAllowedFilter
+    ) {
         $this->responseFormatter = $responseFormatter;
+        $this->languageRepository = $languageRepository;
         $this->ontology = $ontology;
+        $this->languageAllowedFilter = $languageAllowedFilter;
     }
 
-    public function index(ResponseInterface $response): ResponseInterface
+    public function index(ResponseInterface $response, ServerRequestInterface $request): ResponseInterface
     {
         try {
             $this->responseFormatter
@@ -50,15 +58,7 @@ class tao_actions_Languages implements ActionInterface
             return $this->responseFormatter
                 ->withJsonHeader()
                 ->withStatusCode(200)
-                ->withBody(
-                    new SuccessJsonResponse(
-                        tao_helpers_I18n::getAvailableLangsByUsage(
-                            $this->ontology->getResource(
-                                tao_models_classes_LanguageService::INSTANCE_LANGUAGE_USAGE_DATA
-                            )
-                        )
-                    )
-                )
+                ->withBody(new SuccessJsonResponse($this->getLanguages($request)))
                 ->format($response);
         } catch (Throwable $exception) {
             return $this->responseFormatter
@@ -67,5 +67,20 @@ class tao_actions_Languages implements ActionInterface
                 ->withBody(new ErrorJsonResponse(0, $exception->getMessage(), []))
                 ->format($response);
         }
+    }
+
+    private function getLanguages(ServerRequestInterface $request): array
+    {
+        $version = $request->getHeader('Accept-version')[0] ?? 'v1';
+
+        if ($version === 'v2') {
+            return $this->languageAllowedFilter
+                ->filterByLanguageCollection($this->languageRepository->findAvailableLanguagesByUsage())
+                ->jsonSerialize();
+        }
+
+        return tao_helpers_I18n::getAvailableLangsByUsage(
+            $this->ontology->getResource(tao_models_classes_LanguageService::INSTANCE_LANGUAGE_USAGE_DATA)
+        );
     }
 }

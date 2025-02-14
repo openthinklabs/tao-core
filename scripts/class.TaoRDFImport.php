@@ -17,9 +17,12 @@ use oat\tao\model\import\ImportRdf;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
+ *                         (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -40,6 +43,9 @@ class tao_scripts_TaoRDFImport extends tao_scripts_Runner
 
     // --- OPERATIONS ---
 
+    /** @var array */
+    private $options;
+
     /**
      * Short description of method preRun
      *
@@ -49,17 +55,17 @@ class tao_scripts_TaoRDFImport extends tao_scripts_Runner
      */
     public function preRun()
     {
-        
+
         $this->options = ['verbose' => false,
                                'user' => null,
                                'password' => null,
                                'model' => null,
                                'input' => null];
-        
+
         $this->options = array_merge($this->options, $this->parameters);
-        
+
         // the 'file' param is checked by the parent implementation.
-        
+
         if ($this->options['user'] == null) {
             $this->err("Please provide a TAO 'user'.", true);
         } elseif ($this->options['password'] == null) {
@@ -78,23 +84,23 @@ class tao_scripts_TaoRDFImport extends tao_scripts_Runner
      */
     public function run()
     {
-        
+
         $userService = tao_models_classes_UserService::singleton();
         $this->outVerbose("Connecting to TAO as '" . $this->options['user'] . "' ...");
         if ($userService->loginUser($this->options['user'], $this->options['password'])) {
             $this->outVerbose("Connected to TAO as '" . $this->options['user'] . "'.");
-            
+
             $filename = $this->options['input'];
             $action = new ImportRdf();
             $params = [$filename];
-            
+
             if (!empty($this->options['model'])) {
                 $nameSpace = common_ext_NamespaceManager::singleton()->getNamespace($this->options['model']);
                 $params[] = $nameSpace->getModelId();
             }
-             
+
             $report = $action->__invoke($params);
-            
+
             $string = helpers_Report::renderToCommandline($report);
             foreach (explode(PHP_EOL, $string) as $line) {
                 $this->out($line);

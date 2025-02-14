@@ -29,6 +29,7 @@ use oat\tao\model\taskQueue\TaskLog\Decorator\CategoryEntityDecorator;
 use oat\tao\model\taskQueue\TaskLog\Decorator\HasFileEntityDecorator;
 use oat\tao\model\taskQueue\TaskLog\Decorator\RedirectUrlEntityDecorator;
 use oat\tao\model\taskQueue\TaskLog\Decorator\SimpleManagementCollectionDecorator;
+use oat\tao\model\taskQueue\TaskLog\Decorator\TaskLogEntityDecorateProcessor;
 use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
 use oat\tao\model\taskQueue\TaskLogInterface;
 
@@ -72,6 +73,7 @@ class tao_actions_TaskQueueWebApi extends tao_actions_CommonModule
             $taskLogService,
             $this->getFileSystemService(),
             $this->getFileReferenceSerializer(),
+            $this->getTaskLogEntityDecorateProcessor(),
             false
         );
 
@@ -96,19 +98,24 @@ class tao_actions_TaskQueueWebApi extends tao_actions_CommonModule
                 $this->getSessionUserUri()
             );
 
-            $this->setSuccessJsonResponse((new RedirectUrlEntityDecorator(
-                    new HasFileEntityDecorator(
-                        new CategoryEntityDecorator($entity, $taskLogService),
-                        $this->getFileSystemService(),
-                        $this->getFileReferenceSerializer()
-                    ),
-                    $taskLogService,
-                    common_session_SessionManager::getSession()->getUser()
-                ))->toArray());
+            $entity = new RedirectUrlEntityDecorator(
+                new HasFileEntityDecorator(
+                    new CategoryEntityDecorator($entity, $taskLogService),
+                    $this->getFileSystemService(),
+                    $this->getFileReferenceSerializer()
+                ),
+                $taskLogService,
+                common_session_SessionManager::getSession()->getUser()
+            );
+
+            $taskLogEntityDecorator = $this->getTaskLogEntityDecorateProcessor();
+            $taskLogEntityDecorator->setEntity($entity);
+
+            $this->setSuccessJsonResponse($taskLogEntityDecorator->toArray());
         } catch (Exception $e) {
             $this->setErrorJsonResponse(
                 $e instanceof common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
-                 $e->getCode()
+                $e->getCode()
             );
         }
     }
@@ -138,18 +145,52 @@ class tao_actions_TaskQueueWebApi extends tao_actions_CommonModule
             $this->checkIfTaskIdExists();
             $taskIds = $this->detectTaskIds();
 
+            // Get task log service
             $taskLogService = $this->getTaskLogService();
 
-            $filter = $taskIds === static::ALL
-                ? (new TaskLogFilter())->availableForArchived($this->getSessionUserUri())
-                : (new TaskLogFilter())->addAvailableFilters($this->getSessionUserUri())->in(TaskLogBrokerInterface::COLUMN_ID, $taskIds);
+            // Define batch size for the chunk of tasks to be processed in each iteration
+            $batchSize = $taskLogService->getOption(TaskLogInterface::OPTION_DEFAULT_BATCH_SIZE);
+            $success = false;
 
+            // If taskIds is ALL, we'll fetch all tasks using pagination
+            if ($taskIds === static::ALL) {
+                do {
+                    // Set the filter with limit and offset for pagination
+                    $filter = (new TaskLogFilter())
+                        ->availableForArchived($this->getSessionUserUri())
+                        ->setLimit($batchSize)
+                        ->setSortBy(TaskLogBrokerInterface::COLUMN_CREATED_AT);
+                    // Fetch the tasks for the current batch
+                    $taskLogCollection = $taskLogService->search($filter);
+
+                    // If no tasks are returned, break the loop
+                    if (count($taskLogCollection) === 0) {
+                        break;
+                    }
+
+                    // Process the current batch
+                    $success = $taskLogService->archiveCollection($taskLogCollection) || $success;
+                } while (count($taskLogCollection) === $batchSize);
+            } else {
+                // Handle specific task IDs (no need for pagination)
+                $filter = (new TaskLogFilter())
+                    ->addAvailableFilters($this->getSessionUserUri())
+                    ->in(TaskLogBrokerInterface::COLUMN_ID, $taskIds);
+
+                // Fetch all tasks based on provided task IDs
+                $taskLogCollection = $taskLogService->search($filter);
+
+                // Process the tasks without pagination
+                $success = $taskLogService->archiveCollection($taskLogCollection);
+            }
+
+            // Return JSON response
             return $this->returnJson([
-                'success' => (bool) $taskLogService->archiveCollection($taskLogService->search($filter))
+                'success' => (bool) $success
             ]);
         } catch (Exception $e) {
-             $this->setErrorJsonResponse(
-                 $e instanceof common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
+            $this->setErrorJsonResponse(
+                $e instanceof common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
                 $e instanceof \common_exception_NotFound ? 404 : $e->getCode()
             );
         }
@@ -170,7 +211,9 @@ class tao_actions_TaskQueueWebApi extends tao_actions_CommonModule
 
             $filter = $taskIds === static::ALL
                 ? (new TaskLogFilter())->availableForCancelled($this->getSessionUserUri())
-                : (new TaskLogFilter())->addAvailableFilters($this->getSessionUserUri())->in(TaskLogBrokerInterface::COLUMN_ID, $taskIds);
+                : (new TaskLogFilter())
+                    ->addAvailableFilters($this->getSessionUserUri())
+                    ->in(TaskLogBrokerInterface::COLUMN_ID, $taskIds);
 
             return $this->returnJson([
                 'success' => (bool) $taskLogService->cancelCollection($taskLogService->search($filter))
@@ -228,7 +271,7 @@ class tao_actions_TaskQueueWebApi extends tao_actions_CommonModule
         } catch (Exception $e) {
             $this->setErrorJsonResponse(
                 $e instanceof common_exception_UserReadableException ? $e->getUserMessage() : $e->getMessage(),
-                 $e->getCode()
+                $e->getCode()
             );
         }
     }
@@ -280,6 +323,11 @@ class tao_actions_TaskQueueWebApi extends tao_actions_CommonModule
     protected function getFileReferenceSerializer(): FileReferenceSerializer
     {
         return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
+    }
+
+    protected function getTaskLogEntityDecorateProcessor(): TaskLogEntityDecorateProcessor
+    {
+        return $this->getServiceManager()->getContainer()->get(TaskLogEntityDecorateProcessor::class);
     }
 
     protected function getFileSystemService(): FileSystemService

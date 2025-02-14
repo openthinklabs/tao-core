@@ -25,19 +25,26 @@ namespace oat\tao\test\unit\models\classes\menu;
 use oat\generis\test\TestCase;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\menu\SectionVisibilityFilter;
+use oat\tao\model\user\implementation\UserSettingsService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class SectionVisibilityFilterTest extends TestCase
 {
+    private const SECTION_VISIBLE_BY_DEFAULT = 'section_visible_by_default';
+    private const FEATURE_FLAG_SECTION_VISIBLE_BY_DEFAULT_DISABLED = 'FEATURE_FLAG_SECTION_VISIBLE_BY_DEFAULT_DISABLED';
     /** @var SectionVisibilityFilter */
     private $subject;
 
     /** @var FeatureFlagChecker|MockObject  */
     private $featureFlagChecker;
 
+    /** @var UserSettingsService|MockObject  */
+    private $userSettingsService;
+
     public function setUp(): void
     {
         $this->featureFlagChecker = $this->createMock(FeatureFlagChecker::class);
+        $this->userSettingsService = $this->createMock(UserSettingsService::class);
 
         $this->subject = new SectionVisibilityFilter(
             [
@@ -46,12 +53,18 @@ class SectionVisibilityFilterTest extends TestCase
                         'FEATURE_FLAG_LTI1P3',
                     ],
                 ],
+                SectionVisibilityFilter::OPTION_FEATURE_FLAG_SECTIONS_TO_HIDE => [
+                    self::SECTION_VISIBLE_BY_DEFAULT => [
+                        self::FEATURE_FLAG_SECTION_VISIBLE_BY_DEFAULT_DISABLED,
+                    ],
+                ],
             ]
         );
 
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock([
                 FeatureFlagChecker::class => $this->featureFlagChecker,
+                UserSettingsService::class => $this->userSettingsService,
             ])
         );
     }
@@ -68,7 +81,6 @@ class SectionVisibilityFilterTest extends TestCase
     public function testIsHiddenLtiDisabled(): void
     {
         $this->featureFlagChecker
-            ->expects(self::once())
             ->method('isEnabled')
             ->willReturn(false);
 
@@ -78,5 +90,31 @@ class SectionVisibilityFilterTest extends TestCase
     public function testIsVisibleWithNoSections(): void
     {
         self::assertTrue($this->subject->isVisible('another_section'));
+    }
+
+    /**
+     * @dataProvider sectionsToHideDataProvider
+     */
+    public function testWhiteList($isEnabled, $result): void
+    {
+        $this->featureFlagChecker
+            ->method('isEnabled')
+            ->willReturn($isEnabled);
+
+        self::assertSame($result, $this->subject->isVisible(self::SECTION_VISIBLE_BY_DEFAULT));
+    }
+
+    public function sectionsToHideDataProvider(): array
+    {
+        return [
+            'feature flag enabled' => [
+                'isEnabled' => true,
+                'result' => false
+            ],
+            'feature flag disabled' => [
+                'isEnabled' => false,
+                'result' => true
+            ],
+        ];
     }
 }

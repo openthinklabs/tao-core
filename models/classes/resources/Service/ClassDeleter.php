@@ -102,8 +102,11 @@ class ClassDeleter implements ClassDeleterInterface
 
         if ($class->exists()) {
             throw new PartialClassDeletionException(
-                'Unable to delete the selected resource because you do not have the required rights to delete part of its content.',
+                'Unable to delete the selected resource because you do not have the required rights to delete '
+                    . 'part of its content.',
+                // phpcs:disable Generic.Files.LineLength
                 __('Unable to delete the selected resource because you do not have the required rights to delete part of its content.')
+                // phpcs:enable Generic.Files.LineLength
             );
         }
     }
@@ -158,6 +161,10 @@ class ClassDeleter implements ClassDeleterInterface
         $status = true;
 
         foreach ($class->getInstances() as $instance) {
+            if (!$instance->exists()) {
+                continue;
+            }
+
             if (!$this->permissionChecker->hasWriteAccess($instance->getUri())) {
                 $status = false;
 

@@ -15,9 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
+ *                         (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
+ *                         (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor
+ *                         (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -26,6 +29,8 @@ use oat\tao\helpers\translation\TranslationBundle;
 use oat\generis\model\data\ModelManager;
 use oat\tao\helpers\translation\rdf\RdfPack;
 use oat\generis\model\kernel\persistence\file\FileIterator;
+use oat\tao\model\ClientLibConfigRegistry;
+use oat\tao\model\ClientLibRegistry;
 
 /**
  * Short description of class tao_models_classes_LanguageService
@@ -37,17 +42,21 @@ use oat\generis\model\kernel\persistence\file\FileIterator;
 class tao_models_classes_LanguageService extends tao_models_classes_GenerisService
 {
     // --- ASSOCIATIONS ---
-    const TRANSLATION_PREFIX = __CLASS__ . ':all';
+    public const TRANSLATION_PREFIX = __CLASS__ . ':all';
 
     // --- ATTRIBUTES ---
-    const CLASS_URI_LANGUAGES = 'http://www.tao.lu/Ontologies/TAO.rdf#Languages';
-    const CLASS_URI_LANGUAGES_USAGES = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguagesUsages';
-    const PROPERTY_LANGUAGE_USAGES = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsages';
-    const PROPERTY_LANGUAGE_ORIENTATION = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageOrientation';
-    const INSTANCE_LANGUAGE_USAGE_GUI = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsageGUI';
-    const INSTANCE_LANGUAGE_USAGE_DATA = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsageData';
-    const INSTANCE_ORIENTATION_LTR = 'http://www.tao.lu/Ontologies/TAO.rdf#OrientationLeftToRight';
-    const INSTANCE_ORIENTATION_RTL = 'http://www.tao.lu/Ontologies/TAO.rdf#OrientationRightToLeft';
+    public const CLASS_URI_LANGUAGES = 'http://www.tao.lu/Ontologies/TAO.rdf#Languages';
+    public const CLASS_URI_LANGUAGES_USAGES = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguagesUsages';
+    public const PROPERTY_LANGUAGE_USAGES = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsages';
+    public const PROPERTY_LANGUAGE_ORIENTATION = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageOrientation';
+    public const PROPERTY_LANGUAGE_VERTICAL_WRITING_MODE =
+        'http://www.tao.lu/Ontologies/TAO.rdf#LanguageVerticalWritingMode';
+    public const INSTANCE_LANGUAGE_USAGE_GUI = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsageGUI';
+    public const INSTANCE_LANGUAGE_USAGE_DATA = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsageData';
+    public const INSTANCE_ORIENTATION_LTR = 'http://www.tao.lu/Ontologies/TAO.rdf#OrientationLeftToRight';
+    public const INSTANCE_ORIENTATION_RTL = 'http://www.tao.lu/Ontologies/TAO.rdf#OrientationRightToLeft';
+    public const INSTANCE_VERTICAL_WRITING_MODE_RL = 'http://www.tao.lu/Ontologies/TAO.rdf#WritingModeVerticalRl';
+    public const INSTANCE_VERTICAL_WRITING_MODE_LR = 'http://www.tao.lu/Ontologies/TAO.rdf#WritingModeVerticalLr';
     // --- OPERATIONS ---
 
     /**
@@ -276,7 +285,8 @@ class tao_models_classes_LanguageService extends tao_models_classes_GenerisServi
         $extensions = helpers_ExtensionHelper::sortByDependencies($extensions);
         $translations = [];
         foreach ($extensions as $extension) {
-            $file = $extension->getDir() . 'locales' . DIRECTORY_SEPARATOR . $langCode . DIRECTORY_SEPARATOR . 'messages.po';
+            $file = $extension->getDir() . 'locales' . DIRECTORY_SEPARATOR . $langCode . DIRECTORY_SEPARATOR
+                . 'messages.po';
             $new = l10n::getPoFile($file);
             if (is_array($new)) {
                 $translations = array_merge($translations, $new);
@@ -350,7 +360,7 @@ class tao_models_classes_LanguageService extends tao_models_classes_GenerisServi
     private function getLanguageFiles()
     {
         $extManager = $this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID);
-        $localesPath = $extManager->getExtensionById('tao')->getDir().'locales';
+        $localesPath = $extManager->getExtensionById('tao')->getDir() . 'locales';
         if (!@is_dir($localesPath) || !@is_readable($localesPath)) {
             throw new tao_install_utils_Exception("Cannot read 'locales' directory in extenstion 'tao'.");
         }
@@ -370,6 +380,7 @@ class tao_models_classes_LanguageService extends tao_models_classes_GenerisServi
         return $files;
     }
 
+
     /**
      * Return the definition of the languages as an RDF iterator
      * @return AppendIterator
@@ -382,5 +393,17 @@ class tao_models_classes_LanguageService extends tao_models_classes_GenerisServi
             $model->append($iterator->getIterator());
         }
         return $model;
+    }
+
+    public function isRtlLanguage(string $languageCode): bool
+    {
+        $config = $this->getClientLibConfigRegistry()->get('util/locale') ?? [];
+
+        return in_array($languageCode, $config['rtl'] ?? [], true);
+    }
+
+    private function getClientLibConfigRegistry(): ClientLibConfigRegistry
+    {
+        return $this->getServiceLocator()->getContainer()->get(ClientLibConfigRegistry::class);
     }
 }

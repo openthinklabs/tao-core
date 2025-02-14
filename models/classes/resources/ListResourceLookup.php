@@ -21,11 +21,15 @@
 
 namespace oat\tao\model\resources;
 
+use core_kernel_classes_Resource;
+use oat\generis\model\OntologyRdf;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\search\ResultSet;
 use oat\tao\model\search\Search;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\security\SignatureGenerator;
 
 /**
  * Look up resources and format them as a flat list
@@ -36,7 +40,7 @@ class ListResourceLookup extends ConfigurableService implements ResourceLookup
 {
     use OntologyAwareTrait;
 
-    const SERVICE_ID = 'tao/ListResourceLookup';
+    public const SERVICE_ID = 'tao/ListResourceLookup';
 
     /**
      * Retrieve Resources for the given parameters as a list
@@ -48,8 +52,13 @@ class ListResourceLookup extends ConfigurableService implements ResourceLookup
      * @param int                        $limit           for paging
      * @return array the resources
      */
-    public function getResources(\core_kernel_classes_Class $rootClass, array $selectedUris = [], array $propertyFilters = [], $offset = 0, $limit = 30)
-    {
+    public function getResources(
+        \core_kernel_classes_Class $rootClass,
+        array $selectedUris = [],
+        array $propertyFilters = [],
+        $offset = 0,
+        $limit = 30
+    ) {
         // Searching by label parameter will utilize fulltext search
         if (count($propertyFilters) == 1 && isset($propertyFilters[OntologyRdfs::RDFS_LABEL])) {
             $searchString = current($propertyFilters);
@@ -74,7 +83,13 @@ class ListResourceLookup extends ConfigurableService implements ResourceLookup
         /** @var ResultSet $result */
         $result = $searchService->query($searchString, $rootClass, $offset, $limit);
         $count = $result->getTotalCount();
-        return $this->format($result, $count, $offset, $limit);
+
+        $ids = [];
+        foreach ($result as $item) {
+            $ids[] = $item['id'] ?? $item;
+        }
+
+        return $this->format($ids, $count, $offset, $limit);
     }
 
     /**
@@ -139,14 +154,37 @@ class ListResourceLookup extends ConfigurableService implements ResourceLookup
                 'uri'        => $resource->getUri(),
                 'classUri'   => $resourceTypes[0],
                 'label'      => $resource->getLabel(),
-                'type'       => 'instance'
+                'type'       => 'instance',
+                'signature'  => $this->getSignatureGenerator()->generate($resource->getUri()),
             ];
+            $parentClassUri = $this->getParentClassUri($resource);
+            if ($parentClassUri !== null) {
+                $data['classSignature'] = $this->getSignatureGenerator()->generate($parentClassUri);
+            }
         }
         return $data;
     }
 
-    public function getClasses(\core_kernel_classes_Class $rootClass, array $selectedUris = [], array $propertyFilters = [], $offset = 0, $limit = 30)
-    {
+    public function getClasses(
+        \core_kernel_classes_Class $rootClass,
+        array $selectedUris = [],
+        array $propertyFilters = [],
+        $offset = 0,
+        $limit = 30
+    ) {
         return [];
+    }
+
+    private function getSignatureGenerator(): SignatureGenerator
+    {
+        return $this->getServiceManager()->get(SignatureGenerator::class);
+    }
+
+    private function getParentClassUri(core_kernel_classes_Resource $resource): ?string
+    {
+        $parentClassUri = $resource->getOnePropertyValue($resource->getProperty(OntologyRdf::RDF_TYPE));
+        return $parentClassUri !== null
+            ? $parentClassUri->getUri()
+            : null;
     }
 }

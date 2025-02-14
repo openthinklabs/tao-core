@@ -23,15 +23,10 @@ declare(strict_types=1);
 namespace oat\tao\model\resources;
 
 use oat\generis\model\data\Ontology;
-use oat\tao\model\resources\Service\ClassCopier;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\tao\model\accessControl\PermissionChecker;
-use oat\tao\model\resources\Service\InstanceCopier;
-use oat\tao\model\resources\Service\ClassCopierProxy;
-use oat\tao\model\resources\Service\ClassMetadataCopier;
 use oat\generis\model\resource\Repository\ClassRepository;
 use oat\tao\model\resources\Service\RootClassesListService;
-use oat\tao\model\resources\Service\InstanceMetadataCopier;
 use oat\generis\model\resource\Repository\ResourceRepository;
 use oat\tao\model\resources\Specification\RootClassSpecification;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
@@ -71,28 +66,6 @@ class ResourcesServiceProvider implements ContainerServiceProviderInterface
                     service(Ontology::SERVICE_ID),
                     service(ResourceRepository::class),
                     service(ClassRepository::class),
-                ]
-            );
-
-        $services->set(ClassMetadataCopier::class, ClassMetadataCopier::class);
-
-        $services->set(InstanceMetadataCopier::class, InstanceMetadataCopier::class);
-
-        $services
-            ->set(InstanceCopier::class, InstanceCopier::class)
-            ->args(
-                [
-                    service(InstanceMetadataCopier::class),
-                ]
-            );
-
-        $services
-            ->set(ClassCopierProxy::class, ClassCopierProxy::class)
-            ->share(false)
-            ->public()
-            ->args(
-                [
-                    service(RootClassesListService::class),
                 ]
             );
     }

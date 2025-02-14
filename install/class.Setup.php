@@ -28,10 +28,13 @@ use oat\oatbox\log\logger\TaoLog;
 use oat\oatbox\log\LoggerService;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\configurationMarkers\ConfigurationMarkers;
+use oat\tao\model\configurationMarkers\SerializableSecretDtoFactory;
 use oat\tao\model\service\InjectionAwareService;
 use Pimple\Container;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
+// phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace, Squiz.Classes.ValidClassName.NotCamelCaps
 class tao_install_Setup implements Action
 {
     // Adding container and logger.
@@ -40,12 +43,12 @@ class tao_install_Setup implements Action
     /**
      * Setup related dependencies will be reached under this offset.
      */
-    const CONTAINER_INDEX = 'taoInstallSetup';
+    public const CONTAINER_INDEX = 'taoInstallSetup';
 
     /**
      * The setup json content offset in the container.
      */
-    const SETUP_JSON_CONTENT_OFFSET = 'setupJsonContentOffset';
+    private const SETUP_JSON_CONTENT_OFFSET = 'setupJsonContentOffset';
 
     /**
      * @param mixed $params The setup params.
@@ -151,6 +154,10 @@ class tao_install_Setup implements Action
         }
 
         $global = $parameters['configuration']['global'];
+
+        $markers = $this->getConfigurationMarkers();
+
+        $global = $markers->replaceMarkers($global);
         $options['module_namespace'] = $global['namespace'];
         $options['instance_name'] = $global['instance_name'];
         $options['module_url'] = $global['url'];
@@ -224,21 +231,30 @@ class tao_install_Setup implements Action
             throw new InvalidArgumentException('Your config should have a \'default\' key under \'persistences\'');
         }
 
+        //@TODO use $serviceManager->getContainer(ConfigurationMarkers::class) after refactoring taoSetup to use full DI
+        $parameters = $markers->replaceMarkers($parameters);
+
         foreach ($parameters['configuration'] as $extension => $configs) {
             foreach ($configs as $key => $config) {
-                if (isset($config['type']) && $config['type'] === 'configurableService') {
+                if (is_array($config) && isset($config['type']) && $config['type'] === 'configurableService') {
                     $className = $config['class'];
                     $params = $config['options'];
                     if (is_a($className, ConfigurableService::class, true)) {
                         if (is_a($className, InjectionAwareService::class, true)) {
-                            $service = new $className(...$this->prepareParameters($className, $params, $serviceManager));
+                            $service = new $className(
+                                ...$this->prepareParameters($className, $params, $serviceManager)
+                            );
                         } else {
                             $service = new $className($params);
                         }
                         $serviceManager->register($extension . '/' . $key, $service);
                     } else {
-                        $this->logWarning('The class : ' . $className . ' can not be set as a Configurable Service');
-                        $this->logWarning('Make sure your configuration is correct and all required libraries are installed');
+                        $this->logWarning(
+                            sprintf('The class : %s can not be set as a Configurable Service', $className)
+                        );
+                        $this->logWarning(
+                            'Make sure your configuration is correct and all required libraries are installed'
+                        );
                     }
                 }
             }
@@ -253,19 +269,23 @@ class tao_install_Setup implements Action
             $extensionManager = $serviceManager->get(common_ext_ExtensionsManager::SERVICE_ID);
             foreach ($parameters['configuration'] as $ext => $configs) {
                 foreach ($configs as $key => $config) {
-                    if (! (isset($config['type']) && $config['type'] === 'configurableService')) {
+                    if (! (is_array($config) && isset($config['type']) && $config['type'] === 'configurableService')) {
                         if (! is_null($extensionManager->getInstalledVersion($ext))) {
                             $extension = $extensionManager->getExtensionById($ext);
-                            if (! $extension->hasConfig($key) || ! $extension->getConfig($key) instanceof ConfigurableService) {
+                            if (
+                                !$extension->hasConfig($key) ||
+                                !$extension->getConfig($key) instanceof ConfigurableService
+                            ) {
                                 if (! $extension->setConfig($key, $config)) {
-                                    throw new ErrorException('Your config ' . $ext . '/' . $key . ' cannot be set');
+                                    throw new ErrorException(
+                                        sprintf('Your config %s/%s cannot be set', $ext, $key)
+                                    );
                                 }
                             }
                         }
                     }
                 }
             }
-
             // execute post install scripts
             if (isset($parameters['postInstall'])) {
                 foreach ($parameters['postInstall'] as $script) {
@@ -285,7 +305,6 @@ class tao_install_Setup implements Action
             }
             $logger->notice('Installation completed!');
         });
-
     }
 
     /**
@@ -304,8 +323,8 @@ class tao_install_Setup implements Action
 
         $sortedParameters = [];
 
-        while($constructParameters && $parametersToSort) {
-            $parameter     = array_shift($constructParameters);
+        while ($constructParameters && $parametersToSort) {
+            $parameter = array_shift($constructParameters);
             $parameterName = $parameter->getName();
 
             try {
@@ -432,5 +451,13 @@ class tao_install_Setup implements Action
                 '\\Doctrine\\DBAL\\Connections\\MasterSlaveConnection',
                 true
             );
+    }
+
+    private function getConfigurationMarkers(): ConfigurationMarkers
+    {
+        return new ConfigurationMarkers(
+            new SerializableSecretDtoFactory(),
+            $this->getLogger()
+        );
     }
 }

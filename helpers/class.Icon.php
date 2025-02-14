@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2014-2025 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 use oat\tao\model\iconBuilder\IconBuilderTrait;
@@ -25,20 +25,37 @@ use oat\tao\model\iconBuilder\IconBuilderTrait;
  *
  * PLEASE, DO NOT EDIT THIS CLASS. IT GENERATED AUTOMATICALLY
  *
- * @access		public
- * @author		Dieter Raber, <dieter@taotesting.com>
- * @date		2021-12-09 09:04:40
- * @package		tao
+ * @access public
+ * @author Dieter Raber, <dieter@taotesting.com>
+ * @date 2025-01-27 11:25:22
+ * @package tao
  */
 class tao_helpers_Icon
 {
     use IconBuilderTrait;
 
+    public const CLASS_RESTRICTED = 'icon-restricted';
+    public const CLASS_BLOCKED = 'icon-blocked';
+    public const CLASS_COPY = 'icon-copy';
+    public const CLASS_ALIGN_CENTER = 'icon-align-center';
+    public const CLASS_MULTIPLE_MAGICWAND = 'icon-multiple-magicwand';
+    public const CLASS_SD_IMPORT = 'icon-sd-import';
+    public const CLASS_SD_EXPORT = 'icon-sd-export';
+    public const CLASS_BROWSE = 'icon-browse';
+    public const CLASS_MINUS = 'icon-minus';
+    public const CLASS_PLUS = 'icon-plus';
+    public const CLASS_SD_SAVE = 'icon-sd-save';
+    public const CLASS_BACK_BUTTON = 'icon-back-button';
+    public const CLASS_JAPAN_INCORRECT = 'icon-japan-incorrect';
+    public const CLASS_JAPAN_CORRECT = 'icon-japan-correct';
+    public const CLASS_JAPAN_PARTIAL = 'icon-japan-partial';
+    public const CLASS_SCORE_PARTIAL = 'icon-score-partial';
+    public const CLASS_FURIGANA = 'icon-furigana';
+    public const CLASS_ADD_SUBSECTION = 'icon-add-subsection';
     public const CLASS_INFO_BARE = 'icon-info-bare';
     public const CLASS_BOOKMARK_OUTLINE = 'icon-bookmark-outline';
     public const CLASS_BOOKMARK = 'icon-bookmark';
     public const CLASS_INDICATOR = 'icon-indicator';
-    public const CLASS_ADD_SUBSECTION = 'icon-add-subsection';
     public const CLASS_WRAP_INLINE = 'icon-wrap-inline';
     public const CLASS_WRAP_LEFT = 'icon-wrap-left';
     public const CLASS_WRAP_RIGHT = 'icon-wrap-right';
@@ -154,7 +171,7 @@ class tao_helpers_Icon
     public const CLASS_TEMPLATES = 'icon-templates';
     public const CLASS_CUT = 'icon-cut';
     public const CLASS_REPLACE = 'icon-replace';
-    public const CLASS_COPY = 'icon-copy';
+    public const CLASS_DUPLICATE = 'icon-duplicate';
     public const CLASS_PASTE = 'icon-paste';
     public const CLASS_SELECT_ALL = 'icon-select-all';
     public const CLASS_PASTE_TEXT = 'icon-paste-text';
@@ -260,6 +277,96 @@ class tao_helpers_Icon
     public const CLASS_ELIMINATE_CROSSED = 'icon-eliminate-crossed';
     public const CLASS_PLAY_FROM_HERE = 'icon-play-from-here';
 
+    public static function iconRestricted(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_RESTRICTED, $options);
+    }
+
+    public static function iconBlocked(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_BLOCKED, $options);
+    }
+
+    public static function iconCopy(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_COPY, $options);
+    }
+
+    public static function iconAlignCenter(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_ALIGN_CENTER, $options);
+    }
+
+    public static function iconMultipleMagicwand(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_MULTIPLE_MAGICWAND, $options);
+    }
+
+    public static function iconSdImport(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_SD_IMPORT, $options);
+    }
+
+    public static function iconSdExport(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_SD_EXPORT, $options);
+    }
+
+    public static function iconBrowse(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_BROWSE, $options);
+    }
+
+    public static function iconMinus(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_MINUS, $options);
+    }
+
+    public static function iconPlus(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_PLUS, $options);
+    }
+
+    public static function iconSdSave(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_SD_SAVE, $options);
+    }
+
+    public static function iconBackButton(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_BACK_BUTTON, $options);
+    }
+
+    public static function iconJapanIncorrect(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_JAPAN_INCORRECT, $options);
+    }
+
+    public static function iconJapanCorrect(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_JAPAN_CORRECT, $options);
+    }
+
+    public static function iconJapanPartial(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_JAPAN_PARTIAL, $options);
+    }
+
+    public static function iconScorePartial(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_SCORE_PARTIAL, $options);
+    }
+
+    public static function iconFurigana(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_FURIGANA, $options);
+    }
+
+    public static function iconAddSubsection(array $options = [])
+    {
+        return self::buildIcon(self::CLASS_ADD_SUBSECTION, $options);
+    }
+
     public static function iconInfoBare(array $options = [])
     {
         return self::buildIcon(self::CLASS_INFO_BARE, $options);
@@ -278,11 +385,6 @@ class tao_helpers_Icon
     public static function iconIndicator(array $options = [])
     {
         return self::buildIcon(self::CLASS_INDICATOR, $options);
-    }
-
-    public static function iconAddSubsection(array $options = [])
-    {
-        return self::buildIcon(self::CLASS_ADD_SUBSECTION, $options);
     }
 
     public static function iconWrapInline(array $options = [])
@@ -860,9 +962,9 @@ class tao_helpers_Icon
         return self::buildIcon(self::CLASS_REPLACE, $options);
     }
 
-    public static function iconCopy(array $options = [])
+    public static function iconDuplicate(array $options = [])
     {
-        return self::buildIcon(self::CLASS_COPY, $options);
+        return self::buildIcon(self::CLASS_DUPLICATE, $options);
     }
 
     public static function iconPaste(array $options = [])

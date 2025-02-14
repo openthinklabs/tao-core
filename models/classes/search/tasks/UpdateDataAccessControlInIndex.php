@@ -29,10 +29,10 @@ use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\action\Action;
 use oat\oatbox\log\LoggerAwareTrait;
-use oat\tao\elasticsearch\Exception\FailToUpdatePropertiesException;
 use oat\tao\model\search\index\IndexUpdaterInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
+use Throwable;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
@@ -75,11 +75,16 @@ class UpdateDataAccessControlInIndex implements Action, ServiceLocatorAwareInter
         $logMessage = 'Data Access Control were being updated by ' . static::class;
 
         try {
-            $indexUpdater->updatePropertyValue($resourceUri, $parentClasses, self::READ_ACCESS_PROPERTY, $newPermissions);
-        } catch (FailToUpdatePropertiesException $exception) {
+            $indexUpdater->updatePropertyValue(
+                $resourceUri,
+                $parentClasses,
+                self::READ_ACCESS_PROPERTY,
+                $newPermissions
+            );
+        } catch (Throwable $exception) {
             $type = Report::TYPE_ERROR;
             $message = 'Failed during update search index';
-            $logMessage = 'Data Access Control failure: ' . $exception->getMessage();
+            $logMessage = 'Data Access Control failure: (' . get_class($exception) . ') ' . $exception->getMessage();
         }
 
         $this->logInfo($logMessage);

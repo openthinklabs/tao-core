@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020-2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -31,22 +31,15 @@ class ResultSetResponseNormalizer extends ConfigurableService
 {
     use OntologyAwareTrait;
 
+    /**
+     * @inheritDoc
+     */
     public function normalize(SearchQuery $searchQuery, ResultSet $resultSet, string $structure): array
     {
-        $totalPages = is_null($searchQuery->getRows()) || $searchQuery->getRows() === 0
-            ? 1
-            : ceil($resultSet->getTotalCount() / $searchQuery->getRows());
-
         $resultsRaw = $resultSet->getArrayCopy();
-
-        $accessibleResultsMap = [];
-
         $resultAmount = count($resultsRaw);
-
-        $response = [];
-
         $resourcePermissions = [];
-
+        $responseData = [];
         $resultAccessChecker = $this->getResultAccessChecker();
 
         if ($resultAmount > 0) {
@@ -56,6 +49,69 @@ class ResultSetResponseNormalizer extends ConfigurableService
                         array_column($resultsRaw, 'id'),
                         PermissionInterface::RIGHT_READ
                     )
+            );
+
+            foreach ($resultsRaw as $content) {
+                $resourceId = $content['id'];
+
+                if (!is_array($content)) {
+                    $this->logError(
+                        sprintf(
+                            'Search content issue detected: expected array, but %s given',
+                            json_encode($content)
+                        )
+                    );
+                    continue;
+                }
+
+                $isAccessible = isset($accessibleResultsMap[$resourceId]);
+
+                if (!$isAccessible) {
+                    $hasReadAccess = false;
+                }
+
+                if ($isAccessible) {
+                    $hasReadAccess = $resultAccessChecker->hasReadAccess($content);
+                }
+
+                if ($hasReadAccess === false) {
+                    $content = [
+                        'label' => __('Access Denied'),
+                        'id' => $resourceId,
+                    ];
+                }
+
+                $resourcePermissions[$resourceId] = !$hasReadAccess;
+
+                $responseData[] = $content;
+            }
+        }
+
+        return $this->createResponse(
+            $responseData,
+            $resourcePermissions,
+            $searchQuery,
+            $resultSet,
+            $resultAmount
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function normalizeSafeClass(SearchQuery $searchQuery, ResultSet $resultSet, string $structure): array
+    {
+        $resultsRaw = $resultSet->getArrayCopy();
+        $resultAmount = count($resultsRaw);
+        $resourcePermissions = [];
+        $responseData = [];
+
+        if ($resultAmount > 0) {
+            $accessibleResultsMap = array_flip(
+                $this->getPermissionHelper()->filterByPermission(
+                    array_column($resultsRaw, 'id'),
+                    PermissionInterface::RIGHT_READ
+                )
             );
 
             foreach ($resultsRaw as $content) {
@@ -69,47 +125,43 @@ class ResultSetResponseNormalizer extends ConfigurableService
                     continue;
                 }
 
-                $isAccessible = isset($accessibleResultsMap[$content['id']]);
-
-                if (!$isAccessible) {
-                    $hasReadAccess = false;
-                }
-
-                if ($isAccessible) {
-                    $hasReadAccess = $resultAccessChecker->hasReadAccess($content);
-                }
-
-                if ($hasReadAccess === false) {
-                    $content['label'] = __('Access Denied');
-                    $content['id'] = '';
-                }
-
-                $resourcePermissions[$content['id']] = !$hasReadAccess;
-
-                $response['data'][] = $this->getResultSetFilter()->filter($content, $structure);
+                $resourcePermissions[$content['id']] = !isset($accessibleResultsMap[$content['id']]);
+                $responseData[] = $content;
             }
         }
 
-        $response['readonly'] = $resourcePermissions;
-        $response['success'] = true;
-        $response['page'] = empty($response['data']) ? 0 : $searchQuery->getPage();
-        $response['total'] = $totalPages;
+        return $this->createResponse(
+            $responseData,
+            $resourcePermissions,
+            $searchQuery,
+            $resultSet,
+            $resultAmount
+        );
+    }
 
-        $response['totalCount'] = $resultSet->getTotalCount();
-
-        $response['records'] = $resultAmount;
-
-        return $response;
+    private function createResponse(
+        array $responseData,
+        array $resourcePermissions,
+        SearchQuery $searchQuery,
+        ResultSet $resultSet,
+        int $resultAmount
+    ): array {
+        return [
+            'data' => $responseData,
+            'readonly' => $resourcePermissions,
+            'success' => true,
+            'page' => empty($responseData) ? 0 : $searchQuery->getPage(),
+            'total' => empty($searchQuery->getRows())
+                ? 1
+                : ceil($resultSet->getTotalCount() / $searchQuery->getRows()),
+            'totalCount' => $resultSet->getTotalCount(),
+            'records' => $resultAmount,
+        ];
     }
 
     private function getPermissionHelper(): PermissionHelper
     {
         return $this->getServiceLocator()->get(PermissionHelper::class);
-    }
-
-    private function getResultSetFilter(): ResultSetFilter
-    {
-        return $this->getServiceLocator()->get(ResultSetFilter::class);
     }
 
     private function getResultAccessChecker(): ResultAccessChecker

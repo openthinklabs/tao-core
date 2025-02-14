@@ -17,6 +17,7 @@
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
  *
+ * phpcs:disable Generic.Files.LineLength
  */
 
 namespace oat\tao\model;
@@ -39,6 +40,7 @@ interface TaoOntology
     public const CLASS_URI_TREE = 'http://www.tao.lu/Ontologies/TAO.rdf#Tree';
 
     public const PROPERTY_UPDATED_AT = 'http://www.tao.lu/Ontologies/TAO.rdf#UpdatedAt';
+    public const PROPERTY_UPDATED_BY = 'http://www.tao.lu/Ontologies/TAO.rdf#UpdatedBy';
     public const PROPERTY_LIST_LEVEL = 'http://www.tao.lu/Ontologies/TAO.rdf#level';
     public const PROPERTY_USER_FIRST_TIME = 'http://www.tao.lu/Ontologies/TAO.rdf#FirstTimeInTao';
     public const PROPERTY_USER_LAST_EXTENSION = 'http://www.tao.lu/Ontologies/TAO.rdf#LastExtensionUsed';
@@ -116,4 +118,23 @@ interface TaoOntology
     public const PROPERTY_STANCE_LANGUAGE_USAGE_DATA = 'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsageData';
     /** @deprecated use tao_models_classes_LanguageService::CLASS_URI_LANGUAGES */
     public const LANGUAGES_CLASS_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Languages';
+
+    public const PROPERTY_TRANSLATION_TYPE = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationType';
+    public const PROPERTY_VALUE_TRANSLATION_TYPE_ORIGINAL = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationTypeOriginal';
+    public const PROPERTY_VALUE_TRANSLATION_TYPE_TRANSLATION = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationTypeTranslation';
+
+    public const PROPERTY_TRANSLATION_PROGRESS = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationProgress';
+    public const PROPERTY_VALUE_TRANSLATION_PROGRESS_PENDING = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationProgressStatusPending';
+    public const PROPERTY_VALUE_TRANSLATION_PROGRESS_TRANSLATING = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationProgressStatusTranslating';
+    public const PROPERTY_VALUE_TRANSLATION_PROGRESS_TRANSLATED = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationProgressStatusTranslated';
+
+    public const PROPERTY_TRANSLATION_STATUS = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationStatus';
+    public const PROPERTY_VALUE_TRANSLATION_STATUS_READY = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationStatusReadyForTranslation';
+    public const PROPERTY_VALUE_TRANSLATION_STATUS_NOT_READY = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationStatusNotReadyForTranslation';
+
+    public const PROPERTY_UNIQUE_IDENTIFIER = 'http://www.tao.lu/Ontologies/TAO.rdf#UniqueIdentifier';
+    public const PROPERTY_TRANSLATION_ORIGINAL_RESOURCE_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslationOriginalResourceUri';
+    public const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAO.rdf#Language';
+    public const PROPERTY_TRANSLATED_INTO_LANGUAGES = 'http://www.tao.lu/Ontologies/TAO.rdf#TranslatedIntoLanguages';
+    public const LANGUAGE_PREFIX = 'http://www.tao.lu/Ontologies/TAO.rdf#Lang';
 }
