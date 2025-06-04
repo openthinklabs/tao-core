@@ -279,7 +279,7 @@ abstract class tao_actions_CommonModule extends LegacyController implements
     {
         header(HTTPToolkit::statusCodeHeader($httpStatus));
         Context::getInstance()->getResponse()->setContentHeader('application/json');
-        $this->response = $this->getPsrResponse()->withBody(stream_for(json_encode($data)));
+        $this->response = $this->getPsrResponse()->withBody(\GuzzleHttp\Psr7\Utils::streamFor(json_encode($data)));
     }
 
     /**
