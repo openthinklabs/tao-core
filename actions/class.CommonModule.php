@@ -428,7 +428,7 @@ abstract class tao_actions_CommonModule extends LegacyController implements
     {
         $response = parent::getPsrResponse();
         return $this->hasView()
-        ? $response->withBody(stream_for($this->getRenderer()->render()))
+        ? $response->withBody(\GuzzleHttp\Psr7\Utils::streamFor($this->getRenderer()->render()))
         : $response;
     }
 
