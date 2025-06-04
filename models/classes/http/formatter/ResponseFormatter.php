@@ -70,7 +70,7 @@ class ResponseFormatter extends ConfigurableService
      */
     public function withBody($body): self
     {
-        $this->body = stream_for(is_array($body) || $body instanceof JsonSerializable ? json_encode($body) : $body);
+        $this->body = \GuzzleHttp\Psr7\Utils::streamFor(is_array($body) || $body instanceof JsonSerializable ? json_encode($body) : $body);
 
         return $this;
     }
