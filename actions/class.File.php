@@ -15,12 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
- *                         (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013-2018 (update and modification) Open Assessment Technologies SA;
  */
 
@@ -80,7 +77,7 @@ class tao_actions_File extends tao_actions_CommonModule
 
     /**
      * Download a resource file content
-     * @param string id Uri of the resource file
+     * @param {String} uri Uri of the resource file
      */
     public function downloadFile()
     {
@@ -122,17 +119,21 @@ class tao_actions_File extends tao_actions_CommonModule
      * @throws tao_models_classes_FileNotFoundException
      */
     public function accessFile()
-    {
+    {     
         list($extension, $module, $action, $code, $filePath) = explode('/', tao_helpers_Request::getRelativeUrl(), 5);
-        ;
+        
         list($key, $subPath) = explode(' ', base64_decode($code), 2);
 
         $source = $this->getServiceLocator()->get(WebsourceManager::class)->getWebsource($key);
         if ($source instanceof ActionWebSource) {
             $path = $subPath . (empty($filePath) ? '' : DIRECTORY_SEPARATOR . $filePath);
+            $body = $source->getFileStream($path);
+            $content_type = $source->getMimetype($path);
+
+            header('Content-Type: '. $content_type);
             return $this->getPsrResponse()
-                ->withBody($source->getFileStream($path))
-                ->withHeader('content-type', $source->getMimetype($path));
+                ->withBody($body)
+                ->withHeader('content-type', $content_type);
         } else {
             throw new common_exception_NotFound('File not found');
         }
