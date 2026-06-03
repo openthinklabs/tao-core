@@ -119,23 +119,30 @@ class tao_actions_File extends tao_actions_CommonModule
      * @throws tao_models_classes_FileNotFoundException
      */
     public function accessFile()
-    {     
-        list($extension, $module, $action, $code, $filePath) = explode('/', tao_helpers_Request::getRelativeUrl(), 5);
-        
-        list($key, $subPath) = explode(' ', base64_decode($code), 2);
+    {
+        file_put_contents('/tmp/tao_accessFile_executed.log', date('Y-m-d H:i:s') . " - accessFile started for: " . $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
+        // Disable zlib compression to prevent Content-Length mismatch which causes NS_ERROR_CORRUPTED_CONTENT
+        if (ini_get('zlib.output_compression')) {
+            ini_set('zlib.output_compression', 'Off');
+        }
 
-        $source = $this->getServiceLocator()->get(WebsourceManager::class)->getWebsource($key);
-        if ($source instanceof ActionWebSource) {
-            $path = $subPath . (empty($filePath) ? '' : DIRECTORY_SEPARATOR . $filePath);
-            $body = $source->getFileStream($path);
-            $content_type = $source->getMimetype($path);
+        try {
+            list($extension, $module, $action, $code, $filePath) = explode('/', tao_helpers_Request::getRelativeUrl(), 5);
+            ;
+            list($key, $subPath) = explode(' ', base64_decode($code), 2);
 
-            header('Content-Type: '. $content_type);
-            return $this->getPsrResponse()
-                ->withBody($body)
-                ->withHeader('content-type', $content_type);
-        } else {
-            throw new common_exception_NotFound('File not found');
+            $source = $this->getServiceLocator()->get(WebsourceManager::class)->getWebsource($key);
+            if ($source instanceof ActionWebSource) {
+                $path = $subPath . (empty($filePath) ? '' : DIRECTORY_SEPARATOR . $filePath);
+                $mimeType = $source->getMimetype($path);
+                \tao_helpers_Http::returnStream($source->getFileStream($path), $mimeType);
+                exit;
+            } else {
+                throw new common_exception_NotFound('File not found');
+            }
+        } catch (\Throwable $e) {
+            file_put_contents('/tmp/tao_accessFile_error.log', date('Y-m-d H:i:s') . ' ERROR: ' . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n\n", FILE_APPEND);
+            throw $e;
         }
     }
 }
