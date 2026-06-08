@@ -48,7 +48,7 @@ abstract class AbstractImportEvent implements Event, \JsonSerializable
         return $this->report;
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return [
             'report' => $this->report->toArray()

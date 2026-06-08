@@ -35,7 +35,7 @@ use tao_helpers_form_Form;
 
 class UploadService extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/upload';
+    const SERVICE_ID = 'tao/upload';
 
     public static $tmpFilesystemId = 'sharedTmp';
     private $uriSerializer;

@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -32,7 +30,7 @@ use oat\generis\Helper\SystemHelper;
  */
 class tao_models_classes_import_CsvUploadForm extends tao_helpers_form_FormContainer
 {
-    public const IS_OPTION_FIRST_COLUMN_ENABLE = 'enable_option_first_columns';
+    const IS_OPTION_FIRST_COLUMN_ENABLE = 'enable_option_first_columns';
 
     // --- ASSOCIATIONS ---
 
@@ -51,15 +49,12 @@ class tao_models_classes_import_CsvUploadForm extends tao_helpers_form_FormConta
     {
         $this->form = new tao_helpers_form_xhtml_Form('export');
         $submitElt = tao_helpers_form_FormFactory::getElement('import', 'Free');
-        $submitElt->setValue(
-            "<input type='button' class='btn-success small form-refresher' value='"
-              . __('Next') . "' />"
-        );
+        $submitElt->setValue("<input type='button' class='btn-success small form-refresher' value='" . __('Next') . "' />");
 
         $this->form->setActions([$submitElt], 'bottom');
         $this->form->setActions([], 'top');
     }
-
+    
     /**
      * overriden
      *
@@ -101,14 +96,14 @@ class tao_models_classes_import_CsvUploadForm extends tao_helpers_form_FormConta
                 ['max' => SystemHelper::getFileUploadLimit()]
             )
         ]);
-
+        
         $this->form->addElement($fileElt);
         $this->form->createGroup('file', __('Import Metadata from CSV file'), ['source']);
-
+        
         $csvSentElt = tao_helpers_form_FormFactory::getElement('import_sent_csv', 'Hidden');
         $csvSentElt->setValue(1);
         $this->form->addElement($csvSentElt);
-
+        
         // options
         $optDelimiter = tao_helpers_form_FormFactory::getElement(tao_helpers_data_CsvFile::FIELD_DELIMITER, 'Textbox');
         $optDelimiter->setDescription(__("Field delimiter"));
@@ -116,13 +111,22 @@ class tao_models_classes_import_CsvUploadForm extends tao_helpers_form_FormConta
         $optDelimiter->addAttribute("size", 6);
         $optDelimiter->addValidator(tao_helpers_form_FormFactory::getValidator('NotEmpty'));
         $this->form->addElement($optDelimiter);
-
+        
         $optEncloser = tao_helpers_form_FormFactory::getElement(tao_helpers_data_CsvFile::FIELD_ENCLOSER, 'Textbox');
         $optEncloser->setDescription(__("Field encloser"));
         $optEncloser->setValue('"');
         $optEncloser->addAttribute("size", 6);
         $optEncloser->addValidator(tao_helpers_form_FormFactory::getValidator('NotEmpty'));
         $this->form->addElement($optEncloser);
+        
+        /*
+        $optMulti = tao_helpers_form_FormFactory::getElement(tao_helpers_data_CsvFile::MULTI_VALUES_DELIMITER, 'Textbox');
+        $optMulti->setDescription(__("Multiple values delimiter"));
+        $optMulti->setValue('|');
+        $optMulti->addAttribute("size", 6);
+        $optMulti->addValidator(tao_helpers_form_FormFactory::getValidator('NotEmpty'));
+        $this->form->addElement($optMulti);
+        */
 
         if (isset($this->options[static::IS_OPTION_FIRST_COLUMN_ENABLE])) {
             if ($this->options[static::IS_OPTION_FIRST_COLUMN_ENABLE] === true) {
@@ -149,10 +153,7 @@ class tao_models_classes_import_CsvUploadForm extends tao_helpers_form_FormConta
      */
     protected function addFirstColumnElement()
     {
-        $optFirstColumn = tao_helpers_form_FormFactory::getElement(
-            tao_helpers_data_CsvFile::FIRST_ROW_COLUMN_NAMES,
-            'Checkbox'
-        );
+        $optFirstColumn = tao_helpers_form_FormFactory::getElement(tao_helpers_data_CsvFile::FIRST_ROW_COLUMN_NAMES, 'Checkbox');
         $optFirstColumn->setDescription(__("First row column names"));
         $optFirstColumn->setOptions([tao_helpers_data_CsvFile::FIRST_ROW_COLUMN_NAMES => '']);
         $optFirstColumn->setValue(tao_helpers_data_CsvFile::FIRST_ROW_COLUMN_NAMES);

@@ -96,11 +96,8 @@ class TreeHelper
      * @param array $extraProperties
      * @return array
      */
-    public static function buildResourceNode(
-        core_kernel_classes_Resource $resource,
-        core_kernel_classes_Class $class,
-        array $extraProperties = []
-    ) {
+    public static function buildResourceNode(core_kernel_classes_Resource $resource, core_kernel_classes_Class $class, array $extraProperties = [])
+    {
         $label = $resource->getLabel();
         $label = empty($label) ? __('no label') : $label;
 

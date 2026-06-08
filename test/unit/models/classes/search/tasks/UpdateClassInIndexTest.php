@@ -1,6 +1,4 @@
-<?php
-
-/** @noinspection PhpUndefinedClassInspection */
+<?php /** @noinspection PhpUndefinedClassInspection */
 
 /**
  * This program is free software; you can redistribute it and/or

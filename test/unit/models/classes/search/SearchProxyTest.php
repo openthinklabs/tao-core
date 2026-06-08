@@ -25,7 +25,6 @@ namespace oat\tao\test\unit\model\search;
 use oat\generis\model\GenerisRdf;
 use oat\generis\test\TestCase;
 use oat\tao\model\AdvancedSearch\AdvancedSearchChecker;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\search\IdentifierSearcher;
 use oat\tao\model\search\ResultSet;
 use oat\tao\model\search\ResultSetResponseNormalizer;
@@ -65,9 +64,6 @@ class SearchProxyTest extends TestCase
     /** @var SearchInterface|MockObject */
     private $advancedSearch;
 
-    /** @var FeatureFlagChecker|MockObject */
-    private $featureFlagChecker;
-
     public function setUp(): void
     {
         $this->advancedSearchCheckerMock = $this->createMock(AdvancedSearchChecker::class);
@@ -76,7 +72,6 @@ class SearchProxyTest extends TestCase
         $this->advancedSearch = $this->createMock(SearchInterface::class);
         $this->searchQueryFactoryMock = $this->createMock(SearchQueryFactory::class);
         $this->resultSetResponseNormalizerMock = $this->createMock(ResultSetResponseNormalizer::class);
-        $this->featureFlagChecker = $this->createMock(FeatureFlagChecker::class);
 
         $this->resultSetMock = $this->createMock(ResultSet::class);
         $this->requestMock = $this->createMock(ServerRequestInterface::class);
@@ -104,7 +99,6 @@ class SearchProxyTest extends TestCase
                     SearchQueryFactory::class => $this->searchQueryFactoryMock,
                     ResultSetResponseNormalizer::class => $this->resultSetResponseNormalizerMock,
                     IdentifierSearcher::class => $this->identifierSearcher,
-                    FeatureFlagChecker::class => $this->featureFlagChecker,
                 ]
             )
         );
@@ -124,29 +118,6 @@ class SearchProxyTest extends TestCase
         $this->assertSame([], $this->subject->search($this->requestMock));
     }
 
-    public function testSearchByQuery(): void
-    {
-        $query = new SearchQuery(
-            '',
-            '',
-            GenerisRdf::CLASS_ROLE,
-            0,
-            10,
-            0
-        );
-
-        $this->identifierSearcher
-            ->method('search')
-            ->willReturn(new ResultSet([], 1));
-
-        $this->resultSetResponseNormalizerMock
-            ->expects($this->once())
-            ->method('normalizeSafeClass')
-            ->willReturn([]);
-
-        $this->assertSame([], $this->subject->searchByQuery($query));
-    }
-
     public function testSearchByDefaultSearch(): void
     {
         $this->advancedSearchCheckerMock
@@ -164,36 +135,6 @@ class SearchProxyTest extends TestCase
             ->willReturn([]);
 
         $this->assertSame([], $this->subject->search($this->requestMock));
-    }
-
-    public function testSearchWithSafeNode(): void
-    {
-        $request = $this->createMock(ServerRequestInterface::class);
-        $request->method('getQueryParams')->willReturn(
-            [
-                'params' => [
-                    'query' => 'test',
-                    'structure' => 'exampleRootNode',
-                    'rootNode' => 'http://www.tao.lu/Ontologies/generis.rdf#ClassRole'
-                ],
-            ]
-        );
-
-        $this->advancedSearchCheckerMock
-            ->expects($this->once())
-            ->method('isEnabled')
-            ->willReturn(false);
-
-        $this->defaultSearch
-            ->method('query')
-            ->willReturn(new ResultSet([], 1));
-
-        $this->resultSetResponseNormalizerMock
-            ->expects($this->once())
-            ->method('normalizeSafeClass')
-            ->willReturn([]);
-
-        $this->assertSame([], $this->subject->search($request));
     }
 
     public function testForceGenerisSearch(): void

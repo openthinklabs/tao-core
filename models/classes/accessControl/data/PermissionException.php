@@ -26,6 +26,7 @@ namespace oat\tao\model\accessControl\data;
  */
 class PermissionException extends \tao_models_classes_AccessDeniedException
 {
+
     /**
      * @see {@link \tao_models_classes_AccessDeniedException}
      * @param string $userUri

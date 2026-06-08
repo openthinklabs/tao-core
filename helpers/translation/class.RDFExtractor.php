@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,10 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -64,36 +61,34 @@ class tao_helpers_translation_RDFExtractor extends tao_helpers_translation_Trans
      */
     public function extract()
     {
-
+        
         foreach ($this->getPaths() as $path) {
             // In the RDFExtractor, we expect the paths to points directly to the file.
             if (!file_exists($path)) {
                 throw new tao_helpers_translation_TranslationException("No RDF file to parse at '${path}'.");
             } elseif (!is_readable($path)) {
-                throw new tao_helpers_translation_TranslationException(
-                    "'${path}' is not readable. Please check file system rights."
-                );
+                throw new tao_helpers_translation_TranslationException("'${path}' is not readable. Please check file system rights.");
             } else {
                 try {
                     $tus = [];
                     $rdfNS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
                     $rdfsNS = 'http://www.w3.org/2000/01/rdf-schema#';
                     $xmlNS = 'http://www.w3.org/XML/1998/namespace'; // http://www.w3.org/TR/REC-xml-names/#NT-NCName
-
+                    
                     $translatableProperties = $this->translatableProperties;
-
+                    
                     // Try to parse the file as a DOMDocument.
                     $doc = new DOMDocument('1.0', 'UTF-8');
                     $doc->load(realpath($path));
                     if ($doc->documentElement->hasAttributeNS($xmlNS, 'base')) {
                         $this->xmlBase[$path] = $doc->documentElement->getAttributeNodeNS($xmlNS, 'base')->value;
                     }
-
+                    
                     $descriptions = $doc->getElementsByTagNameNS($rdfNS, 'Description');
                     foreach ($descriptions as $description) {
                         if ($description->hasAttributeNS($rdfNS, 'about')) {
                             $about = $description->getAttributeNodeNS($rdfNS, 'about')->value;
-
+                            
                             // At the moment only get rdfs:label and rdfs:comment
                             // c.f. array $translatableProperties
                             // In the future, this should be configured in the constructor
@@ -104,13 +99,13 @@ class tao_helpers_translation_RDFExtractor extends tao_helpers_translation_Trans
                                 if (count($uri) == 2) {
                                     $uri[0] .= '#';
                                     $nodeList = $description->getElementsByTagNameNS($uri[0], $uri[1]);
-
+                                    
                                     for ($i = 0; $i < $nodeList->length; $i++) {
                                         $children[] = $nodeList->item($i);
                                     }
                                 }
                             }
-
+                            
                             foreach ($children as $child) {
                                 // Only process if it has a language attribute.
                                 $tus = $this->processUnit($child, $xmlNS, $about, $tus);
@@ -120,12 +115,10 @@ class tao_helpers_translation_RDFExtractor extends tao_helpers_translation_Trans
                             continue;
                         }
                     }
-
+                    
                     $this->setTranslationUnits($tus);
                 } catch (DOMException $e) {
-                    throw new tao_helpers_translation_TranslationException(
-                        "Unable to parse RDF file at '${path}'. DOM returns '" . $e->getMessage() . "'."
-                    );
+                    throw new tao_helpers_translation_TranslationException("Unable to parse RDF file at '${path}'. DOM returns '" . $e->getMessage() . "'.");
                 }
             }
         }
@@ -141,7 +134,7 @@ class tao_helpers_translation_RDFExtractor extends tao_helpers_translation_Trans
      */
     public function addTranslatableProperty($propertyUri)
     {
-
+        
         $this->translatableProperties[] = $propertyUri;
     }
 
@@ -155,7 +148,7 @@ class tao_helpers_translation_RDFExtractor extends tao_helpers_translation_Trans
      */
     public function removeTranslatableProperty($propertyUri)
     {
-
+        
         foreach ($this->translatableProperties as $prop) {
             if ($prop == $propertyUri) {
                 unset($prop);
@@ -173,7 +166,7 @@ class tao_helpers_translation_RDFExtractor extends tao_helpers_translation_Trans
      */
     public function setTranslatableProperties($propertyUris)
     {
-
+        
         $this->translatableProperties = $propertyUris;
     }
 
@@ -189,12 +182,12 @@ class tao_helpers_translation_RDFExtractor extends tao_helpers_translation_Trans
     {
         $returnValue = (string) '';
 
-
+        
         if (!isset($this->xmlBase[$path])) {
             throw new tao_helpers_translation_TranslationException('Missing xmlBase for file ' . $path);
         }
         $returnValue = $this->xmlBase[$path];
-
+        
 
         return (string) $returnValue;
     }

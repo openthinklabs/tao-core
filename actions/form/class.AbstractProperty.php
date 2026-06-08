@@ -17,10 +17,8 @@ use oat\generis\model\OntologyAwareTrait;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -38,12 +36,8 @@ abstract class tao_actions_form_AbstractProperty extends tao_helpers_form_FormCo
      */
     protected $index;
 
-    public function __construct(
-        core_kernel_classes_Class $clazz,
-        core_kernel_classes_Resource $instance = null,
-        $options = [],
-        $data = []
-    ) {
+    public function __construct(core_kernel_classes_Class $clazz, core_kernel_classes_Resource $instance = null, $options = [], $data = [])
+    {
         $this->property = $this->getProperty($instance);
         return parent::__construct($data, $options);
     }
@@ -114,8 +108,7 @@ abstract class tao_actions_form_AbstractProperty extends tao_helpers_form_FormCo
                 . '<span class="property-heading-toolbar">'
                 . $setupIndexIcon
                 . '<span class="icon-edit"></span>'
-                . '<span class="icon-bin property-deleter" data-uri=\''
-                . tao_helpers_Display::encodeAttrValue($property->getUri()) . '\'></span>'
+                . '<span class="icon-bin property-deleter" data-uri=\'' . tao_helpers_Display::encodeAttrValue($property->getUri()) . '\'></span>'
                 . '</span>';
         }
         return $groupTitle;

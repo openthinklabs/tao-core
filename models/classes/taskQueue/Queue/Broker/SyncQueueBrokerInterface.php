@@ -26,4 +26,5 @@ namespace oat\tao\model\taskQueue\Queue\Broker;
  */
 interface SyncQueueBrokerInterface
 {
+
 }

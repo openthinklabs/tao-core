@@ -31,6 +31,7 @@ use oat\oatbox\extension\AbstractAction;
  */
 class RegisterFrontendLog extends AbstractAction
 {
+
     /**
      * @param array $params
      * @return Report

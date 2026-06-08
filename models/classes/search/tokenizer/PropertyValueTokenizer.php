@@ -29,6 +29,7 @@ namespace oat\tao\model\search\tokenizer;
  */
 interface PropertyValueTokenizer
 {
+   
     /**
      *
      * @param mixed $value

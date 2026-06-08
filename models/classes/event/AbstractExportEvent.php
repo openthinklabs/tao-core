@@ -48,7 +48,7 @@ abstract class AbstractExportEvent implements Event, \JsonSerializable
         return $this->exportedResource;
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return [
             'exportedResource' => $this->exportedResource->getUri()

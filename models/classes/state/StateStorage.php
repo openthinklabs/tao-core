@@ -26,7 +26,7 @@ namespace oat\tao\model\state;
  */
 interface StateStorage
 {
-    public const SERVICE_ID = 'tao/stateStorage';
+    const SERVICE_ID = 'tao/stateStorage';
 
     /**
      * Store the state of the service call

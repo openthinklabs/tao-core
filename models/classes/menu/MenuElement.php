@@ -26,15 +26,15 @@ use oat\oatbox\PhpSerializable;
 
 class MenuElement
 {
-    public const SERIAL_VERSION = 1392821334;
-
+    const SERIAL_VERSION = 1392821334;
+    
     protected $id;
-
+    
     public function __construct($id, $version = self::SERIAL_VERSION)
     {
         $this->id = $id;
     }
-
+    
     public function getId()
     {
         return $this->id;

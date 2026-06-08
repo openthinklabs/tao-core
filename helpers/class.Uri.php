@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,10 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -53,7 +50,7 @@ class tao_helpers_Uri
      * @access public
      * @var int
      */
-    public const ENCODE_ARRAY_KEYS = 1;
+    const ENCODE_ARRAY_KEYS = 1;
 
     /**
      * Short description of attribute ENCODE_ARRAY_VALUES
@@ -61,7 +58,7 @@ class tao_helpers_Uri
      * @access public
      * @var int
      */
-    public const ENCODE_ARRAY_VALUES = 2;
+    const ENCODE_ARRAY_VALUES = 2;
 
     /**
      * Short description of attribute ENCODE_ARRAY_ALL
@@ -69,7 +66,7 @@ class tao_helpers_Uri
      * @access public
      * @var int
      */
-    public const ENCODE_ARRAY_ALL = 3;
+    const ENCODE_ARRAY_ALL = 3;
 
     /**
      * get the project base url
@@ -258,12 +255,8 @@ class tao_helpers_Uri
      * @param  boolean uniqueMode
      * @return array
      */
-    public static function encodeArray(
-        $uris,
-        $encodeMode = self::ENCODE_ARRAY_ALL,
-        $dotMode = true,
-        $uniqueMode = false
-    ) {
+    public static function encodeArray($uris, $encodeMode = self::ENCODE_ARRAY_ALL, $dotMode = true, $uniqueMode = false)
+    {
         $returnValue = [];
 
         if (is_array($uris)) {

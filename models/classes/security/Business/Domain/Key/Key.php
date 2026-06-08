@@ -24,22 +24,16 @@ namespace oat\tao\model\security\Business\Domain\Key;
 
 final class Key
 {
-    private string $value;
-    private ?string $passphrase;
+    /** @var string */
+    private $value;
 
-    public function __construct(string $value, ?string $passphrase = null)
+    public function __construct(string $value)
     {
         $this->value = $value;
-        $this->passphrase = $passphrase;
     }
 
     public function getValue(): string
     {
         return $this->value;
-    }
-
-    public function getPassphrase(): ?string
-    {
-        return $this->passphrase;
     }
 }

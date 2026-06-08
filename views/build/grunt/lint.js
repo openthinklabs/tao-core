@@ -56,7 +56,7 @@ module.exports = function(grunt) {
     grunt.config.merge({
         eslint : {
             options : {
-                overrideConfigFile: '.eslintrc.json',
+                configFile: '.eslintrc.json',
             },
             file : {
                 src : grunt.option('file')

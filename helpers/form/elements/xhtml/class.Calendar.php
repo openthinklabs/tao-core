@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -68,8 +66,7 @@ class tao_helpers_form_elements_xhtml_Calendar extends tao_helpers_form_elements
             $this->attributes['size'] = 20;
         }
 
-        $returnValue .= "<div class='form-elt-container'><input class='datepicker-input' type='text' "
-            . "name='{$this->name}' id='$elementId' ";
+        $returnValue .= "<div class='form-elt-container'><input class='datepicker-input' type='text' name='{$this->name}' id='$elementId' ";
         $returnValue .= $this->renderAttributes();
 
         if (! empty($this->value)) {

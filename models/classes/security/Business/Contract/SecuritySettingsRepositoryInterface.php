@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This program is free software; you can redistribute it and/or
@@ -17,8 +17,6 @@
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
-
-declare(strict_types=1);
 
 namespace oat\tao\model\security\Business\Contract;
 

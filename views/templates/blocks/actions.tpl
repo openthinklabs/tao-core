@@ -1,10 +1,8 @@
 <?php
 use oat\tao\helpers\Layout;
-
-$actions_list = Layout::isQuickWinsDesignEnabled() ? Layout::getSortedActionsByWeight('actions') : get_data('actions');
 ?>
 
-    <?php foreach ($actions_list as $action): ?>
+    <?php foreach (get_data('actions') as $action): ?>
     <li class="action <?= get_data('action_classes')?>"
         id="<?=$action->getId()?>"
         title="<?= __($action->getName()) ?>"
@@ -13,12 +11,7 @@ $actions_list = Layout::isQuickWinsDesignEnabled() ? Layout::getSortedActionsByW
         data-multiple="<?= $action->isMultiple() ? 'true' : 'false' ?>"
         data-rights='<?= json_encode($action->getRequiredRights()) ?>' >
         <a class="li-inner" href="<?= $action->getUrl(); ?>">
-            <?= Layout::renderIcon( $action->getIcon(), ' icon-magicwand'); ?>
-            <?php if(Layout::isQuickWinsDesignEnabled()): ?>
-                <span class="action-name"><?= __($action->getName()) ?></span>
-            <?php else: ?>
-                <?= __($action->getName()) ?>
-            <?php endif; ?>
+            <?= Layout::renderIcon( $action->getIcon(), ' icon-magicwand'); ?> <?= __($action->getName()) ?>
         </a>
     </li>
     <?php endforeach; ?>

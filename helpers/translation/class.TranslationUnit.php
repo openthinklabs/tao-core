@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,10 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -100,13 +97,12 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      *
      * @access public
      * @author Jerome Bogaerts, <jerome.bogaerts@tudor.lu>
-     * @param array $annotations An associative array of annotations where keys are the annotation names and values are
-     *                           annotation values.
+     * @param  array annotations An associative array of annotations where keys are the annotation names and values are annotation values.
      * @return void
      */
     public function setAnnotations($annotations)
     {
-
+        
         $this->annotations = $annotations;
     }
 
@@ -122,9 +118,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = [];
 
-
+        
         $returnValue = $this->annotations;
-
+        
 
         return (array) $returnValue;
     }
@@ -141,7 +137,7 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      */
     public function addAnnotation($name, $value = '')
     {
-
+        
         $this->annotations[$name] = $value;
     }
 
@@ -155,7 +151,7 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      */
     public function removeAnnotation($name)
     {
-
+        
         if (isset($this->annotations[$name])) {
             unset($this->annotations[$name]);
         }
@@ -174,13 +170,13 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = [];
 
-
+        
         if (isset($this->annotations[$name])) {
             $returnValue = ['name' => $name, 'value' => $this->annotations[$name]];
         } else {
             $returnValue = null;
         }
-
+        
 
         return (array) $returnValue;
     }
@@ -196,9 +192,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (string) '';
 
-
+        
         $returnValue = $this->source;
-
+        
 
         return (string) $returnValue;
     }
@@ -214,9 +210,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (string) '';
 
-
+        
         $returnValue = $this->target;
-
+        
 
         return (string) $returnValue;
     }
@@ -231,7 +227,7 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      */
     public function setSource($source)
     {
-
+        
         $this->source = $source;
     }
 
@@ -245,7 +241,7 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      */
     public function setTarget($target)
     {
-
+        
         $this->target = $target;
     }
 
@@ -258,7 +254,7 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      */
     public function __construct()
     {
-
+        
         // Default values for source and target languages are en-US.
         $this->setSourceLanguage(tao_helpers_translation_Utils::getDefaultLanguage());
         $this->setTargetLanguage(tao_helpers_translation_Utils::getDefaultLanguage());
@@ -274,7 +270,7 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      */
     public function setSourceLanguage($sourceLanguage)
     {
-
+        
         $this->sourceLanguage = $sourceLanguage;
         $this->addAnnotation('sourceLanguage', $sourceLanguage);
     }
@@ -289,7 +285,7 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
      */
     public function setTargetLanguage($targetLanguage)
     {
-
+        
         $this->targetLanguage = $targetLanguage;
         $this->addAnnotation('targetLanguage', $targetLanguage);
     }
@@ -323,9 +319,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (string) '';
 
-
+        
         $returnValue = $this->sourceLanguage;
-
+        
 
         return (string) $returnValue;
     }
@@ -341,9 +337,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (string) '';
 
-
+        
         $returnValue = $this->targetLanguage;
-
+        
 
         return (string) $returnValue;
     }
@@ -359,10 +355,10 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (string) '';
 
-
+        
         $returnValue = $this->getSourceLanguage() . '->' . $this->getTargetLanguage() . ':' .
                        $this->getSource() . '-' . $this->getTarget();
-
+        
 
         return (string) $returnValue;
     }
@@ -379,9 +375,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (bool) false;
 
-
+        
         $returnValue = $this->getSource() == $translationUnit->getSource();
-
+        
 
         return (bool) $returnValue;
     }
@@ -398,9 +394,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (bool) false;
 
-
+        
         $returnValue = $this->getTarget() == $translationUnit->getTarget();
-
+        
 
         return (bool) $returnValue;
     }
@@ -418,9 +414,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (bool) false;
 
-
+        
         $returnValue = $this->getSourceLanguage() == $translationUnit->getSourceLanguage();
-
+        
 
         return (bool) $returnValue;
     }
@@ -438,9 +434,9 @@ class tao_helpers_translation_TranslationUnit implements tao_helpers_translation
     {
         $returnValue = (bool) false;
 
-
+        
         $returnValue = $this->getTargetLanguage() == $translationUnit->getTargetLanguage();
-
+        
 
         return (bool) $returnValue;
     }

@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -41,7 +39,7 @@ class tao_helpers_form_elements_xhtml_Label extends tao_helpers_form_elements_La
     public function render()
     {
         $returnValue = (string) '';
-
+        
         if (isset($this->attributes['class'])) {
             $classes = explode(' ', $this->attributes['class']);
             if (! isset($this->attributes['no-format'])) {
@@ -61,7 +59,7 @@ class tao_helpers_form_elements_xhtml_Label extends tao_helpers_form_elements_La
             }
         }
         unset($this->attributes['no-format']);
-
+        
         $returnValue .= "<span class='form_desc'>";
         if (! empty($this->description)) {
             $returnValue .= _dh($this->getDescription());
@@ -70,11 +68,9 @@ class tao_helpers_form_elements_xhtml_Label extends tao_helpers_form_elements_La
         $returnValue .= "<span ";
         $returnValue .= $this->renderAttributes();
         $returnValue .= " >";
-        $returnValue .= isset($this->attributes['htmlentities']) && ! $this->attributes['htmlentities']
-            ? $this->value
-            : _dh($this->value);
+        $returnValue .= isset($this->attributes['htmlentities']) && ! $this->attributes['htmlentities'] ? $this->value : _dh($this->value);
         $returnValue .= "</span>";
-
+        
         return (string) $returnValue;
     }
 }

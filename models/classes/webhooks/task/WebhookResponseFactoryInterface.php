@@ -24,7 +24,7 @@ use Psr\Http\Message\ResponseInterface;
 
 interface WebhookResponseFactoryInterface
 {
-    public const SERVICE_ID = 'tao/webhookResponseFactory';
+    const SERVICE_ID = 'tao/webhookResponseFactory';
 
     /**
      * @param ResponseInterface $response

@@ -21,7 +21,6 @@
 
 namespace oat\tao\model\theme;
 
-use InvalidArgumentException;
 use Jig\Utils\StringUtils;
 use oat\oatbox\Configurable;
 use oat\tao\helpers\Template;
@@ -35,55 +34,47 @@ use oat\tao\helpers\Template;
  * @deprecated until operation issues as resolved
  * @package oat\tao\model\theme
  */
-class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesignCheckerInterface
+class ConfigurablePlatformTheme extends Configurable implements Theme
 {
-    use PortalTemplateFinderTrait;
-    use SolarDesignCheckerTrait;
 
     /** Theme extension id key */
-    public const EXTENSION_ID = 'extensionId';
+    const EXTENSION_ID = 'extensionId';
 
     /** Theme label key */
-    public const LABEL = 'label';
+    const LABEL = 'label';
 
     /** Theme id key */
-    public const ID = 'id';
+    const ID = 'id';
 
     /** Theme stylesheet key */
-    public const STYLESHEET = 'stylesheet';
+    const STYLESHEET = 'stylesheet';
 
     /** Theme logo url key */
-    public const LOGO_URL = 'logoUrl';
+    const LOGO_URL = 'logoUrl';
 
     /** Theme logo link key */
-    public const LINK = 'link';
+    const LINK = 'link';
 
     /** Theme logo title key */
-    public const MESSAGE = 'message';
+    const MESSAGE = 'message';
 
     /** Theme templates key */
-    public const TEMPLATES = 'templates';
+    const TEMPLATES = 'templates';
 
     /** Use the default path for logo, stylesheet, templates etc. */
-    public const DEFAULT_PATH = 'useDefaultThemePath';
+    const DEFAULT_PATH = 'useDefaultThemePath';
 
     /** Path to themes */
-    public const DEFAULT_THEME_PATH = 'themes/platform';
+    const DEFAULT_THEME_PATH = 'themes/platform';
 
     /** Logo Name */
-    public const DEFAULT_LOGO_NAME = 'logo.png';
+    const DEFAULT_LOGO_NAME = 'logo.png';
 
     /** Stylesheet Name */
-    public const DEFAULT_STYLESHEET_NAME = 'theme.css';
+    const DEFAULT_STYLESHEET_NAME = 'theme.css';
 
     /** Theme operated by key */
-    public const OPERATED_BY = 'operatedBy';
-
-    public const TEMPLATE_STRATEGY = 'templateStrategy';
-
-    public const PORTAL_TEMPLATE_STRATEGY = 'portal';
-
-    public const DEFAULT_TEMPLATE_STRATEGY = 'default';
+    const OPERATED_BY = 'operatedBy';
 
     /**
      * Default theme path
@@ -130,8 +121,7 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
      * ];
      *
      * If this contains anything you don't like, just add that key to your $config array to override the default.
-     * The same applies if something is missing that you would like to have - for these cases generic getter is
-     * available.
+     * The same applies if something is missing that you would like to have - for these cases generic getter is available.
      *
      * // Full blown custom configuration example
      * $options = [
@@ -203,24 +193,25 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
      */
     public function getTemplate($id, $context = Theme::CONTEXT_BACKOFFICE)
     {
-        if (
-            $this->hasOption(self::TEMPLATE_STRATEGY)
-            && $this->getOption(self::TEMPLATE_STRATEGY) == self::PORTAL_TEMPLATE_STRATEGY
-        ) {
-            return $this->getPortalTemplate($id);
+        $templates = $this->getOption(static::TEMPLATES);
+
+        if (is_null($templates) || empty($templates[$id])) {
+            $path = strpos($id, '.tpl') !== false ? $id : 'blocks/' . $id . '.tpl';
+            $templatePath = Template::getTemplate($path, 'tao');
+            return file_exists($templatePath) ? $templatePath : null;
         }
 
-        return $this->getDefaultemplate($id);
+        if ($templates[$id] === static::DEFAULT_PATH) {
+            return Template::getTemplate(
+                $this->defaultThemePath . '/' . $id . '.tpl',
+                $this->getOption(static::EXTENSION_ID)
+            );
+        }
+
+        // otherwise it will be assumed the template is already configured
+        return $templates[$id];
     }
 
-    private function getPortalTemplate($id): ?string
-    {
-        try {
-            return $this->findTemplateByIdOrFail($id);
-        } catch (InvalidArgumentException $exception) {
-            return $this->getDefaultemplate($id);
-        }
-    }
 
     /**
      * This method is here to handle custom options
@@ -293,7 +284,6 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
 
         return '';
     }
-
     /**
      * Get the message of current theme
      * Message is used in the header as title of the logo
@@ -341,7 +331,7 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
     public function getOperatedBy()
     {
         $operatedBy = $this->getOption(static::OPERATED_BY);
-        $operatedBy['name'] = empty($operatedBy['name']) ? '' : $operatedBy['name'];
+        $operatedBy['name']  = empty($operatedBy['name'])  ? '' : $operatedBy['name'];
         $operatedBy['email'] = empty($operatedBy['email']) ? '' : $operatedBy['email'];
         return $operatedBy;
     }
@@ -354,6 +344,7 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
      */
     protected function setDefaultThemePath($label)
     {
+
         $this->defaultThemePath = static::DEFAULT_THEME_PATH . '/' . StringUtils::removeSpecChars($label);
     }
 
@@ -393,7 +384,7 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
     {
         return $this->customTexts;
     }
-
+    
     /**
      * This is now just an alias to keep backward compatibility
      *
@@ -422,12 +413,12 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
         }
         $options = array_merge(
             [
-                static::STYLESHEET => Template::css('tao-3.css', 'tao'),
-                static::LOGO_URL => Template::img('tao-logo.png', 'tao'),
-                static::LABEL => $options[static::LABEL],
-                static::EXTENSION_ID => $options[static::EXTENSION_ID],
-                static::ID => $options[static::EXTENSION_ID]
-                    . StringUtils::camelize(StringUtils::removeSpecChars($options[static::LABEL]), true)
+            static::STYLESHEET   => Template::css('tao-3.css', 'tao'),
+            static::LOGO_URL     => Template::img('tao-logo.png', 'tao'),
+            static::LABEL        => $options[static::LABEL],
+            static::EXTENSION_ID => $options[static::EXTENSION_ID],
+            static::ID           => $options[static::EXTENSION_ID]
+                                    . StringUtils::camelize(StringUtils::removeSpecChars($options[static::LABEL]), true)
             ],
             $options
         );
@@ -449,26 +440,5 @@ class ConfigurablePlatformTheme extends Configurable implements Theme, SolarDesi
         $this->setOptions($options);
 
         return true;
-    }
-
-    private function getDefaultemplate(string $id): ?string
-    {
-        $templates = $this->getOption(static::TEMPLATES);
-
-        if (is_null($templates) || empty($templates[$id])) {
-            $path = strpos($id, '.tpl') !== false ? $id : 'blocks/' . $id . '.tpl';
-            $templatePath = Template::getTemplate($path, 'tao');
-            return file_exists($templatePath) ? $templatePath : null;
-        }
-
-        if ($templates[$id] === static::DEFAULT_PATH) {
-            return Template::getTemplate(
-                $this->defaultThemePath . '/' . $id . '.tpl',
-                $this->getOption(static::EXTENSION_ID)
-            );
-        }
-
-        // otherwise it will be assumed the template is already configured
-        return $templates[$id];
     }
 }

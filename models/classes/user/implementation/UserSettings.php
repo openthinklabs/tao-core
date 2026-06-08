@@ -26,40 +26,34 @@ use oat\tao\model\user\UserSettingsInterface;
 
 class UserSettings implements UserSettingsInterface
 {
-    /** @var array */
-    private $settings = [];
+    /** @var string|null */
+    private $dataLanguageCode;
+
+    /** @var string|null */
+    private $uiLanguageCode;
+
+    /** @var string */
+    private $timezone;
 
     public function __construct(string $timezone, string $uiLanguageCode = null, string $dataLanguageCode = null)
     {
-        $this->setSetting(self::TIMEZONE, $timezone);
-        $this->setSetting(self::UI_LANGUAGE_CODE, $uiLanguageCode);
-        $this->setSetting(self::DATA_LANGUAGE_CODE, $dataLanguageCode);
+        $this->timezone = $timezone;
+        $this->uiLanguageCode = $uiLanguageCode;
+        $this->dataLanguageCode = $dataLanguageCode;
     }
 
     public function getUILanguageCode(): ?string
     {
-        return $this->getSetting(self::UI_LANGUAGE_CODE);
+        return $this->uiLanguageCode;
     }
 
     public function getDataLanguageCode(): ?string
     {
-        return $this->getSetting(self::DATA_LANGUAGE_CODE);
+        return $this->dataLanguageCode;
     }
 
     public function getTimezone(): string
     {
-        return $this->getSetting(self::TIMEZONE);
-    }
-
-    public function setSetting(string $setting, $value): UserSettingsInterface
-    {
-        $this->settings[$setting] = $value;
-
-        return $this;
-    }
-
-    public function getSetting(string $setting)
-    {
-        return $this->settings[$setting] ?? null;
+        return $this->timezone;
     }
 }

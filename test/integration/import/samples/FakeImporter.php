@@ -31,6 +31,7 @@ use oat\oatbox\filesystem\File;
  */
 class FakeImporter extends AbstractImporter
 {
+
     /**
      * @param File $file
      * @return \common_report_Report

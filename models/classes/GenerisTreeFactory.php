@@ -15,12 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
- *                         (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2017     (update and modification) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  *
@@ -31,7 +28,6 @@
  * @author Joel Bout, <joel@taotesting.com>
  * @package tao
  */
-
 namespace oat\tao\model;
 
 use core_kernel_classes_Class;
@@ -40,8 +36,6 @@ use oat\generis\model\kernel\persistence\smoothsql\search\filter\Filter;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\helpers\TreeHelper;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
-use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\security\SignatureGenerator;
 use tao_helpers_Uri;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
@@ -100,16 +94,8 @@ class GenerisTreeFactory
      * @param array $optionsFilter
      * @param array $extraProperties
      */
-    public function __construct(
-        $showResources,
-        array $openNodes = [],
-        $limit = 10,
-        $offset = 0,
-        array $resourceUrisToShow = [],
-        array $propertyFilter = [],
-        array $optionsFilter = [],
-        array $extraProperties = []
-    ) {
+    public function __construct($showResources, array $openNodes = [], $limit = 10, $offset = 0, array $resourceUrisToShow = [], array $propertyFilter = [], array $optionsFilter = [], array $extraProperties = [])
+    {
         $this->limit          = (int) $limit;
         $this->offset         = (int) $offset;
         $this->openNodes      = $openNodes;
@@ -278,16 +264,6 @@ class GenerisTreeFactory
         $search->setLanguage($queryBuilder, \common_session_SessionManager::getSession()->getDataLanguage());
         $query = $search->searchType($queryBuilder, $class->getUri(), $options['recursive']);
 
-        if ($this->mustFilterTranslations($class)) {
-            $query->addCriterion(
-                TaoOntology::PROPERTY_TRANSLATION_TYPE,
-                SupportedOperatorHelper::IN,
-                [
-                    TaoOntology::PROPERTY_VALUE_TRANSLATION_TYPE_ORIGINAL
-                ]
-            );
-        }
-
         foreach ($propertyFilter as $filterProp => $filterVal) {
             if ($filterVal instanceof Filter) {
                 $query->addCriterion($filterVal->getKey(), $filterVal->getOperator(), $filterVal->getValue());
@@ -346,35 +322,5 @@ class GenerisTreeFactory
             $result[] = $this->getClass($subclass->getUri());
         }
         return $result;
-    }
-
-    private function mustFilterTranslations(core_kernel_classes_Class $class): bool
-    {
-        $featureFlagChecker = $this->getFeatureFlagChecker();
-
-        if ($featureFlagChecker->isEnabled('FEATURE_FLAG_TRANSLATION_DEVELOPER_MODE')) {
-            return false;
-        }
-
-        if (!$featureFlagChecker->isEnabled('FEATURE_FLAG_TRANSLATION_ENABLED')) {
-            return false;
-        }
-
-        $parentClassIds = $class->getParentClassesIds();
-        $mainClass = array_pop($parentClassIds);
-
-        return in_array(
-            $mainClass ?? $class->getUri(),
-            [
-                TaoOntology::CLASS_URI_ITEM,
-                TaoOntology::CLASS_URI_TEST
-            ],
-            true
-        );
-    }
-
-    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
-    {
-        return ServiceManager::getServiceManager()->getContainer()->get(FeatureFlagChecker::class);
     }
 }

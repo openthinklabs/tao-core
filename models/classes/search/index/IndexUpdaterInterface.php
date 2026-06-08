@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -48,12 +47,7 @@ interface IndexUpdaterInterface
      * @param string $propertyName
      * @param array $value
      */
-    public function updatePropertyValue(
-        string $typeOrId,
-        array $parentClasses,
-        string $propertyName,
-        array $value
-    ): void;
+    public function updatePropertyValue(string $typeOrId, array $parentClasses, string $propertyName, array $value): void;
 
     /**
      * @param string $class

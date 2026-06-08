@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,54 +14,52 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2023 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ *
  */
 
 /**
  * Helps you to check in which mode the current TAO instance states: production, development.
- * The purpose is to wrap the use of DEBUG_MODE to replace this system in the future...
+ * The pupose is to wrap the use of DEBUG_MODE to replace this system in the future...
  *
  * @todo Enable more than those 2 modes
  *
  * @author Bertrand Chevrier <bertrand@taotesting.com>
- *
  * @package tao
- *
- * phpcs:disable Squiz.Classes.ValidClassName
+
  */
 class tao_helpers_Mode
 {
+
     /**
      * Development mode
      */
-    public const DEVELOPMENT = 2;
+    const DEVELOPMENT = 2;
 
     /**
      * Alias for development
      */
-    public const DEBUG = 2;
+    const DEBUG = 2;
 
     /**
      *  Production mode
      */
-    public const PRODUCTION = 3;
+    const PRODUCTION = 3;
 
     /**
      * @var int the current mode
      */
     private static $currentMode;
-
+    
     /**
      * Check the TAO instance current mode
-     *
      * @example tao_helpers_Mode::is('production')
-     *
      * @param int|string $mode
-     *
      * @return boolean
      */
     public static function is($mode)
     {
+       
         if (is_int($mode) && self::get() == $mode) {
             return true;
         }
@@ -71,17 +68,10 @@ class tao_helpers_Mode
         }
         return false;
     }
-
-    public function isMode($mode): bool
-    {
-        return self::is($mode);
-    }
-
+    
     /**
      * Get the current mode
-     *
      * @example (tao_helpers_Mode::get() == tao_helpers_Mode::DEVELOPMENT)
-     *
      * @return int matching the constants
      */
     public static function get()
@@ -91,12 +81,10 @@ class tao_helpers_Mode
         }
         return self::$currentMode;
     }
-
+    
     /**
      * Get the mode constant by name
-     *
      * @param string $name the mode name
-     *
      * @return int|boolean false if not exists
      */
     public static function getModeByName($name)
@@ -105,19 +93,20 @@ class tao_helpers_Mode
             case 'development':
             case 'debug':
                 return self::DEVELOPMENT;
+
             case 'production':
                 return self::PRODUCTION;
+
             default:
                 return false;
         }
     }
-
+    
     /**
      * Reads the current value of DEBUG_MODE
      *
+     * @return int  matching the constants
      * @throws common_Exception
-     *
-     * @return int matching the constants
      */
     private static function getCurrentMode()
     {
@@ -125,7 +114,7 @@ class tao_helpers_Mode
         if (!defined('DEBUG_MODE')) {
             throw new common_Exception('The DEBUG MODE constant is not defined, it should never occurs');
         }
-
+        
         if (DEBUG_MODE == true) {
             return self::DEVELOPMENT;
         }

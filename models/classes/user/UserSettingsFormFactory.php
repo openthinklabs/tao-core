@@ -73,12 +73,6 @@ class UserSettingsFormFactory
             $fields['data_lang'] = $userSettings->getDataLanguageCode();
         }
 
-        if ($userSettings->getSetting(UserSettingsInterface::INTERFACE_MODE)) {
-            $fields[UserSettingsInterface::INTERFACE_MODE] = $userSettings->getSetting(
-                UserSettingsInterface::INTERFACE_MODE
-            );
-        }
-
         return $fields;
     }
 
@@ -86,9 +80,7 @@ class UserSettingsFormFactory
     {
         return [
             tao_actions_form_UserSettings::OPTION_LANGUAGE_SERVICE => $this->languageService,
-            tao_helpers_form_FormContainer::CSRF_PROTECTION_OPTION => (bool) (
-                $params[self::PARAM_USE_CSRF_PROTECTION] ?? true
-            ),
+            tao_helpers_form_FormContainer::CSRF_PROTECTION_OPTION => (bool) ($params[self::PARAM_USE_CSRF_PROTECTION] ?? true),
         ];
     }
 }

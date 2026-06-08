@@ -54,6 +54,7 @@ class ExportedTable
         $this->tableName = $tableName;
 
         foreach ($rows as $row) {
+
             $rowFields = [];
             foreach ($row as $key => $value) {
                 $column = $this->getColumn($key);

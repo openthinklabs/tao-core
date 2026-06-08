@@ -15,17 +15,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2012-2016 Open Assessment Technologies SA
  *
  */
 
 namespace oat\tao\test;
 
-use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use League\Flysystem\Memory\MemoryAdapter;
 use oat\generis\persistence\PersistenceManager;
 use oat\generis\test\GenerisPhpUnitTestRunner;
 use oat\oatbox\filesystem\Directory;
@@ -48,7 +46,7 @@ abstract class TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements 
     use ServiceLocatorAwareTrait;
     use KeyValueMockTrait;
 
-    public const SESSION_KEY = 'TAO_TEST_SESSION';
+    const SESSION_KEY = 'TAO_TEST_SESSION';
     /**
      * @var boolean
      */
@@ -154,9 +152,9 @@ abstract class TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements 
 
             $adapters = $fileSystemService->getOption(FileSystemService::OPTION_ADAPTERS);
             $tmpDir = \tao_helpers_File::createTempDir();
-            if (class_exists('League\Flysystem\InMemory\InMemoryFilesystemAdapter')) {
+            if (class_exists('League\Flysystem\Memory\MemoryAdapter')) {
                 $adapters[$this->tempFileSystemId] = [
-                    'class' => InMemoryFilesystemAdapter::class
+                    'class' => MemoryAdapter::class
                 ];
             } else {
                 $adapters[$this->tempFileSystemId] = [
@@ -166,10 +164,7 @@ abstract class TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements 
             }
             $fileSystemService->setOption(FileSystemService::OPTION_ADAPTERS, $adapters);
             $fileSystemService->setOption(FileSystemService::OPTION_FILE_PATH, $tmpDir);
-            $fileSystemService->setOption(
-                FileSystemService::OPTION_DIRECTORIES,
-                [$this->tempFileSystemId => $this->tempFileSystemId]
-            );
+            $fileSystemService->setOption(FileSystemService::OPTION_DIRECTORIES, [$this->tempFileSystemId => $this->tempFileSystemId]);
 
 
             $fileSystemService->setServiceLocator($this->getServiceManagerProphecy([

@@ -88,3 +88,4 @@ class UploadServiceTest extends TestCase
         $this->subject->fetchUploadedFile('unsupported');
     }
 }
+

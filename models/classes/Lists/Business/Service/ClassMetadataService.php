@@ -54,15 +54,15 @@ class ClassMetadataService extends InjectionAwareService implements ClassMetadat
             return $collection;
         }
 
-        return $this->fillData($searchRequest->getIgnoredWidgets(), $collection, $class);
+        return $this->fillData($collection, $class);
     }
 
     private function fillData(
-        array $ignoredWidgets,
         ClassCollection $collection,
         core_kernel_classes_Class $currentClass,
         core_kernel_classes_Class $parentClass = null
-    ): ClassCollection {
+    ): ClassCollection
+    {
         $subClasses = $currentClass->getSubClasses();
 
         if (count($subClasses)) {
@@ -70,12 +70,12 @@ class ClassMetadataService extends InjectionAwareService implements ClassMetadat
                 ->setClass($currentClass->getUri())
                 ->setLabel($currentClass->getLabel())
                 ->setParentClass($parentClass !== null ? $parentClass->getUri() : null)
-                ->setMetaData($this->getClassMetadata($ignoredWidgets, $currentClass));
+                ->setMetaData($this->getClassMetadata($currentClass));
 
             $collection->addClassMetadata($classMetadata);
 
             foreach ($subClasses as $subClass) {
-                $collection = $this->fillData($ignoredWidgets, $collection, $subClass, $currentClass);
+                $collection = $this->fillData($collection, $subClass, $currentClass);
             }
 
             return $collection;
@@ -85,18 +85,16 @@ class ClassMetadataService extends InjectionAwareService implements ClassMetadat
             ->setClass($currentClass->getUri())
             ->setLabel($currentClass->getLabel())
             ->setParentClass($parentClass !== null ? $parentClass->getUri() : null)
-            ->setMetaData($this->getClassMetadata($ignoredWidgets, $currentClass));
+            ->setMetaData($this->getClassMetadata($currentClass));
 
         $collection->addClassMetadata($classMetadata);
 
         return $collection;
     }
 
-    private function getClassMetadata(array $ignoredWidgets, core_kernel_classes_Class $class): MetadataCollection
+    private function getClassMetadata(core_kernel_classes_Class $class): MetadataCollection
     {
-        return $this->getClassMetadataValuesService()
-            ->ignoreWidgets($ignoredWidgets)
-            ->getByClassRecursive($class, $this->maxListSize);
+        return $this->getClassMetadataValuesService()->getByClassRecursive($class, $this->maxListSize);
     }
 
     private function getClassMetadataValuesService(): GetClassMetadataValuesService

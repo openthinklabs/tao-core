@@ -34,6 +34,7 @@ use oat\tao\model\mvc\error\ExceptionInterpretor;
  */
 class ExceptionInterpreterServiceTest extends TestCase
 {
+
     public function testGetExceptionInterpreter()
     {
         $service = new ExceptionInterpreterService([

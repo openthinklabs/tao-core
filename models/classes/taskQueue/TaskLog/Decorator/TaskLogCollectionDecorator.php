@@ -23,7 +23,6 @@ namespace oat\tao\model\taskQueue\TaskLog\Decorator;
 
 use oat\tao\model\taskQueue\TaskLog\CollectionInterface;
 use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
-use Traversable;
 
 /**
  * @author Gyula Szucs <gyula@taotesting.com>
@@ -44,9 +43,10 @@ abstract class TaskLogCollectionDecorator implements CollectionInterface
     }
 
     /**
-     * @return Traversable|EntityInterface[]
+     * @return \Traversable|EntityInterface[]
      */
-    public function getIterator(): Traversable
+    #[\ReturnTypeWillChange]
+    public function getIterator()
     {
         return $this->collection->getIterator();
     }
@@ -54,7 +54,8 @@ abstract class TaskLogCollectionDecorator implements CollectionInterface
     /**
      * @inheritdoc
      */
-    public function count(): int
+    #[\ReturnTypeWillChange]
+    public function count()
     {
         return $this->collection->count();
     }
@@ -99,7 +100,11 @@ abstract class TaskLogCollectionDecorator implements CollectionInterface
         return $this->collection->getIds();
     }
 
-    public function jsonSerialize(): array
+    /**
+     * @inheritdoc
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         return $this->collection->jsonSerialize();
     }

@@ -132,12 +132,7 @@ class tao_models_classes_export_RdfExporter extends Configurable implements tao_
                 }
                 $newDom = new DOMDocument();
                 $newDom->loadXML($xmls[$i]);
-                $descriptions = $newDom->getElementsByTagNameNS(
-                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-                    'Description'
-                );
-
-                foreach ($descriptions as $desc) {
+                foreach ($newDom->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'Description') as $desc) {
                     $newNode = $baseDom->importNode($desc, true);
                     $baseDom->documentElement->appendChild($newNode);
                 }

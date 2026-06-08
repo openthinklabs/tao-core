@@ -27,6 +27,7 @@ use oat\oatbox\extension\AbstractAction;
 
 class CleanClassLabels extends AbstractAction
 {
+
     /**
      * @inheritDoc
      */

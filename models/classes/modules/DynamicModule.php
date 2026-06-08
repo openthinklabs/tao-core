@@ -169,7 +169,10 @@ class DynamicModule implements JsonSerializable
         return in_array($this->tags, $tag);
     }
 
-    public function jsonSerialize(): array
+    /**
+     * @see JsonSerializable::jsonSerialize
+     */
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,12 +24,11 @@
  */
 class tao_helpers_Xml
 {
+
     /**
      * Returns XML from the array
      * @param mixed
      * @return string xml
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName
      */
     public static function from_array($obj = [])
     {
@@ -43,16 +41,13 @@ class tao_helpers_Xml
 
         return $dom->saveXML();
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
     /**
      * Convert array to xml
      * @param array $data
      * @param $xml_data
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName,PEAR.Functions.ValidDefaultValue
      */
-    private static function array_to_xml($data = [], &$xml_data)
+    private static function array_to_xml($data, &$xml_data)
     {
         foreach ($data as $key => $value) {
             if (is_array($value) or (is_object($value))) {
@@ -71,22 +66,18 @@ class tao_helpers_Xml
             }
         }
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName,PEAR.Functions.ValidDefaultValue
 
     /**
      * Convert xml to array
      * @param string $xml
      * @return mixed
      * @throws common_exception_Error
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName
      */
     public static function to_array($xml)
     {
         $json = json_encode(self::getSimpleXml($xml));
         return json_decode($json, true);
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
     /**
      * @param $xml

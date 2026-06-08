@@ -28,6 +28,7 @@ use oat\generis\test\TestCase;
 
 class GenerisUserServiceTest extends TestCase
 {
+
     public function testFindUser()
     {
         $searchString = 'test';

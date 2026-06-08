@@ -26,6 +26,7 @@ namespace oat\tao\model\media;
  */
 interface MediaManagement extends MediaBrowser
 {
+
     /**
      * @param string $source file to add
      * @param string $fileName new name of the file

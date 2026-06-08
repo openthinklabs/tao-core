@@ -2,26 +2,21 @@
 
 namespace oat\tao\test\integration\accessControl;
 
-use common_session_SessionManager;
-use core_kernel_classes_Resource;
-use core_kernel_users_Service;
 use oat\generis\model\data\permission\PermissionInterface;
 use oat\generis\model\GenerisRdf;
 use oat\generis\test\GenerisPhpUnitTestRunner;
 use oat\oatbox\user\User;
 use oat\tao\model\accessControl\data\DataAccessControl;
 use oat\tao\model\TaoOntology;
-use oat\generis\test\MockObject;
-use PHPUnit\Framework\Constraint\Constraint;
-use tao_models_classes_UserService;
 use PHPUnit\Framework\Assert;
+use oat\generis\test\MockObject;
 
 class DataAccessControlTest extends GenerisPhpUnitTestRunner
 {
-    public const SAMPLE_ITEMS_LABEL = 'SampleTestItem_';
+    const SAMPLE_ITEMS_LABEL = 'SampleTestItem_';
 
     /**
-     * @var tao_models_classes_UserService
+     * @var \tao_models_classes_UserService
      */
     protected $userService;
 
@@ -63,15 +58,9 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
 
     public function setUp(): void
     {
-        $this->userService = tao_models_classes_UserService::singleton();
-        $this->testAdminData[GenerisRdf::PROPERTY_USER_PASSWORD] =
-            core_kernel_users_Service::getPasswordHash()->encrypt(
-                $this->testAdminData[GenerisRdf::PROPERTY_USER_PASSWORD]
-            );
-        $this->testAnonymousData[GenerisRdf::PROPERTY_USER_PASSWORD] =
-            core_kernel_users_Service::getPasswordHash()->encrypt(
-                $this->testAnonymousData[GenerisRdf::PROPERTY_USER_PASSWORD]
-            );
+        $this->userService = \tao_models_classes_UserService::singleton();
+        $this->testAdminData[GenerisRdf::PROPERTY_USER_PASSWORD] = \core_kernel_users_Service::getPasswordHash()->encrypt($this->testAdminData[GenerisRdf::PROPERTY_USER_PASSWORD]);
+        $this->testAnonymousData[GenerisRdf::PROPERTY_USER_PASSWORD] = \core_kernel_users_Service::getPasswordHash()->encrypt($this->testAnonymousData[GenerisRdf::PROPERTY_USER_PASSWORD]);
     }
 
     /**
@@ -92,11 +81,8 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
 
         //Run assertions for the user which should have no access only in case of NoAccess provider configured
         if ($isAdminUserCreated) {
-            $this->userService->loginUser(
-                $this->testAdminData[GenerisRdf::PROPERTY_USER_LOGIN],
-                $this->testAdminData['plainPassword']
-            );
-            $adminUser = common_session_SessionManager::getSession()->getUser();
+            $this->userService->loginUser($this->testAdminData[GenerisRdf::PROPERTY_USER_LOGIN], $this->testAdminData['plainPassword']);
+            $adminUser = \common_session_SessionManager::getSession()->getUser();
 
             //Check on a provider that gives full access
             $this->setFreeAccessTestPermissionProvider();
@@ -110,6 +96,7 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
             $this->setNoAccessTestPermissionProvider();
             $this->check($adminUser, $urisList);
 
+
             $this->userService->logout();
         } else {
             $this->fail("Admin user was not created, so no tests for him");
@@ -117,11 +104,8 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
 
         //Run assertions for the user which should have access only in case of FreeAccess provider configured
         if ($isAnonUserCreated) {
-            $this->userService->loginUser(
-                $this->testAnonymousData[GenerisRdf::PROPERTY_USER_LOGIN],
-                $this->testAnonymousData['plainPassword']
-            );
-            $anonUser = common_session_SessionManager::getSession()->getUser();
+            $this->userService->loginUser($this->testAnonymousData[GenerisRdf::PROPERTY_USER_LOGIN], $this->testAnonymousData['plainPassword']);
+            $anonUser = \common_session_SessionManager::getSession()->getUser();
 
             //Check on a provider that gives full access
             $this->setFreeAccessTestPermissionProvider();
@@ -154,12 +138,7 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
 
         //Check if admin user has access to functionality
         $this->assertThat(
-            $this->dac->hasAccess(
-                $user,
-                $expectedClassName,
-                $expectedAction,
-                ['id' => 'http://www.tao.lu/Ontologies/TAOItem.rdf#Item']
-            ),
+            $this->dac->hasAccess($user, $expectedClassName, $expectedAction, ['id' => 'http://www.tao.lu/Ontologies/TAOItem.rdf#Item']),
             $this->getConstraintBasedOnProviderAndUser($user)
         );
 
@@ -168,7 +147,6 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
         foreach ($urisList as $uri) {
             $requestParameters[] = ['id' => $uri];
         }
-
         $this->assertThat(
             $this->dac->hasAccess($user, $expectedClassName, $expectedAction, $requestParameters),
             $this->getConstraintBasedOnProviderAndUser($user)
@@ -179,7 +157,7 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
      * Get constraint to make assertions based on current permission provider and user role
      *
      * @param User $user to check roles
-     * @return Constraint
+     * @return \PHPUnit_Framework_Constraint_IsFalse|\PHPUnit_Framework_Constraint_IsTrue
      */
     private function getConstraintBasedOnProviderAndUser(User $user)
     {
@@ -187,16 +165,14 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
         if (
             $permissionProvider instanceof FreeAccessTestPermissionProvider
             ||
-            (
-                $permissionProvider instanceof DACTestPermissionProvider
-                && in_array('http://www.tao.lu/Ontologies/TAO.rdf#GlobalManager', $user->getRoles())
-            )
+            ($permissionProvider instanceof DACTestPermissionProvider && in_array('http://www.tao.lu/Ontologies/TAO.rdf#GlobalManager', $user->getRoles()))
         ) {
             return Assert::isTrue();
         } else {
             return Assert::isFalse();
         }
     }
+
 
     /**
      * Set FreeAccess permission provider as current permission provider
@@ -277,7 +253,7 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
      * Search database for user by his login
      *
      * @param $login
-     * @return core_kernel_classes_Resource|mixed
+     * @return \core_kernel_classes_Resource|mixed
      */
     private function getUserByLogin($login)
     {
@@ -305,7 +281,7 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
      * Search database for items by label
      *
      * @param $label
-     * @return core_kernel_classes_Resource[]
+     * @return \core_kernel_classes_Resource[]
      */
     private function getItemByLabel($label)
     {
@@ -318,21 +294,17 @@ class DataAccessControlTest extends GenerisPhpUnitTestRunner
         return $items;
     }
 
+
     /**
      * Clearing up, removing created users (if any) and created sample items (if any)
      */
     public function __destruct()
     {
         if ($this->getUserByLogin($this->testAdminData[GenerisRdf::PROPERTY_USER_LOGIN])) {
-            $this->userService->removeUser(
-                $this->getUserByLogin($this->testAdminData[GenerisRdf::PROPERTY_USER_LOGIN])
-            );
+            $this->userService->removeUser($this->getUserByLogin($this->testAdminData[GenerisRdf::PROPERTY_USER_LOGIN]));
         }
-
         if ($this->getUserByLogin($this->testAnonymousData[GenerisRdf::PROPERTY_USER_LOGIN])) {
-            $this->userService->removeUser(
-                $this->getUserByLogin($this->testAnonymousData[GenerisRdf::PROPERTY_USER_LOGIN])
-            );
+            $this->userService->removeUser($this->getUserByLogin($this->testAnonymousData[GenerisRdf::PROPERTY_USER_LOGIN]));
         }
 
         $items = $this->getItemByLabel(self::SAMPLE_ITEMS_LABEL);
@@ -364,7 +336,7 @@ class FreeAccessTestPermissionProvider implements PermissionInterface
         return [];
     }
 
-    public function onResourceCreated(core_kernel_classes_Resource $resource)
+    public function onResourceCreated(\core_kernel_classes_Resource $resource)
     {
         // TODO: Implement onResourceCreated() method.
     }
@@ -404,7 +376,7 @@ class DACTestPermissionProvider implements PermissionInterface
         ];
     }
 
-    public function onResourceCreated(core_kernel_classes_Resource $resource)
+    public function onResourceCreated(\core_kernel_classes_Resource $resource)
     {
         // TODO: Implement onResourceCreated() method.
     }
@@ -422,6 +394,7 @@ class NoAccessTestPermissionProvider implements PermissionInterface
         'NONE'
     ];
 
+
     public function getPermissions(User $user, array $resourceIds)
     {
         return array_fill_keys($resourceIds, $this->permissions);
@@ -434,7 +407,7 @@ class NoAccessTestPermissionProvider implements PermissionInterface
         ];
     }
 
-    public function onResourceCreated(core_kernel_classes_Resource $resource)
+    public function onResourceCreated(\core_kernel_classes_Resource $resource)
     {
         // TODO: Implement onResourceCreated() method.
     }

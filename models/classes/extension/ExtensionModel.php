@@ -30,12 +30,13 @@ use oat\tao\helpers\translation\rdf\RdfPack;
 
 class ExtensionModel extends \common_ext_ExtensionModel
 {
+
     public function __construct(common_ext_Extension $extension)
     {
         parent::__construct($extension);
         $this->addLanguages($extension);
     }
-
+    
     protected function addLanguages($extension)
     {
         $langService = tao_models_classes_LanguageService::singleton();

@@ -131,7 +131,10 @@ class JsonLdExport implements JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize(): array
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
     {
         $data = [
             '@context' => [],
@@ -210,11 +213,10 @@ class JsonLdExport implements JsonSerializable
 
         return is_string($value)
             ? $value
-            : (
-                (is_object($value) && $value instanceof \core_kernel_classes_Resource)
+            : ((is_object($value) && $value instanceof \core_kernel_classes_Resource)
                 ? $value->getUri()
                 : (string) $value
-            );
+        );
     }
 
     /**

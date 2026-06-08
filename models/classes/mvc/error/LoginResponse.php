@@ -27,6 +27,7 @@ namespace oat\tao\model\mvc\error;
  */
 class LoginResponse extends ResponseAbstract
 {
+    
     protected $contentType = 'text/plain';
 
 
@@ -35,7 +36,7 @@ class LoginResponse extends ResponseAbstract
         $this->httpCode = 302;
         return $this;
     }
-
+    
     public function send()
     {
         $params = [];

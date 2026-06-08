@@ -31,11 +31,11 @@ use ReflectionMethod;
 
 class AnnotationReaderService extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/AnnotationReaderService';
+    const SERVICE_ID = 'tao/AnnotationReaderService';
 
-    public const KEY_PREFIX = 'routeAnnotation_';
-    public const PROP_RIGHTS = 'required_rights';
-    public const PROP_SECURITY = 'security';
+    const KEY_PREFIX = 'routeAnnotation_';
+    const PROP_RIGHTS = 'required_rights';
+    const PROP_SECURITY = 'security';
 
     /**
      * @var \common_cache_Cache
@@ -71,6 +71,7 @@ class AnnotationReaderService extends ConfigurableService
             // we need to change autoloader file without this, on each environment
             new requiredRights();
             new security();
+            AnnotationReader::addGlobalIgnoredName('requiresRight');
             $annotationReader = new AnnotationReader();
 
             if ($methodName) {

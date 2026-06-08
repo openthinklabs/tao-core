@@ -35,7 +35,8 @@ use oat\tao\model\search\index\IndexService;
  */
 class SearchService
 {
-    public const CONFIG_KEY = 'search';
+   
+    const CONFIG_KEY = 'search';
 
     /**
      * @return Search
@@ -54,7 +55,7 @@ class SearchService
     {
         return ServiceManager::getServiceManager()->register(Search::SERVICE_ID, $impl);
     }
-
+    
     /**
      * Runs a full reindexing of the resources
      *

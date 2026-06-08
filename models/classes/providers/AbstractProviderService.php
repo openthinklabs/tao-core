@@ -23,8 +23,7 @@ namespace oat\tao\model\providers;
 use oat\tao\model\modules\AbstractModuleService;
 
 /**
- * Manage module providers. Should be overridden to provide the right ProviderRegistry instance and a SERVICE_ID
- * constant.
+ * Manage module providers. Should be overridden to provide the right ProviderRegistry instance and a SERVICE_ID constant.
  *
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>

@@ -31,6 +31,7 @@ use oat\tao\helpers\Template;
  */
 class ClientLibRegistryTest extends TaoPhpUnitTestRunner
 {
+
     /**
      * Unit test library
      * @var string

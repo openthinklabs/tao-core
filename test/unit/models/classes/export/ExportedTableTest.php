@@ -53,11 +53,7 @@ class ExportedTableTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->exportedTable = new ExportedTable(
-            $this->rowsFixture,
-            $this->typeMappingFixture,
-            $this->tableNameFixture
-        );
+        $this->exportedTable = new ExportedTable($this->rowsFixture, $this->typeMappingFixture, $this->tableNameFixture);
     }
 
     public function testGetTableName()
@@ -73,26 +69,17 @@ class ExportedTableTest extends TestCase
         $this->assertEquals($columns[0]->getName(), 'Test Taker ID');
         $this->assertEquals($columns[0]->getFormattedName(), ExportedColumn::PREFIX . 'test_taker_id');
         $this->assertEquals($columns[0]->getType(), ExportedColumn::TYPE_VARCHAR);
-        $this->assertEquals(
-            $columns[0]->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'test_taker_id' . ' ' . ExportedColumn::TYPE_VARCHAR
-        );
+        $this->assertEquals($columns[0]->getColumnCreatingString(), ExportedColumn::PREFIX . 'test_taker_id' . ' ' . ExportedColumn::TYPE_VARCHAR);
 
         $this->assertEquals($columns[1]->getName(), 'Compilation Time');
         $this->assertEquals($columns[1]->getFormattedName(), ExportedColumn::PREFIX . 'compilation_time');
         $this->assertEquals($columns[1]->getType(), ExportedColumn::TYPE_INTEGER);
-        $this->assertEquals(
-            $columns[1]->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'compilation_time' . ' ' . ExportedColumn::TYPE_INTEGER
-        );
+        $this->assertEquals($columns[1]->getColumnCreatingString(), ExportedColumn::PREFIX . 'compilation_time' . ' ' . ExportedColumn::TYPE_INTEGER);
 
         $this->assertEquals($columns[2]->getName(), 'Field Without Type');
         $this->assertEquals($columns[2]->getFormattedName(), ExportedColumn::PREFIX . 'field_without_type');
         $this->assertEquals($columns[2]->getType(), ExportedColumn::TYPE_VARCHAR);
-        $this->assertEquals(
-            $columns[2]->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'field_without_type' . ' ' . ExportedColumn::TYPE_VARCHAR
-        );
+        $this->assertEquals($columns[2]->getColumnCreatingString(), ExportedColumn::PREFIX . 'field_without_type' . ' ' . ExportedColumn::TYPE_VARCHAR);
     }
 
     public function testRows()
@@ -105,15 +92,9 @@ class ExportedTableTest extends TestCase
         $this->assertEquals($rowField->getColumn()->getName(), 'Test Taker ID');
         $this->assertEquals($rowField->getColumn()->getFormattedName(), ExportedColumn::PREFIX . 'test_taker_id');
         $this->assertEquals($rowField->getColumn()->getType(), ExportedColumn::TYPE_VARCHAR);
-        $this->assertEquals(
-            $rowField->getColumn()->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'test_taker_id' . ' ' . ExportedColumn::TYPE_VARCHAR
-        );
+        $this->assertEquals($rowField->getColumn()->getColumnCreatingString(), ExportedColumn::PREFIX . 'test_taker_id' . ' ' . ExportedColumn::TYPE_VARCHAR);
 
-        $this->assertEquals(
-            $rowField->getFormattedValue(),
-            '\'http://nec-pr.docker.localhost/tao.rdf#i5f16bd028eb6e202ad4b5d184"f67e22\''
-        );
+        $this->assertEquals($rowField->getFormattedValue(), '\'http://nec-pr.docker.localhost/tao.rdf#i5f16bd028eb6e202ad4b5d184"f67e22\'');
 
         $row = $rows[0];
         $rowField = $row[1];
@@ -121,10 +102,7 @@ class ExportedTableTest extends TestCase
         $this->assertEquals($rowField->getColumn()->getName(), 'Compilation Time');
         $this->assertEquals($rowField->getColumn()->getFormattedName(), ExportedColumn::PREFIX . 'compilation_time');
         $this->assertEquals($rowField->getColumn()->getType(), ExportedColumn::TYPE_INTEGER);
-        $this->assertEquals(
-            $rowField->getColumn()->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'compilation_time' . ' ' . ExportedColumn::TYPE_INTEGER
-        );
+        $this->assertEquals($rowField->getColumn()->getColumnCreatingString(), ExportedColumn::PREFIX . 'compilation_time' . ' ' . ExportedColumn::TYPE_INTEGER);
 
         $this->assertEquals($rowField->getFormattedValue(), '1594828375');
 
@@ -134,10 +112,7 @@ class ExportedTableTest extends TestCase
         $this->assertEquals($rowField->getColumn()->getName(), 'Field Without Type');
         $this->assertEquals($rowField->getColumn()->getFormattedName(), ExportedColumn::PREFIX . 'field_without_type');
         $this->assertEquals($rowField->getColumn()->getType(), ExportedColumn::TYPE_VARCHAR);
-        $this->assertEquals(
-            $rowField->getColumn()->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'field_without_type' . ' ' . ExportedColumn::TYPE_VARCHAR
-        );
+        $this->assertEquals($rowField->getColumn()->getColumnCreatingString(), ExportedColumn::PREFIX . 'field_without_type' . ' ' . ExportedColumn::TYPE_VARCHAR);
 
         $this->assertEquals($rowField->getFormattedValue(), "'12345'");
 
@@ -148,15 +123,9 @@ class ExportedTableTest extends TestCase
         $this->assertEquals($rowField->getColumn()->getName(), 'Test Taker ID');
         $this->assertEquals($rowField->getColumn()->getFormattedName(), ExportedColumn::PREFIX . 'test_taker_id');
         $this->assertEquals($rowField->getColumn()->getType(), ExportedColumn::TYPE_VARCHAR);
-        $this->assertEquals(
-            $rowField->getColumn()->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'test_taker_id' . ' ' . ExportedColumn::TYPE_VARCHAR
-        );
+        $this->assertEquals($rowField->getColumn()->getColumnCreatingString(), ExportedColumn::PREFIX . 'test_taker_id' . ' ' . ExportedColumn::TYPE_VARCHAR);
 
-        $this->assertEquals(
-            $rowField->getFormattedValue(),
-            "'http://nec-pr.docker.localhost/tao.rdf#i5f16bd028eb6e202ad4b5d43f67e24'"
-        );
+        $this->assertEquals($rowField->getFormattedValue(), "'http://nec-pr.docker.localhost/tao.rdf#i5f16bd028eb6e202ad4b5d43f67e24'");
 
         $row = $rows[1];
         $rowField = $row[1];
@@ -164,10 +133,7 @@ class ExportedTableTest extends TestCase
         $this->assertEquals($rowField->getColumn()->getName(), 'Compilation Time');
         $this->assertEquals($rowField->getColumn()->getFormattedName(), ExportedColumn::PREFIX . 'compilation_time');
         $this->assertEquals($rowField->getColumn()->getType(), ExportedColumn::TYPE_INTEGER);
-        $this->assertEquals(
-            $rowField->getColumn()->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'compilation_time' . ' ' . ExportedColumn::TYPE_INTEGER
-        );
+        $this->assertEquals($rowField->getColumn()->getColumnCreatingString(), ExportedColumn::PREFIX . 'compilation_time' . ' ' . ExportedColumn::TYPE_INTEGER);
 
         $this->assertEquals($rowField->getFormattedValue(), '1594828388');
 
@@ -177,11 +143,23 @@ class ExportedTableTest extends TestCase
         $this->assertEquals($rowField->getColumn()->getName(), 'Field Without Type');
         $this->assertEquals($rowField->getColumn()->getFormattedName(), ExportedColumn::PREFIX . 'field_without_type');
         $this->assertEquals($rowField->getColumn()->getType(), ExportedColumn::TYPE_VARCHAR);
-        $this->assertEquals(
-            $rowField->getColumn()->getColumnCreatingString(),
-            ExportedColumn::PREFIX . 'field_without_type' . ' ' . ExportedColumn::TYPE_VARCHAR
-        );
+        $this->assertEquals($rowField->getColumn()->getColumnCreatingString(), ExportedColumn::PREFIX . 'field_without_type' . ' ' . ExportedColumn::TYPE_VARCHAR);
 
         $this->assertEquals($rowField->getFormattedValue(), "'33333'");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

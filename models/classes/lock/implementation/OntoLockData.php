@@ -31,6 +31,7 @@ use common_exception_InconsistentData;
  **/
 class OntoLockData extends SimpleLock
 {
+    
     /**
      *
      * @param string $json
@@ -46,9 +47,7 @@ class OntoLockData extends SimpleLock
             $epoch = $array['epoch'];
             return new self($resource, $ownerId, $epoch);
         } else {
-            throw new common_exception_InconsistentData(
-                'LockData should contain a resource, owner and epoch, one data is missing'
-            );
+            throw new common_exception_InconsistentData('LockData should contain a resource, owner and epoch, one data is missing');
         }
     }
 
@@ -60,7 +59,7 @@ class OntoLockData extends SimpleLock
     {
         return new core_kernel_classes_Resource($this->getOwnerId());
     }
-
+    
     /**
      * @author "Patrick Plichart, <patrick@taotesting.com>"
      * @return string

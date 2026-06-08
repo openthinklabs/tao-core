@@ -22,7 +22,6 @@
 
 namespace oat\tao\helpers;
 
-use common_Exception;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
@@ -39,6 +38,7 @@ use oat\tao\model\TaoOntology;
  */
 class TaoCe
 {
+
     /**
      * Check whether the current user has already been connected to the TAO backend.
      *
@@ -46,17 +46,14 @@ class TaoCe
      */
     public static function isFirstTimeInTao()
     {
-        $firstTime = common_session_SessionManager::getSession()->getUserPropertyValues(
-            TaoOntology::PROPERTY_USER_FIRST_TIME
-        );
+        $firstTime = common_session_SessionManager::getSession()->getUserPropertyValues(TaoOntology::PROPERTY_USER_FIRST_TIME);
 
         //for compatibility purpose we assume previous users are veterans
         return in_array(GenerisRdf::GENERIS_TRUE, $firstTime);
     }
-
+    
     /**
-     * The user knows TAO, he's now a veteran, the TaoOntology::PROPERTY_USER_FIRST_TIME property can be false
-     * (except if $notYet is true).
+     * The user knows TAO, he's now a veteran, the TaoOntology::PROPERTY_USER_FIRST_TIME property can be false (except if $notYet is true).
      *
      * @param core_kernel_classes_Resource $user a user or the current user if null/not set
      * @param boolean $notYet our veteran want to be still considered as a noob...
@@ -64,7 +61,7 @@ class TaoCe
     public static function becomeVeteran()
     {
         $success = false;
-
+        
         $userUri = common_session_SessionManager::getSession()->getUserUri();
         if (!empty($userUri)) {
             $user = new \core_kernel_classes_Resource($userUri);
@@ -78,7 +75,7 @@ class TaoCe
         }
         return $success;
     }
-
+    
 
     /**
      * Get the URL of the last visited extension
@@ -87,9 +84,7 @@ class TaoCe
      */
     public static function getLastVisitedUrl()
     {
-        $urls = common_session_SessionManager::getSession()->getUserPropertyValues(
-            TaoOntology::PROPERTY_USER_LAST_EXTENSION
-        );
+        $urls = common_session_SessionManager::getSession()->getUserPropertyValues(TaoOntology::PROPERTY_USER_LAST_EXTENSION);
         if (!empty($urls)) {
             $lastUrl = current($urls);
             return ROOT_URL . $lastUrl;
@@ -97,7 +92,7 @@ class TaoCe
             return null;
         }
     }
-
+    
     /**
      * Set the URL of the last visited extension to a user.
      * @param string $url a non empty URL where the user was the last time
@@ -110,20 +105,17 @@ class TaoCe
             throw new common_Exception('Cannot register an empty URL for the last visited extension');
         }
         $success = false;
-
+        
         $userUri = common_session_SessionManager::getSession()->getUserUri();
         if (!empty($userUri)) {
             $user = new \core_kernel_classes_Resource($userUri);
             $user = new core_kernel_classes_Resource($userUri);
             if ($user->exists()) {
                 // user in ontology
-
+                
                 //clean up what's stored
                 $url = str_replace(ROOT_URL, '', $url);
-                $success = $user->editPropertyValues(
-                    new core_kernel_classes_Property(TaoOntology::PROPERTY_USER_LAST_EXTENSION),
-                    $url
-                );
+                $success = $user->editPropertyValues(new core_kernel_classes_Property(TaoOntology::PROPERTY_USER_LAST_EXTENSION), $url);
             } // else we fail;
         }
         return $success;

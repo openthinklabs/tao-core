@@ -31,6 +31,7 @@ use oat\tao\model\ThemeRegistry;
  */
 class ThemeConfig extends ConfigurableService implements ClientConfig
 {
+
     /**
      * (non-PHPdoc)
      * @see \oat\tao\model\clientConfig\ClientConfig::getConfig()

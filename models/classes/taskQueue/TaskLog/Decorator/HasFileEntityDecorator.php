@@ -45,18 +45,18 @@ class HasFileEntityDecorator extends TaskLogEntityDecorator
      */
     private $fileReferenceSerializer;
 
-    public function __construct(
-        EntityInterface $entity,
-        FileSystemService $fileSystemService,
-        FileReferenceSerializer $fileReferenceSerializer
-    ) {
+    public function __construct(EntityInterface $entity, FileSystemService $fileSystemService, FileReferenceSerializer $fileReferenceSerializer)
+    {
         parent::__construct($entity);
 
         $this->fileSystemService = $fileSystemService;
         $this->fileReferenceSerializer = $fileReferenceSerializer;
     }
 
-    public function jsonSerialize(): array
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

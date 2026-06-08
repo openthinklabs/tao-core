@@ -33,18 +33,14 @@ namespace oat\tao\model\websource;
  */
 class ActionWebSource extends BaseWebsource
 {
+   
     public static function spawnWebsource($fileSystemId)
     {
         return self::spawn($fileSystemId);
     }
-
+    
     public function getAccessUrl($relativePath)
     {
-        return _url(
-            'accessFile/' . base64_encode($this->getId() . ' '
-                . trim($relativePath, DIRECTORY_SEPARATOR)) . '/',
-            'File',
-            'tao'
-        );
+        return _url('accessFile/' . base64_encode($this->getId() . ' ' . trim($relativePath, DIRECTORY_SEPARATOR)) . '/', 'File', 'tao');
     }
 }

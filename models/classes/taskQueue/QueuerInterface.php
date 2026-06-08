@@ -52,9 +52,4 @@ interface QueuerInterface extends \Countable
      * @param TaskInterface $task
      */
     public function acknowledge(TaskInterface $task);
-
-    /**
-     * Check if the internal queue contains any tasks.
-     */
-    public function hasPreFetchedMessages(): bool;
 }

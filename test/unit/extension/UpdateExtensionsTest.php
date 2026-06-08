@@ -19,7 +19,7 @@
  *
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace oat\tao\test\unit\extension;
 
@@ -79,6 +79,7 @@ class UpdateExtensionsTest extends TestCase
         $this->assertEquals('foo already up to date', $reports[0]->getMessage());
         $this->assertEquals('bar already up to date', $reports[1]->getMessage());
         $this->assertEquals('Migrations applied', $reports[2]->getMessage());
+
     }
 
     private function getOntologyMock()
@@ -166,4 +167,5 @@ class UpdateExtensionsTest extends TestCase
             ]);
         return $extensionsManagerMock;
     }
+
 }

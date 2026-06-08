@@ -24,7 +24,6 @@ namespace oat\tao\test\unit\model\taskQueue;
 use common_exception_NotFound;
 use Exception;
 use InvalidArgumentException;
-use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\tao\model\taskQueue\Task\AbstractTask;
 use oat\tao\model\taskQueue\TaskLog;
@@ -35,6 +34,7 @@ use oat\tao\model\taskQueue\TaskLog\TaskLogCollection;
 use oat\tao\model\taskQueue\TaskLog\TasksLogsStats;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use oat\generis\test\MockObject;
 
 class TaskLogTest extends TestCase
 {
@@ -244,12 +244,8 @@ class TaskLogTest extends TestCase
      * @param bool $taskRunning
      * @return MockObject|TaskLogInterface
      */
-    protected function getTaskLogMock(
-        $notFound = false,
-        $shouldArchive = true,
-        $taskRunning = false,
-        $shouldCancel = true
-    ) {
+    protected function getTaskLogMock($notFound = false, $shouldArchive = true, $taskRunning = false, $shouldCancel = true)
+    {
         $taskLogMock = $this->getMockBuilder(TaskLog::class)->disableOriginalConstructor()->getMock();
         $collectionMock = $this->getMockBuilder(TaskLogCollection::class)->disableOriginalConstructor()->getMock();
         $entity = $this->getMockBuilder(TaskLogEntity::class)->disableOriginalConstructor()->getMock();
@@ -320,17 +316,16 @@ class TaskLogTest extends TestCase
     public function testGetTaskCategories(): void
     {
         $this->assertSame(
+            $this->subject->getTaskCategories(),
             [
                 TaskLogInterface::CATEGORY_CREATE,
                 TaskLogInterface::CATEGORY_UPDATE,
                 TaskLogInterface::CATEGORY_DELETE,
-                TaskLogInterface::CATEGORY_COPY,
                 TaskLogInterface::CATEGORY_IMPORT,
                 TaskLogInterface::CATEGORY_EXPORT,
                 TaskLogInterface::CATEGORY_DELIVERY_COMPILATION,
                 TaskLogInterface::CATEGORY_UNRELATED_RESOURCE,
-            ],
-            $this->subject->getTaskCategories()
+            ]
         );
     }
 }

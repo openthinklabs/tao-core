@@ -28,18 +28,19 @@ namespace oat\tao\model\lock;
  */
 interface Lock
 {
+    
     /**
      * @author "Patrick Plichart, <patrick@taotesting.com>"
      * @return core_kernel_classes_Resource
      */
     public function getResource();
-
+    
     /**
      * @author "Patrick Plichart, <patrick@taotesting.com>"
      * @return int epoche
      */
     public function getCreationTime();
-
+    
     /**
      * @author "Patrick Plichart, <patrick@taotesting.com>"
      * @return string

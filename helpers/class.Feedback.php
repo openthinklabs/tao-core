@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,6 +27,7 @@
  */
 class tao_helpers_Feedback
 {
+
     /**
      * @param $type
      * @param $message
@@ -43,9 +43,7 @@ class tao_helpers_Feedback
         'modal'        => false
         ];
         $settings = array_merge($defaults, $settings);
-        $closer = $settings['closer']
-            ? sprintf('<span class="icon-close close-trigger" title="%s"></span>', __('Remove Message'))
-            : '';
+        $closer = $settings['closer'] ? sprintf('<span class="icon-close close-trigger" title="%s"></span>', __('Remove Message')) : '';
         if (is_string($settings['icon'])) {
             $icon = sprintf('<span class="%s"></span>', $settings['icon']);
         } elseif ($settings['icon'] === true) {

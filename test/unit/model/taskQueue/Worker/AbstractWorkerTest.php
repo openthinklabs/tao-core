@@ -145,11 +145,8 @@ class AbstractWorkerTest extends TestCase
         ]);
 
         $this->modelMock = $this->createMock(Ontology::class);
-        $this->reportMock = $this->createMock(\common_report_Report::class);
         $this->taskMock = $this->createMock(TaskInterface::class);
-        $this->taskMock
-            ->method('getLabel')
-            ->willReturn('Task Label');
+        $this->reportMock = $this->createMock(\common_report_Report::class);
 
         $this->subject = new DummyWorker($this->queue, $this->taskLog);
         $this->subject->setServiceLocator($this->serviceLocatorMock);
@@ -362,10 +359,7 @@ class AbstractWorkerTest extends TestCase
 
     private function getCallbackTask(): CallbackTaskInterface
     {
-        $mock = $this->createMock(CallbackTaskInterface::class);
-        $mock->method('getLabel')->willReturn('Task Label');
-
-        return $mock;
+        return $this->createMock(CallbackTaskInterface::class);
     }
 
     /**
@@ -373,10 +367,7 @@ class AbstractWorkerTest extends TestCase
      */
     private function getTaskMockCallback()
     {
-        $mock = $this->createMock(TaskInterface::class);
-        $mock->method('getLabel')->willReturn('Task Label');
-
-        return $mock;
+        return $this->createMock(TaskInterface::class);
     }
 }
 

@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2020-2022 (original work) Open Assessment Technologies SA.
  */
 
@@ -26,9 +24,7 @@ declare(strict_types=1);
 
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\validator\ValidatorInterface;
-use oat\tao\model\form\Modifier\AbstractFormModifier;
 use oat\tao\model\security\xsrf\TokenService;
-use Psr\Container\ContainerInterface;
 use tao_helpers_form_FormFactory as FormFactory;
 use oat\tao\helpers\form\elements\xhtml\CsrfToken;
 use oat\tao\helpers\form\elements\FormElementAware;
@@ -48,7 +44,6 @@ abstract class tao_helpers_form_FormContainer
     public const IS_DISABLED = 'is_disabled';
     public const ADDITIONAL_VALIDATORS = 'extraValidators';
     public const ATTRIBUTE_VALIDATORS = 'attributeValidators';
-    public const FORM_MODIFIERS = 'formModifiers';
 
     public const WITH_SERVICE_MANAGER = 'withServiceManager';
 
@@ -120,14 +115,6 @@ abstract class tao_helpers_form_FormContainer
 
         // initialize the elements of the form
         $this->initElements();
-
-        foreach ($options[self::FORM_MODIFIERS] ?? [] as $modifierClass) {
-            $modifier = $this->getContainer()->get($modifierClass);
-
-            if ($modifier instanceof AbstractFormModifier) {
-                $modifier->modify($this->form, $options);
-            }
-        }
 
         if ($this->form !== null) {
             $this->form->evaluateInputValues();
@@ -328,7 +315,8 @@ abstract class tao_helpers_form_FormContainer
     private function getSanitizerValidationFeeder(): SanitizerValidationFeederInterface
     {
         if (!isset($this->sanitizerValidationFeeder)) {
-            $this->sanitizerValidationFeeder = $this->getContainer()->get(SanitizerValidationFeeder::class);
+            $serviceManager = $this->serviceManager ?? ServiceManager::getServiceManager();
+            $this->sanitizerValidationFeeder = $serviceManager->getContainer()->get(SanitizerValidationFeeder::class);
         }
 
         return $this->sanitizerValidationFeeder;
@@ -344,12 +332,5 @@ abstract class tao_helpers_form_FormContainer
         }
 
         unset($options[self::WITH_SERVICE_MANAGER]);
-    }
-
-    private function getContainer(): ContainerInterface
-    {
-        $serviceManager = $this->serviceManager ?? ServiceManager::getServiceManager();
-
-        return $serviceManager->getContainer();
     }
 }

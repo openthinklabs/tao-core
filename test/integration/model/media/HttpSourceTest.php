@@ -32,6 +32,7 @@ use oat\tao\helpers\Template;
  */
 class HttpSourceTest extends TaoPhpUnitTestRunner
 {
+
     public function testGetBaseName()
     {
         $mediaSource = new HttpSource();

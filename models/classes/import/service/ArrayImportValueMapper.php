@@ -28,9 +28,9 @@ class ArrayImportValueMapper extends ConfigurableService implements ImportValueM
 {
     use LoggerAwareTrait;
 
-    public const OPTION_DELIMITER = 'delimiter';
+    const OPTION_DELIMITER = 'delimiter';
 
-    public const OPTION_VALUE_MAPPER = 'valueMapper';
+    const OPTION_VALUE_MAPPER = 'valueMapper';
 
     /** @var common_report_Report */
     protected $report;

@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013 (update and modification) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
@@ -36,13 +34,14 @@ use oat\oatbox\user\User;
  */
 class Message
 {
+
     /**
      * Short description of attribute STATUS_WAITING
      *
      * @access public
      * @var int
      */
-    public const STATUS_WAITING = 2;
+    const STATUS_WAITING = 2;
 
     /**
      * Short description of attribute STATUS_SENT
@@ -50,7 +49,7 @@ class Message
      * @access public
      * @var int
      */
-    public const STATUS_SENT = 3;
+    const STATUS_SENT = 3;
 
     /**
      * Short description of attribute STATUS_ERROR
@@ -58,7 +57,7 @@ class Message
      * @access public
      * @var int
      */
-    public const STATUS_ERROR = 4;
+    const STATUS_ERROR = 4;
 
     /**
      * Short description of attribute from

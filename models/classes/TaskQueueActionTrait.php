@@ -29,6 +29,7 @@ use oat\oatbox\task\Task;
  */
 trait TaskQueueActionTrait
 {
+
     /**
      * @var Task[]
      */
@@ -74,7 +75,7 @@ trait TaskQueueActionTrait
      * @param Task $task
      * @return null
      */
-    protected function getTaskReport($task)
+    protected function getTaskReport(Task $task)
     {
         return $task->getReport();
     }
@@ -84,7 +85,7 @@ trait TaskQueueActionTrait
      * @param Task $task
      * @return null
      */
-    protected function getTaskStatus($task)
+    protected function getTaskStatus(Task $task)
     {
         return $task->getStatus();
     }
@@ -94,7 +95,7 @@ trait TaskQueueActionTrait
      * @param Task $task
      * @return null
      */
-    protected function getTaskId($task)
+    protected function getTaskId(Task $task)
     {
         return $task->getId();
     }

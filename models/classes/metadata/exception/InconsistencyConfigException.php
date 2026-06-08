@@ -29,4 +29,5 @@ namespace oat\tao\model\metadata\exception;
  */
 class InconsistencyConfigException extends \common_Exception
 {
+
 }

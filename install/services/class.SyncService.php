@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,12 +14,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
- *                         (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -38,6 +34,7 @@
  */
 class tao_install_services_SyncService extends tao_install_services_Service
 {
+    
     /**
      * Creates a new instance of the service.
      * @param tao_install_services_Data $data The input data to be handled by the service.
@@ -47,7 +44,7 @@ class tao_install_services_SyncService extends tao_install_services_Service
     {
         parent::__construct($data);
     }
-
+    
     /**
      * Executes the main logic of the service.
      * @return tao_install_services_Data The result of the service execution.
@@ -56,7 +53,7 @@ class tao_install_services_SyncService extends tao_install_services_Service
     {
         $ext = common_configuration_ComponentFactory::buildPHPExtension('json');
         $report = $ext->check();
-
+                                       
         // We fake JSON encoding for a gracefull response in any case.
         $json = $report->getStatus() == common_configuration_Report::VALID;
         if (!$json) {
@@ -71,10 +68,10 @@ class tao_install_services_SyncService extends tao_install_services_Service
                 'availableTimezones' => self::getAvailableTimezones()
             ]]);
         }
-
+                                   
         $this->setResult(new tao_install_services_Data($data));
     }
-
+    
     /**
      * Computes the root URL of the platform based on the current
      * request.
@@ -87,7 +84,7 @@ class tao_install_services_SyncService extends tao_install_services_Service
         $isHTTPS = common_http_Request::isHttps();
         $host = $_SERVER['HTTP_HOST'];
         $uri = $_SERVER['REQUEST_URI'];
-        $currentUrl = ($isHTTPS ? 'https' : 'http') . '://' . $host . $uri;
+        $currentUrl = ($isHTTPS ? 'https' : 'http' ) . '://' . $host . $uri;
         $parsed = parse_url($currentUrl);
         $port = (empty($parsed['port'])) ? '' : ':' . $parsed['port'];
         $rootUrl = $parsed['scheme'] . '://' . $parsed['host'] . $port . $parsed['path'];
@@ -110,7 +107,7 @@ class tao_install_services_SyncService extends tao_install_services_Service
 
         return $availableDrivers;
     }
-
+    
     /**
      * Get the list of available languages in terms of locales in the /tao meta-extension folder.
      *
@@ -121,7 +118,7 @@ class tao_install_services_SyncService extends tao_install_services_Service
     private static function getAvailableLanguages($localesPath, $sort = true)
     {
         $languages = [];
-
+        
         try {
             $languages = tao_install_utils_System::getAvailableLocales($localesPath);
             if (true == $sort) {
@@ -130,10 +127,10 @@ class tao_install_services_SyncService extends tao_install_services_Service
         } catch (Exception $e) {
             // Do nothing and return gracefully.
         }
-
+        
         return $languages;
     }
-
+    
     /**
      * Get available timezones on the server side. The returned value
      * corresponds to the value returned by DateTimeZone::listIdentifiers()'s PHP
@@ -146,7 +143,7 @@ class tao_install_services_SyncService extends tao_install_services_Service
     private static function getAvailableTimezones()
     {
         return DateTimeZone::listIdentifiers();
-
+        
         // get full list of timezone identifiers and add UTC value with the display
         $timezone_identifiers = DateTimeZone::listIdentifiers();
         $timezones = [];
@@ -160,10 +157,10 @@ class tao_install_services_SyncService extends tao_install_services_Service
             $utcValue = ($utcHours > 0) ? (' +' . $utcPrint) : (($utcHours == 0) ? '' : ' ' . $utcPrint);
             array_push($timezones, $timezone_identifier . " (UTC" . $utcValue . ")");
         }
-
+        
         return $timezones;
     }
-
+    
     protected function checkData()
     {
         // Check data integrity.

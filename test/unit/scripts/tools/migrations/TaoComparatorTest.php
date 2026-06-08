@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020-2023 (original work) Open Assessment Technologies SA
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA
  *
  */
 
@@ -36,6 +35,7 @@ use helpers_ExtensionHelper as ExtensionHelper;
  */
 class TaoComparatorTest extends TestCase
 {
+
     public function testCompare()
     {
         $extensionsManagerMock = $this->getExtensionManagerMock();
@@ -46,8 +46,6 @@ class TaoComparatorTest extends TestCase
             $extensionBar4 = new Version('Version4_bar'),
             $extensionBar2 = new Version('Version2_bar'),
             $extensionBaz1 = new Version('Version1_baz'),
-            $camelCaseVersion = new Version('Version1Baz'),
-            $smallLetterExtension = new Version('Version1baz'),
         ];
 
         usort($versions, [$comparator, 'compare']);
@@ -59,8 +57,6 @@ class TaoComparatorTest extends TestCase
             'Version3_foo',
             'Version5_foo',
             'Version1_baz',
-            'Version1Baz',
-            'Version1baz',
             'Version2_bar',
             'Version4_bar',
         ], $versionKeys);

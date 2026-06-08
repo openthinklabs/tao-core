@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -103,23 +101,14 @@ class tao_actions_form_Clazz extends tao_helpers_form_FormContainer
      * @return tao_helpers_form_Form|null
      * @throws common_Exception
      */
-    protected function getPropertyForm(
-        core_kernel_classes_Property $property,
-        int $index,
-        bool $isParentProp,
-        array $propertyData
-    ): ?tao_helpers_form_Form {
+    protected function getPropertyForm(core_kernel_classes_Property $property, int $index, bool $isParentProp, array $propertyData): ?tao_helpers_form_Form
+    {
         $options = [
             'index' => $index,
             'isParentProperty' => $isParentProp,
             'disableIndexChanges' => $this->disableIndexChanges
         ];
-        $propFormContainer = new tao_actions_form_SimpleProperty(
-            $this->getClassInstance(),
-            $property,
-            $options,
-            $propertyData
-        );
+        $propFormContainer = new tao_actions_form_SimpleProperty($this->getClassInstance(), $property, $options, $propertyData);
         return $propFormContainer->getForm();
     }
 
@@ -145,8 +134,7 @@ class tao_actions_form_Clazz extends tao_helpers_form_FormContainer
         $actions     = tao_helpers_form_FormFactory::getCommonActions();
         $propertyElt = tao_helpers_form_FormFactory::getElement('property', 'Free');
         $propertyElt->setValue(
-            "<a href='#' class='btn-info property-adder small'><span class='icon-property-add'></span> "
-                . __('Add property') . "</a>"
+            "<a href='#' class='btn-info property-adder small'><span class='icon-property-add'></span> " . __('Add property') . "</a>"
         );
         $actions[] = $propertyElt;
 
@@ -194,7 +182,7 @@ class tao_actions_form_Clazz extends tao_helpers_form_FormContainer
 
                 //set label validator, read only
                 if ($property->getUri() == OntologyRdfs::RDFS_LABEL) {
-                    $readonly = tao_helpers_form_FormFactory::getElement('', 'Readonly');
+                    $readonly = tao_helpers_form_FormFactory::getElement($element->getName(), 'Readonly');
                     $readonly->setDescription($element->getDescription());
                     $readonly->setValue($element->getRawValue());
                     $element = $readonly;
@@ -232,10 +220,7 @@ class tao_actions_form_Clazz extends tao_helpers_form_FormContainer
             $parentProp = true;
             $domains    = $classProperty->getDomain();
             foreach ($domains->getIterator() as $domain) {
-                if (
-                    array_search($classProperty->getUri(), $systemProperties) !== false
-                    || $domain->getUri() == $clazz->getUri()
-                ) {
+                if (array_search($classProperty->getUri(), $systemProperties) !== false || $domain->getUri() == $clazz->getUri()) {
                     $parentProp = false;
                     //@todo use the getPrivileges method once implemented
                     break;
@@ -257,7 +242,9 @@ class tao_actions_form_Clazz extends tao_helpers_form_FormContainer
                 $this->form->setGroups(array_merge($this->form->getGroups(), $propForm->getGroups()));
 
                 unset($propForm);
-            } else { // read only properties
+            }
+            // read only properties
+            else {
                 $roElement = tao_helpers_form_FormFactory::getElement('roProperty' . $i, 'Free');
                 $roElement->setValue(__('Cannot be edited'));
                 $this->form->addElement($roElement);

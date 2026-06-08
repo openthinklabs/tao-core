@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,14 +20,14 @@
 
 declare(strict_types=1);
 
-namespace oat\tao\test\unit\scripts\tools\migrations;
+namespace unit\scripts\tools\migrations;
 
 use oat\generis\test\TestCase;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Connection;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use Psr\Log\LoggerInterface;
-use common_report_Report as Report;
+use \common_report_Report as Report;
 
 class AbstractMigrationTest extends TestCase
 {
@@ -58,21 +57,13 @@ class AbstractMigrationTest extends TestCase
             ->willReturn($this->createMock(\ArrayIterator::class));
 
 
-        $migration = new class (
-            $connectionMock,
-            $loggerMock,
-            $upReportMock,
-            $downReportMock
-        ) extends AbstractMigration {
+        $migration = new class($connectionMock, $loggerMock, $upReportMock, $downReportMock) extends AbstractMigration
+        {
             private $upReportMock;
             private $downReportMock;
 
-            public function __construct(
-                Connection $connection,
-                LoggerInterface $logger,
-                Report $upReportMock,
-                Report $downReportMock
-            ) {
+            public function __construct(Connection $connection, LoggerInterface $logger, Report $upReportMock, Report $downReportMock)
+            {
                 parent::__construct($connection, $logger);
                 $this->upReportMock = $upReportMock;
                 $this->downReportMock = $downReportMock;

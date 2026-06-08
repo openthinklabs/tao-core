@@ -24,6 +24,7 @@ use oat\tao\helpers\form\validators\CrossElementEvaluationAware;
 
 class tao_helpers_form_validators_AnyOf extends tao_helpers_form_Validator implements CrossElementEvaluationAware
 {
+
     /** @var tao_helpers_form_FormElement[]|[] */
     private $references = [];
 

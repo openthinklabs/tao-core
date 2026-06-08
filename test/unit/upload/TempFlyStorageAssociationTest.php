@@ -35,6 +35,7 @@ use Prophecy\Argument;
  */
 class TempFlyStorageAssociationTest extends TestCase
 {
+
     public function testSetUpload()
     {
         $file = new File('foo', 'bar');

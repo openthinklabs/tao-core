@@ -29,10 +29,11 @@ use oat\oatbox\service\ConfigurableService;
  */
 class ClientConfigService extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/clientConfig';
 
-    public const OPTION_CONFIG_SOURCES = 'configs';
-
+    const SERVICE_ID = 'tao/clientConfig';
+    
+    const OPTION_CONFIG_SOURCES = 'configs';
+    
     /**
      * Returns an array of json serialisable content
      * to be send to the client json encoded
@@ -47,7 +48,7 @@ class ClientConfigService extends ConfigurableService
         }
         return $config;
     }
-
+    
     /**
      * Either adds or overrides an existing client config
      *

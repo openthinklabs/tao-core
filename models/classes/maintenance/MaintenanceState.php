@@ -23,15 +23,15 @@ namespace oat\tao\model\maintenance;
 
 class MaintenanceState
 {
-    public const ID         = 'id';
-    public const STATUS     = 'status';
-    public const START_TIME = 'start';
-    public const END_TIME   = 'end';
+    const ID         = 'id';
+    const STATUS     = 'status';
+    const START_TIME = 'start';
+    const END_TIME   = 'end';
 
-    public const LIVE_MODE = 'on';
-    public const OFFLINE_MODE = 'off';
+    const LIVE_MODE = 'on';
+    const OFFLINE_MODE = 'off';
 
-    public const DATEDIFF_FORMAT = '%y years, %m months, %d days %H:%I:%S';
+    const DATEDIFF_FORMAT = '%y years, %m months, %d days %H:%I:%S';
 
     protected static $availableStatus = [self::LIVE_MODE, self::OFFLINE_MODE];
 

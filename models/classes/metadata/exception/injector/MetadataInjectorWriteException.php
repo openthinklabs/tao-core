@@ -23,4 +23,5 @@ namespace oat\tao\model\metadata\exception\injector;
 
 class MetadataInjectorWriteException extends \common_Exception
 {
+
 }

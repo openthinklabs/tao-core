@@ -32,12 +32,11 @@ class KeyTest extends TestCase
 
     public function setUp(): void
     {
-        $this->subject = new Key('123456', 'passphrase');
+        $this->subject = new Key('123456');
     }
 
     public function testGetters(): void
     {
         $this->assertSame('123456', $this->subject->getValue());
-        $this->assertSame('passphrase', $this->subject->getPassphrase());
     }
 }

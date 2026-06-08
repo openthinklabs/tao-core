@@ -54,12 +54,9 @@ class ExportedField
     /**
      * @return string
      */
-    public function getFormattedValue(): string
+    public function getFormattedValue() : string
     {
-        if (
-            is_null($this->value)
-            || ($this->value === '' && $this->getColumn()->getType() !== ExportedColumn::TYPE_VARCHAR)
-        ) {
+        if (is_null($this->value) || ($this->value === '' && $this->getColumn()->getType() !== ExportedColumn::TYPE_VARCHAR)) {
             return 'null';
         }
 
@@ -75,8 +72,6 @@ class ExportedField
             case ExportedColumn::TYPE_VARCHAR:
             case ExportedColumn::TYPE_DECIMAL:
                 return "'$value'";
-            default:
-                return $this->value;
         }
     }
 }

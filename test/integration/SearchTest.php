@@ -16,6 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ *
+ *
  */
 
 namespace oat\tao\test\integration;
@@ -40,6 +42,7 @@ use oat\tao\model\search\tokenizer\Tokenizer;
  */
 class SearchTest extends GenerisPhpUnitTestRunner
 {
+
     private $class;
 
     private $property;
@@ -117,14 +120,7 @@ class SearchTest extends GenerisPhpUnitTestRunner
         $this->assertInstanceOf(OntologyIndex::class, $index);
 
         $tokenizer = new core_kernel_classes_Resource(RawValue::URI);
-        $similar = OntologyIndexService::createIndex(
-            $this->property,
-            substr($index->getIdentifier(), 0, -2),
-            $tokenizer,
-            true,
-            true
-        );
-
+        $similar = OntologyIndexService::createIndex($this->property, substr($index->getIdentifier(), 0, -2), $tokenizer, true, true);
         $this->assertInstanceOf(OntologyIndex::class, $similar);
 
         return $similar;

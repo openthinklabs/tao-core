@@ -34,6 +34,7 @@ use oat\tao\test\TaoPhpUnitTestRunner;
  */
 class SectionTest extends TaoPhpUnitTestRunner
 {
+    
     /**
      * Data Provider : provides xml, from legacy and new format, and also the expect result
      * @return array the data
@@ -79,7 +80,7 @@ XML;
             [$sectionNew, $sectionLegacy]
         ];
     }
-
+    
     /**
      * Test the section can be loaded from either legacy or new XML format
      *
@@ -97,7 +98,7 @@ XML;
 
 
         $sectionFromLegacy = Section::fromSimpleXMLElement(new SimpleXMLElement($legacyXml), 'tao');
-
+    
         $this->assertTrue($sectionFromLegacy instanceof Section);
         $this->assertEquals(count($sectionFromLegacy->getActions()), 4);
         $this->assertEquals(count($sectionFromLegacy->getTrees()), 1);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This program is free software; you can redistribute it and/or
@@ -17,8 +17,6 @@
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
-
-declare(strict_types=1);
 
 namespace oat\tao\model\security\DataAccess\Repository;
 
@@ -61,9 +59,9 @@ class SecuritySettingsRepository extends InjectionAwareService implements Securi
     {
         return new SettingsCollection(
             ...array_map(
-                [$this, 'createSetting'],
-                self::SETTING_KEYS
-            )
+                   [$this, 'createSetting'],
+                   self::SETTING_KEYS
+               )
         );
     }
 

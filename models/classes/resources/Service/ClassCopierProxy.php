@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2022-2023 (original work) Open Assessment Technologies SA.
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  *
  * @author Andrei Shapiro <andrei.shapiro@taotesting.com>
  */
@@ -26,29 +26,23 @@ namespace oat\tao\model\resources\Service;
 
 use InvalidArgumentException;
 use core_kernel_classes_Class;
-use oat\generis\model\data\Ontology;
-use oat\tao\model\resources\Command\ResourceTransferCommand;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
-use oat\tao\model\resources\Contract\ResourceTransferInterface;
 use oat\tao\model\resources\Contract\RootClassesListServiceInterface;
-use oat\tao\model\resources\ResourceTransferResult;
 
-class ClassCopierProxy implements ClassCopierInterface, ResourceTransferInterface
+class ClassCopierProxy implements ClassCopierInterface
 {
-    private RootClassesListServiceInterface $rootClassesListService;
+    /** @var RootClassesListServiceInterface */
+    private $rootClassesListService;
 
-    /** @var array<string, ClassCopierInterface|ResourceTransferInterface> */
-    private array $classCopiers = [];
+    /** @var array<string, ClassCopierInterface> */
+    private $classCopiers = [];
 
-    private Ontology $ontology;
-
-    public function __construct(RootClassesListServiceInterface $rootClassesListService, Ontology $ontology)
+    public function __construct(RootClassesListServiceInterface $rootClassesListService)
     {
         $this->rootClassesListService = $rootClassesListService;
-        $this->ontology = $ontology;
     }
 
-    public function addClassCopier(string $rootClassUri, ResourceTransferInterface $classCopier): void
+    public function addClassCopier(string $rootClassUri, ClassCopierInterface $classCopier): void
     {
         if (!in_array($rootClassUri, $this->rootClassesListService->listUris(), true)) {
             throw new InvalidArgumentException('Provided root class URI was not found in root classes list.');
@@ -67,43 +61,24 @@ class ClassCopierProxy implements ClassCopierInterface, ResourceTransferInterfac
         $this->classCopiers[$rootClassUri] = $classCopier;
     }
 
-    public function transfer(ResourceTransferCommand $command): ResourceTransferResult
-    {
-        return $this->getTransfer(
-            $this->ontology->getClass($command->getFrom()),
-            $command->getTo()
-        )->transfer($command);
-    }
-
+    /**
+     * @inheritDoc
+     */
     public function copy(
         core_kernel_classes_Class $class,
         core_kernel_classes_Class $destinationClass
     ): core_kernel_classes_Class {
-        $result = $this->transfer(
-            new ResourceTransferCommand(
-                $class->getUri(),
-                $destinationClass->getUri(),
-                ResourceTransferCommand::ACL_KEEP_ORIGINAL,
-                ResourceTransferCommand::TRANSFER_MODE_COPY
-            )
-        );
-
-        return $this->ontology->getClass($result->getDestination());
-    }
-
-    private function getTransfer(core_kernel_classes_Class $from, string $toUri): ResourceTransferInterface
-    {
-        $rootClassUri = $this->extractRootClass($from)->getUri();
+        $rootClassUri = $this->extractRootClass($class)->getUri();
 
         if (isset($this->classCopiers[$rootClassUri])) {
-            return $this->classCopiers[$rootClassUri];
+            return $this->classCopiers[$rootClassUri]->copy($class, $destinationClass);
         }
 
         throw new InvalidArgumentException(
             sprintf(
-                'Class (%s) cannot be copied to the class (%s) - not supported by any class copier.',
-                $from->getUri(),
-                $toUri
+                'Provided class (%s) cannot be copied to the destination class (%s) - not supported by any class copier.',
+                $class->getUri(),
+                $destinationClass->getUri()
             )
         );
     }
@@ -111,7 +86,7 @@ class ClassCopierProxy implements ClassCopierInterface, ResourceTransferInterfac
     private function extractRootClass(core_kernel_classes_Class $class): core_kernel_classes_Class
     {
         foreach ($this->rootClassesListService->list() as $rootClass) {
-            if ($class->equals($rootClass) || $class->isSubClassOf($rootClass)) {
+            if ($class->getUri() === $rootClass->getUri() || $class->isSubClassOf($rootClass)) {
                 return $rootClass;
             }
         }

@@ -22,8 +22,8 @@ namespace oat\tao\model\webhooks\configEntity;
 
 class WebhookAuth implements WebhookAuthInterface
 {
-    public const AUTH_CLASS = 'authClass';
-    public const CREDENTIALS = 'credentials';
+    const AUTH_CLASS = 'authClass';
+    const CREDENTIALS = 'credentials';
 
     /**
      * @var string

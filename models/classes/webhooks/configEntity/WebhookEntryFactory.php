@@ -25,34 +25,8 @@ use oat\tao\helpers\ArrayValidator;
 
 class WebhookEntryFactory extends ConfigurableService
 {
-    public function createEntry(
-        string $id,
-        string $url,
-        string $httpMethod,
-        int $retryMax,
-        WebhookAuth $auth = null,
-        bool $responseValidation = true,
-        array $extraPayload = []
-    ): WebhookInterface {
-        return new Webhook(
-            $id,
-            $url,
-            $httpMethod,
-            $retryMax,
-            $auth,
-            $responseValidation,
-            $extraPayload
-        );
-    }
-
-    public function createAuthEntry(string $authClass, array $properties): WebhookAuth
-    {
-        return new WebhookAuth($authClass, $properties);
-    }
-
     /**
      * @param array $data
-     *
      * @return Webhook
      */
     public function createEntryFromArray(array $data)
@@ -66,11 +40,7 @@ class WebhookEntryFactory extends ConfigurableService
             ? $this->createAuthEntryFromArray($data[Webhook::AUTH])
             : null;
 
-        /*
-         * default value for validation for back compatibility,
-         * because old webhooks are nod updated and may not contain this new parameter
-         */
-        $responseValidation = true;
+        $responseValidation = true; // default value for validation for back compatibility, because old webhooks are nod updated and may not contain this new parameter
         if (array_key_exists(Webhook::RESPONSE_VALIDATION, $data)) {
             $responseValidation = $data[Webhook::RESPONSE_VALIDATION];
         }
@@ -88,7 +58,6 @@ class WebhookEntryFactory extends ConfigurableService
 
     /**
      * @param array $data
-     *
      * @return WebhookAuth
      */
     protected function createAuthEntryFromArray(array $data)

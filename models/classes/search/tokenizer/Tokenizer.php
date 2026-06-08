@@ -29,4 +29,5 @@ namespace oat\tao\model\search\tokenizer;
  */
 interface Tokenizer extends PropertyValueTokenizer
 {
+   
 }

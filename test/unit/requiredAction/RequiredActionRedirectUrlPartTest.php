@@ -72,9 +72,7 @@ class RequiredActionRedirectUrlPartTest extends TestCase
     private function getPositiveRule()
     {
         $ruleMock = $this->prophesize('oat\tao\model\requiredAction\implementation\TimeRule');
-        $ruleMock
-            ->setRequiredAction(Argument::type('oat\tao\model\requiredAction\RequiredActionInterface'))
-            ->willReturn(null);
+        $ruleMock->setRequiredAction(Argument::type('oat\tao\model\requiredAction\RequiredActionInterface'))->willReturn(null);
         $ruleMock->check(null)->willReturn(true);
 
         return $ruleMock->reveal();
@@ -83,9 +81,7 @@ class RequiredActionRedirectUrlPartTest extends TestCase
     private function getNegativeRule()
     {
         $ruleMock = $this->prophesize('oat\tao\model\requiredAction\implementation\TimeRule');
-        $ruleMock
-            ->setRequiredAction(Argument::type('oat\tao\model\requiredAction\RequiredActionInterface'))
-            ->willReturn(null);
+        $ruleMock->setRequiredAction(Argument::type('oat\tao\model\requiredAction\RequiredActionInterface'))->willReturn(null);
         $ruleMock->check(null)->willReturn(false);
 
         return $ruleMock->reveal();

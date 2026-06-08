@@ -65,10 +65,7 @@ class RdsTaskLogBrokerTest extends TestCase
 
     public function testGetPersistenceWhenInstantiatingANewOneThenItReturnsOneWithTheRequiredInterface()
     {
-        $commonPersistenceSqlPersistenceMock = $this
-            ->getMockBuilder(\common_persistence_SqlPersistence::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $commonPersistenceSqlPersistenceMock = $this->getMockBuilder(\common_persistence_SqlPersistence::class)->disableOriginalConstructor()->getMock();
         $commonPersistenceManagerMock = $this->getMockBuilder(\common_persistence_Manager::class)->getMock();
 
         $commonPersistenceManagerMock->expects($this->once())
@@ -98,8 +95,7 @@ class RdsTaskLogBrokerTest extends TestCase
         };
 
         // Bind the closure to $rdsLogBrokerMock's scope.
-        // $bound is now a Closure, and calling it is like asking $rdsLogBrokerMock to call $this->getPersistence();
-        // and return the results.
+        // $bound is now a Closure, and calling it is like asking $rdsLogBrokerMock to call $this->getPersistence(); and return the results.
         $bound = $persistenceCaller->bindTo($rdsLogBrokerMock, $rdsLogBrokerMock);
 
         $this->assertInstanceOf(\common_persistence_SqlPersistence::class, $bound());

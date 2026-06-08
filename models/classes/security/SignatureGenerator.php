@@ -7,9 +7,9 @@ use oat\tao\model\metadata\exception\InconsistencyConfigException;
 
 class SignatureGenerator extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/SignatureGenerator';
+    const SERVICE_ID = 'tao/SignatureGenerator';
 
-    public const OPTION_SALT = 'salt';
+    const OPTION_SALT = 'salt';
 
     /**
      * @param string[] $dataToSign

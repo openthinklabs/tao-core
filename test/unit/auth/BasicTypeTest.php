@@ -13,6 +13,7 @@ use oat\tao\model\auth\BasicType;
  */
 class BasicTypeTest extends TestCase
 {
+
     public function testBasicType()
     {
         $authType = new TestBasicAuthType();

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,7 +25,7 @@ use oat\generis\test\TestCase;
 use oat\tao\model\accessControl\filter\ParameterFilterInterface;
 use oat\tao\model\accessControl\filter\ParameterFilterProxy;
 
-class ProxyParameterFilterProxyTest extends TestCase
+class ParameterFilterProxyTest extends TestCase
 {
     /** @var ParameterFilterProxy */
     private $subject;

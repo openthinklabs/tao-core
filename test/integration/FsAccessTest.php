@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013-2015 (update and modification) Open Assessment Technologies SA;
  */
 
@@ -49,7 +47,8 @@ use oat\generis\model\GenerisRdf;
  */
 class tao_test_FsAccessTest extends TaoPhpUnitTestRunner
 {
-    public const TEST_USER_LOGIN = 'FsAccessTestUser';
+
+    const TEST_USER_LOGIN = 'FsAccessTestUser';
 
     private $testUser;
     private $credentials = [];
@@ -75,11 +74,7 @@ class tao_test_FsAccessTest extends TaoPhpUnitTestRunner
             }
         }
         if (!$this->testUser) {
-            $this->testUser = tao_models_classes_UserService::singleton()->addUser(
-                self::TEST_USER_LOGIN,
-                $pass,
-                $taoManagerRole
-            );
+            $this->testUser = tao_models_classes_UserService::singleton()->addUser(self::TEST_USER_LOGIN, $pass, $taoManagerRole);
         }
         $this->credentials = [
             'loginForm_sent' => 1,
@@ -147,6 +142,8 @@ class tao_test_FsAccessTest extends TaoPhpUnitTestRunner
         $this->assertEquals($expected, $config);
     }
 
+
+
     /**
      * @author Lionel Lecaque, lionel@taotesting.com
      */
@@ -179,10 +176,7 @@ class tao_test_FsAccessTest extends TaoPhpUnitTestRunner
         $assetService = ServiceManager::getServiceManager()->get(AssetService::SERVICE_ID);
         $this->registerFileSystem($ext);
 
-        $websource = DirectWebSource::spawnWebsource(
-            $this->fileSystem->getId(),
-            $assetService->getJsBaseWww($ext->getId())
-        );
+        $websource = DirectWebSource::spawnWebsource($this->fileSystem->getId(), $assetService->getJsBaseWww($ext->getId()));
 
         $this->runWebsourceTests($websource);
     }
@@ -192,10 +186,7 @@ class tao_test_FsAccessTest extends TaoPhpUnitTestRunner
         $ext = common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
         $this->registerFileSystem($ext);
 
-        $websource = TokenWebSource::spawnWebsource(
-            $this->fileSystem->getId(),
-            $this->fileSystem->getAdapter()->getPathPrefix()
-        );
+        $websource = TokenWebSource::spawnWebsource($this->fileSystem->getId(), $this->fileSystem->getAdapter()->getPathPrefix());
 
         $this->runWebsourceTests($websource);
     }
@@ -234,17 +225,11 @@ class tao_test_FsAccessTest extends TaoPhpUnitTestRunner
         $this->assertInstanceOf(Websource::class, $fromManager);
 
         $url = $websource->getAccessUrl('img' . DIRECTORY_SEPARATOR . 'tao.png');
-        $this->assertTrue(
-            $websource->getFileSystem()->has('img' . DIRECTORY_SEPARATOR . 'tao.png'),
-            'reference file not found'
-        );
+        $this->assertTrue($websource->getFileSystem()->has('img' . DIRECTORY_SEPARATOR . 'tao.png'), 'reference file not found');
         $this->assertUrlHttpCode($url);
 
         $url = $websource->getAccessUrl('img' . DIRECTORY_SEPARATOR . 'fakeFile_thatDoesNotExist.png');
-        $this->assertFalse(
-            $websource->getFileSystem()->has('img' . DIRECTORY_SEPARATOR . 'fakeFile_thatDoesNotExist.png'),
-            'reference file should not be found'
-        );
+        $this->assertFalse($websource->getFileSystem()->has('img' . DIRECTORY_SEPARATOR . 'fakeFile_thatDoesNotExist.png'), 'reference file should not be found');
         $this->assertUrlHttpCode($url, '404');
 
         $url = $websource->getAccessUrl('img' . DIRECTORY_SEPARATOR);

@@ -11,6 +11,7 @@ use oat\tao\scripts\tools\migrations\AbstractMigration;
 
 final class Version202010042003512234_tao extends AbstractMigration
 {
+
     public function getDescription(): string
     {
         return 'Register services for metadata class discovery endpoint';
@@ -19,7 +20,8 @@ final class Version202010042003512234_tao extends AbstractMigration
     public function up(Schema $schema): void
     {
         (new RegisterClassMetadataServices())
-            ->setServiceLocator($this->getServiceManager())();
+            ->setServiceLocator($this->getServiceManager())
+        ();
     }
 
     public function down(Schema $schema): void

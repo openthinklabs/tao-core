@@ -56,17 +56,8 @@ class Notification implements JsonSerializable
 
     protected $updatedAt;
 
-    public function __construct(
-        string $userId,
-        string $title,
-        string $message,
-        string $senderId,
-        string $senderName,
-        string $id = null,
-        string $createdAt = null,
-        string $updatedAt = null,
-        int $status = 0
-    ) {
+    public function __construct(string $userId, string $title, string $message, string $senderId, string $senderName, string $id = null, string $createdAt = null, string $updatedAt = null, int $status = 0)
+    {
         $this->id = $id;
         $this->status = $status;
         $this->recipient = $userId;

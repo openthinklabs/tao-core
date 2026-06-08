@@ -34,11 +34,8 @@ interface ImsOauthDataStoreInterface
      * Returns the OauthConsumer for the specified key
      * @param string $consumer_key
      * @return OAuthConsumer
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName
      */
     public function lookup_consumer($consumer_key);
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
     /**
      * Should verify if the token exists and return it
@@ -48,11 +45,8 @@ interface ImsOauthDataStoreInterface
      * @param string $token_type
      * @param string $token
      * @return OAuthToken
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName
      */
     public function lookup_token($consumer, $token_type, $token);
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
     /**
      * Should verify if a nonce has already been used by specified consumer (got from lookup_consumer() call).
@@ -63,11 +57,8 @@ interface ImsOauthDataStoreInterface
      * @param string $nonce
      * @param string $timestamp
      * @return bool if nonce value exists
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName
      */
     public function lookup_nonce($consumer, $token, $nonce, $timestamp);
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
     /**
      * Perform request_token request according to OAuth flow
@@ -78,11 +69,8 @@ interface ImsOauthDataStoreInterface
      * @param OAuthConsumer $consumer
      * @param callable|null $callback
      * @return mixed
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName
      */
     public function new_request_token($consumer, $callback = null);
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
     /**
      * Perform access_token request according to OAuth flow
@@ -94,9 +82,6 @@ interface ImsOauthDataStoreInterface
      * @param OAuthConsumer $consumer
      * @param string $verifier Verification code
      * @return string
-     *
-     * phpcs:disable PSR1.Methods.CamelCapsMethodName
      */
     public function new_access_token($token, $consumer, $verifier = null);
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 }

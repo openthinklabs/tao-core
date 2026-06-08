@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,7 +36,7 @@ class TaoClassNameGeneratorTest extends TestCase
         $extFoo->method('getId')
             ->willReturn('foo');
         $generatorFoo = new TaoClassNameGenerator($extFoo);
-        $namespace = 'oat\\' . $extFoo->getId() . '\\migrations';
+        $namespace = 'oat\\'.$extFoo->getId().'\\migrations';
         $className = $generatorFoo->generateClassName($namespace);
         $this->assertEquals(0, strpos($className, $namespace));
         $postfixPosition = strlen($className) - strlen($extFoo->getId());

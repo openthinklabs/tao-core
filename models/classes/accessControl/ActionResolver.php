@@ -33,6 +33,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class ActionResolver
 {
+
     private $action;
 
     private $controller;

@@ -60,6 +60,7 @@ class ProviderRegistry extends AbstractModuleRegistry
  */
 class ProviderService extends AbstractProviderService
 {
+
 }
 
 /**

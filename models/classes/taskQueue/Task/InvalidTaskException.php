@@ -25,4 +25,5 @@ use Exception;
 
 class InvalidTaskException extends Exception
 {
+
 }

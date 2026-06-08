@@ -60,7 +60,7 @@ class BaseWebsourceTest extends TestCase
             ->getMock();
 
         $fileSystemMock
-            ->method('mimeType')
+            ->method('getMimetype')
             ->willReturn($mimeType);
 
         return $fileSystemMock;

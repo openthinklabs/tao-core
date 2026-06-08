@@ -28,7 +28,8 @@ namespace oat\tao\helpers\form\validators;
  */
 class CspHeaderValidator extends \tao_helpers_form_Validator
 {
-    public const DIRECTIVES = [
+
+    const DIRECTIVES = [
         'self',
         'none',
         '*'

@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013-2017 (update and modification) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
@@ -48,6 +46,7 @@ class tao_helpers_Display
      */
     public static function textCutter($input, int $maxLength = 75): string
     {
+        $input = (string)$input;
         $encoding = self::getEncoding();
 
         if (mb_strlen($input, $encoding) <= $maxLength) {
@@ -72,6 +71,7 @@ class tao_helpers_Display
      */
     public static function textCleaner($input, string $joker = '_', int $maxLength = -1): string
     {
+        $input = (string)$input;
         $encoding = self::getEncoding();
 
         if ($maxLength > -1) {
@@ -102,7 +102,7 @@ class tao_helpers_Display
      */
     public static function htmlize($input): string
     {
-        return htmlentities($input, ENT_COMPAT, self::getEncoding());
+        return htmlentities((string)$input, ENT_COMPAT, self::getEncoding());
     }
 
 
@@ -112,7 +112,7 @@ class tao_helpers_Display
      */
     public static function htmlEscape($string): string
     {
-        return htmlspecialchars($string);
+        return htmlspecialchars((string)$string);
     }
 
     /**
@@ -123,7 +123,7 @@ class tao_helpers_Display
      */
     public static function encodeAttrValue($string): string
     {
-        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars((string)$string, ENT_QUOTES, 'UTF-8');
     }
 
     /**

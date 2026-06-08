@@ -32,10 +32,10 @@ use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\model\webhooks\configEntity\Webhook;
 use oat\tao\model\webhooks\configEntity\WebhookAuth;
 use oat\tao\model\webhooks\WebhookEventsService;
-use oat\tao\model\webhooks\WebhookEventsServiceInterface;
 use oat\tao\model\webhooks\WebhookRegistryManager;
 use oat\tao\model\webhooks\WebhookRegistryManagerInterface;
 use oat\tao\model\webhooks\WebhookSerializableEventInterface;
+use oat\taoPublishing\model\publishing\event\RemoteDeliveryCreatedEvent;
 use ReflectionClass;
 
 class RegisterEventWebhook extends ScriptAction
@@ -83,13 +83,6 @@ class RegisterEventWebhook extends ScriptAction
                 'flag' => false,
                 'required' => false,
                 'description' => 'Provide authentication class that you want to use'
-            ],
-            'credentials' => [
-                'prefix' => 'c',
-                'longPrefix' => 'credentials',
-                'flag' => false,
-                'required' => false,
-                'description' => 'Provide authentication parameters in format login:password'
             ]
         ];
     }
@@ -105,28 +98,26 @@ class RegisterEventWebhook extends ScriptAction
 
         /** @var ConfigurableService $webhookEventsService */
         $webhookEventsService = $this->getServiceLocator()->get(WebhookEventsService::class);
-        $eventClass = $this->getOption('event');
 
         try {
-            $this->validateEvent($eventClass);
-            $webhookEventsService->registerEvent($eventClass);
-            $serviceManager = $this->getServiceManager();
-            $serviceManager->register(WebhookEventsServiceInterface::SERVICE_ID, $webhookEventsService);
-            $serviceManager->register(EventManager::SERVICE_ID, $this->getEventManager());
-
-            $this->getWebhookRegistryManager()->addWebhookConfig(
-                $this->createWebHook(),
-                $eventClass
-            );
-
-            $this->report->add(
-                Report::createInfo('Webhook created')
-            );
+            $this->validateEvent();
+            $webhookEventsService->registerEvent(RemoteDeliveryCreatedEvent::class);
+            $this->getServiceManager()->register(WebhookEventsService::SERVICE_ID, $webhookEventsService);
+            $this->getServiceManager()->register(EventManager::SERVICE_ID, $this->getEventManager());
         } catch (Exception $exception) {
             $this->report->add(
                 Report::createError('Registering failed')
             );
         }
+
+        $this->getWebhookRegistryManager()->addWebhookConfig(
+            $this->createWebHook(),
+            RemoteDeliveryCreatedEvent::class
+        );
+
+        $this->report->add(
+            Report::createInfo('Webhook created')
+        );
 
         return $this->report;
     }
@@ -143,7 +134,6 @@ class RegisterEventWebhook extends ScriptAction
             $this->report->add(
                 Report::createWarning(sprintf('Used illegal method %s. Falling back to default method', $method))
             );
-
             return self::DEFAULT_HTTP_METHOD;
         }
 
@@ -154,14 +144,9 @@ class RegisterEventWebhook extends ScriptAction
     {
         if ($authenticationClass = $this->getOption('auth')) {
             if ($this->isAuthenticationClassIsValid($authenticationClass)) {
-                $credentialsParams = explode(':', $this->getOption('credentials') ?? '');
-                $credentials = $credentialsParams === ['']
-                    ? []
-                    : array_combine(['login', 'password'], $credentialsParams);
-
                 return new WebhookAuth(
                     $authenticationClass,
-                    $credentials
+                    []
                 );
             }
         }
@@ -181,14 +166,14 @@ class RegisterEventWebhook extends ScriptAction
         );
     }
 
-    private function validateEvent(string $eventName): void
+    private function validateEvent(): void
     {
+        $eventName = $this->getOption('event');
+
         if (!$this->eventImplementsWebhook($eventName)) {
-            $message = sprintf('Provided event: %s does not exist or is not implementing WebhookInterface', $eventName);
-
-            $this->report->add(Report::createError($message));
-
-            throw new \DomainException($message);
+            $this->report->add(
+                Report::createError(sprintf('Provided event: %s does not exist or is not implementing WebhookInterface', $eventName))
+            );
         }
     }
 
@@ -196,7 +181,6 @@ class RegisterEventWebhook extends ScriptAction
     {
         if (class_exists($event)) {
             $event = new ReflectionClass($event);
-
             return in_array(WebhookSerializableEventInterface::class, $event->getInterfaceNames(), true);
         }
 

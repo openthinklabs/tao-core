@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -85,10 +83,7 @@ class tao_helpers_form_FormFactory
                 'element' => new tao_helpers_form_xhtml_TagWrapper(['tag' => 'div']),
                 'group' => new tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-group']),
                 'error' => new tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-error']),
-                'actions-bottom' => new tao_helpers_form_xhtml_TagWrapper([
-                    'tag' => 'div',
-                    'cssClass' => 'form-toolbar'
-                ])
+                'actions-bottom' => new tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-toolbar'])
             ]);
 
             $myForm->setActions(self::getCommonActions());
@@ -207,7 +202,8 @@ class tao_helpers_form_FormFactory
      */
     public static function getCommonActions($context = 'bottom', $save = true)
     {
-        if (!$save) {
+        if (!$save)
+        {
             return [tao_helpers_form_FormFactory::getElement('save', 'Free')];
         }
 

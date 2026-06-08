@@ -41,7 +41,8 @@ try {
     $uninstaller = new tao_install_ExtensionUninstaller($extension);
     $uninstaller->uninstall();
 
-    $serviceManager->rebuildContainer();
+    $serviceManager->getContainerBuilder()
+        ->forceBuild();
 
     $message = __('Uninstalled %s', $extId);
 } catch (common_Exception $e) {

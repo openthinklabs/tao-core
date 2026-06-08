@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,27 +14,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2023 (original work) Open Assessment Technologies SA.
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ *
  */
 
 declare(strict_types=1);
 
 use oat\generis\model\data\Ontology;
 use oat\generis\test\MockObject;
-use oat\generis\test\ServiceManagerMockTrait;
+use oat\generis\test\TestCase;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\AdvancedSearch\AdvancedSearchChecker;
 use oat\tao\model\event\DataAccessControlChangedEvent;
 use oat\tao\model\listener\DataAccessControlChangedListener;
 use oat\tao\model\search\tasks\UpdateDataAccessControlInIndex;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class DataAccessControlChangedListenerTest extends TestCase
 {
-    use ServiceManagerMockTrait;
-
     /** @var QueueDispatcherInterface|MockObject */
     private $queueDispatcher;
 
@@ -61,7 +58,7 @@ class DataAccessControlChangedListenerTest extends TestCase
         $this->advancedSearchChecker = $this->createMock(AdvancedSearchChecker::class);
 
         $this->sut->setServiceLocator(
-            $this->getServiceManagerMock(
+            $this->getServiceLocatorMock(
                 [
                     QueueDispatcherInterface::SERVICE_ID => $this->queueDispatcher,
                     LoggerService::SERVICE_ID => $this->logger,
@@ -75,7 +72,7 @@ class DataAccessControlChangedListenerTest extends TestCase
     /**
      * @dataProvider provideSuccessfulCases
      */
-    public function testHandleEventShouldCreateTaskSuccessfully(bool $isRecursive, bool $isClass): void
+    public function testHandleEventShouldCreateTaskSuccessfully(bool $isRecursive, bool $isclass): void
     {
         $documentUri = 'https://tao.docker.localhost/ontologies/tao.rdf#i5ef45f413088c8e7901a84708e84ec';
         $resource = $this->createMock(core_kernel_classes_Resource::class);
@@ -84,7 +81,7 @@ class DataAccessControlChangedListenerTest extends TestCase
         $resource->expects($this->once())->method('getUri')
             ->willReturn($documentUri);
         $resource->expects($this->once())->method('isClass')
-            ->willReturn($isClass);
+            ->willReturn($isclass);
 
         $this->logger->expects($this->once())->method('debug')
             ->with('triggering index update on DataAccessControlChanged event');

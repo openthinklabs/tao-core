@@ -191,8 +191,7 @@ class DependentPropertiesRepositoryContextTest extends TestCase
             'Property' => [
                 'parameter' => DependentPropertiesRepositoryContext::PARAM_PROPERTY,
                 'invalidValues' => [
-                    new class () {
-                    },
+                    new class () {},
                     [],
                     ['json'],
                     'string',

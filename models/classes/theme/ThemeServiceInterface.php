@@ -24,23 +24,23 @@ namespace oat\tao\model\theme;
 interface ThemeServiceInterface
 {
     /** Service identifier in the ServiceManager. */
-    public const SERVICE_ID = 'tao/theming';
+    const SERVICE_ID = 'tao/theming';
 
     /** The option of the theme collection. */
-    public const OPTION_AVAILABLE = 'available';
+    const OPTION_AVAILABLE = 'available';
 
     /** The option of the current theme name. */
-    public const OPTION_CURRENT = 'current';
+    const OPTION_CURRENT = 'current';
 
     /** The class name offset in the stored version. */
-    public const THEME_CLASS_OFFSET = 'class';
+    const THEME_CLASS_OFFSET = 'class';
 
     /** The options offset in the stored version. */
-    public const THEME_OPTIONS_OFFSET = 'options';
+    const THEME_OPTIONS_OFFSET = 'options';
 
-    public const OPTION_THEME_DETAILS_PROVIDERS = 'themeDetailsProviders';
+    const OPTION_THEME_DETAILS_PROVIDERS = 'themeDetailsProviders';
 
-    public const OPTION_HEADLESS_PAGE = 'headless_page';
+    const OPTION_HEADLESS_PAGE = 'headless_page';
 
     /**
      * Returns the identifier of the current Theme.

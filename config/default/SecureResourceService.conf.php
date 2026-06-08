@@ -23,7 +23,6 @@ return new class implements ServiceFactoryInterface {
 };
 
 **/
-
 use oat\tao\model\resources\SecureResourceService;
 
 return new SecureResourceService();

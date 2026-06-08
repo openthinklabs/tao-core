@@ -106,13 +106,9 @@ trait GenerisServiceTrait
         }
 
         $options = [
-            'lang' => $this
-                ->getServiceLocator()
-                ->get(SessionService::SERVICE_ID)
-                ->getCurrentSession()
-                ->getDataLanguage(),
-            'like' => false,
-            'recursive' => false
+            'lang'              => $this->getServiceLocator()->get(SessionService::SERVICE_ID)->getCurrentSession()->getDataLanguage(),
+            'like'              => false,
+            'recursive'         => false
         ];
 
         do {
@@ -165,8 +161,6 @@ trait GenerisServiceTrait
     }
 
     /**
-     * @deprecated Use `oat\tao\model\resources\Service\InstanceCopier::transfer()` instead for Items/Tests/Assets
-     *
      * duplicate a resource
      *
      * @access public
@@ -174,6 +168,7 @@ trait GenerisServiceTrait
      * @param  core_kernel_classes_Resource $instance
      * @param  core_kernel_classes_Class $clazz
      * @return core_kernel_classes_Resource
+     * @throws \League\Flysystem\FileExistsException
      * @throws \common_Exception
      * @throws \common_exception_Error
      */
@@ -210,6 +205,7 @@ trait GenerisServiceTrait
      * @param core_kernel_classes_Resource $source
      * @param core_kernel_classes_Resource $destination
      * @param core_kernel_classes_Property $property
+     * @throws \League\Flysystem\FileExistsException
      * @throws \common_Exception
      * @throws \common_exception_Error
      */
@@ -312,11 +308,8 @@ trait GenerisServiceTrait
         if ($instance->isClass()) {
             try {
                 /** @var core_kernel_classes_Class $instance */
-                $status = $instance->editPropertyValues(
-                    $this->getProperty(OntologyRdfs::RDFS_SUBCLASSOF),
-                    $destinationClass
-                );
-                if ($status) {
+                $status = $instance->editPropertyValues($this->getProperty(OntologyRdfs::RDFS_SUBCLASSOF), $destinationClass);
+                if ($status){
                     $this->getEventManager()->trigger(new ClassMovedEvent($instance));
                 }
                 return $status;
@@ -353,10 +346,8 @@ trait GenerisServiceTrait
      * @param  core_kernel_classes_Class $topLevelClazz
      * @return array
      */
-    public function getClazzProperties(
-        core_kernel_classes_Class $clazz,
-        core_kernel_classes_Class $topLevelClazz = null
-    ) {
+    public function getClazzProperties(core_kernel_classes_Class $clazz, core_kernel_classes_Class $topLevelClazz = null)
+    {
         $returnValue = [];
         if (is_null($topLevelClazz)) {
             $topLevelClazz = new core_kernel_classes_Class(TaoOntology::CLASS_URI_OBJECT);
@@ -395,7 +386,7 @@ trait GenerisServiceTrait
 
                 $allParentClasses = $parentClass->getParentClasses(true);
                 if (array_key_exists($topLevelClazz->getUri(), $allParentClasses)) {
-                    $parents[$parentClass->getUri()] = $parentClass;
+                     $parents[$parentClass->getUri()] = $parentClass;
                 }
                 $lastLevelParents[$parentClass->getUri()] = $parentClass;
             }
@@ -547,15 +538,7 @@ trait GenerisServiceTrait
                 $openNodes[] = $clazz->getUri();
             }
 
-            $factory = new GenerisTreeFactory(
-                $instances,
-                $openNodes,
-                $limit,
-                $offset,
-                $browse,
-                $this->getDefaultFilters(),
-                $searchOptions
-            );
+            $factory = new GenerisTreeFactory($instances, $openNodes, $limit, $offset, $browse, $this->getDefaultFilters(), $searchOptions);
             $tree = $factory->buildTree($clazz);
             $returnValue = $chunk
                 ? (isset($tree['children']) ? $tree['children'] : [])

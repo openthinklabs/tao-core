@@ -28,6 +28,7 @@ use tao_helpers_File;
 
 class ContentDetector extends ConfigurableService
 {
+
     private const MIMETYPES = [
         tao_helpers_File::MIME_SVG,
     ];

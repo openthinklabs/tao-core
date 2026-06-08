@@ -1,8 +1,6 @@
 <?php
 use oat\tao\helpers\Template;
 use oat\tao\helpers\Layout;
-use oat\tao\helpers\UserPilotTemplateHelper;
-use oat\tao\model\session\Dto\UserPilotDto;
 use oat\tao\model\theme\Theme;
 
 $releaseMsgData = Layout::getReleaseMsgData();
@@ -33,11 +31,7 @@ $hasVersionWarning = empty($_COOKIE['versionWarning'])
     <link rel="stylesheet" href="<?= Layout::getThemeStylesheet(Theme::CONTEXT_BACKOFFICE) ?>" />
 </head>
 
-<body class="
-    <?= Layout::isSolarDesignEnabled() ? 'solar-design' : '' ?>
-    <?= Layout::isSmallNavi() ? ' small-navi' : '' ?>
-    <?= Layout::isQuickWinsDesignEnabled() ? ' qc-wins' : '' ?>
-">
+<body<?php Layout::isSmallNavi() && print ' class="small-navi"'?>>
 <?php Template::inc('blocks/requirement-check.tpl', 'tao'); ?>
 
 <div class="content-wrap">
@@ -60,7 +54,5 @@ $hasVersionWarning = empty($_COOKIE['versionWarning'])
 <?=Layout::renderThemeTemplate(Theme::CONTEXT_BACKOFFICE, 'footer')?>
 
 <div class="loading-bar"></div>
-<?php Layout::printAnalyticsCode(); ?>
-<?php UserPilotTemplateHelper::userPilotCode(new UserPilotDto(common_session_SessionManager::getSession())); ?>
 </body>
 </html>

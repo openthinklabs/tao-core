@@ -50,28 +50,29 @@ use oat\oatbox\user\User;
  */
 interface ActionQueue
 {
-    public const SERVICE_ID = 'tao/ActionQueue';
+
+    const SERVICE_ID = 'tao/ActionQueue';
 
     /**
      * List of registered actions to be performed using action queue
      */
-    public const OPTION_ACTIONS = 'actions';
+    const OPTION_ACTIONS = 'actions';
 
     /**
      * Persistence identifier
      */
-    public const OPTION_PERSISTENCE = 'persistence';
+    const OPTION_PERSISTENCE = 'persistence';
 
     /**
      * Limit of actions in progress.
      * If number of active actions will be more that this value then action will be put into queue
      */
-    public const ACTION_PARAM_LIMIT = 'limit';
+    const ACTION_PARAM_LIMIT = 'limit';
 
     /**
      * Time to live for place in the queue (seconds). Configures per actions.
      */
-    public const ACTION_PARAM_TTL = 'ttl';
+    const ACTION_PARAM_TTL = 'ttl';
 
     /**
      * @param QueuedAction $action

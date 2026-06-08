@@ -9,6 +9,7 @@ namespace oat\tao\model\action;
  */
 interface CommonModuleInterface
 {
+
     /**
      * Initialization for the controller.
      */

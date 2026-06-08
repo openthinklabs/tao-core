@@ -35,7 +35,7 @@ class KeyReader implements Reader
     /**
      * Source key label to find into $dataSource array
      */
-    public const KEY_SOURCE = 'key';
+    const KEY_SOURCE = 'key';
 
     protected $key;
 
@@ -52,9 +52,7 @@ class KeyReader implements Reader
         }
 
         if (! array_key_exists(self::KEY_SOURCE, $options)) {
-            throw new InconsistencyConfigException(
-                'Missing configuration keys for reader, attribute "' . self::KEY_SOURCE . '" not found'
-            );
+            throw new InconsistencyConfigException('Missing configuration keys for reader, attribute "' . self::KEY_SOURCE . '" not found');
         }
 
         $this->key = $options[self::KEY_SOURCE];
@@ -74,9 +72,7 @@ class KeyReader implements Reader
             return $data[$key];
         }
 
-        throw new MetadataReaderNotFoundException(
-            __CLASS__ . ' cannot found value associated to key "' . $this->key . '".'
-        );
+        throw new MetadataReaderNotFoundException(__CLASS__ . ' cannot found value associated to key "' . $this->key . '".');
     }
 
     /**

@@ -27,9 +27,7 @@ use Slim\Http\Stream;
 use Slim\Http\Environment;
 use Slim\Http\Request;
 
-// phpcs:disable PSR1.Files.SideEffects
 include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
-// phpcs:enable PSR1.Files.SideEffects
 
 /**
  * @author Aleh Hutnikau hutnikau@qpt.com
@@ -37,6 +35,7 @@ include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
  */
 class HttpHelperTest extends TaoPhpUnitTestRunner
 {
+
     protected $string = '0123456789';
 
     public function setUp(): void

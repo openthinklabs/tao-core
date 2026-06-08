@@ -28,6 +28,7 @@ use oat\tao\model\media\mediaSource\DirectorySearchQuery;
  */
 interface MediaBrowser
 {
+
     public function getDirectories(DirectorySearchQuery $params): array;
 
     /**

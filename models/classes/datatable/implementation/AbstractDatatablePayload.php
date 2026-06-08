@@ -84,7 +84,7 @@ abstract class AbstractDatatablePayload implements DatatablePayloadInterface, Se
      * Template method to find data.
      * Any step (such as filtration, pagination, sorting e.t.c. can be changed in concrete class).
      */
-    public function getPayload(): array
+    public function getPayload()
     {
         $queryBuilder = $this->getSearchService()->query();
 
@@ -92,8 +92,9 @@ abstract class AbstractDatatablePayload implements DatatablePayloadInterface, Se
         $this->doPagination($queryBuilder);
         $this->doSorting($queryBuilder);
         $searchResult = $this->doSearch($queryBuilder);
+        $result = $this->doPostProcessing($searchResult);
 
-        return  $this->doPostProcessing($searchResult);
+        return $result;
     }
 
     /**
@@ -161,7 +162,11 @@ abstract class AbstractDatatablePayload implements DatatablePayloadInterface, Se
         return $this->getSearchService()->getGateway()->search($queryBuilder);
     }
 
-    protected function doPostProcessing(TaoResultSet $result): array
+    /**
+     * @param TaoResultSet $result
+     * @return array
+     */
+    protected function doPostProcessing(TaoResultSet $result)
     {
         $payload = [
             'data' => $result->getArrayCopy(),
@@ -254,9 +259,10 @@ abstract class AbstractDatatablePayload implements DatatablePayloadInterface, Se
      * Fetch all the values of properties listed in properties map
      *
      * @param $payload
+     * @return mixed
      * @throws \common_exception_InvalidArgumentType
      */
-    protected function fetchPropertyValues($payload): array
+    protected function fetchPropertyValues($payload)
     {
         $propertyMap = $this->getPropertiesMap();
         $data = [];
@@ -280,7 +286,10 @@ abstract class AbstractDatatablePayload implements DatatablePayloadInterface, Se
         return $payload;
     }
 
-    public function jsonSerialize(): array
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
     {
         return $this->getPayload();
     }

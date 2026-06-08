@@ -16,8 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2006-2009 (original work) Public Research Centre Henri Tudor (under the project FP6-IST-PALETTE);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2014      (update and modification) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
@@ -44,7 +43,7 @@ class FlowController extends ClearFwFlowController implements ServiceManagerAwar
     /**
      * This header is added to the response to inform the client a forward occurs
      */
-    public const FORWARD_HEADER = 'X-Tao-Forward';
+    const FORWARD_HEADER = 'X-Tao-Forward';
 
 
     /**
@@ -79,7 +78,7 @@ class FlowController extends ClearFwFlowController implements ServiceManagerAwar
 
         // load the responsible extension
         common_ext_ExtensionsManager::singleton()->getExtensionById($resolver->getExtensionId());
-
+   
         //update the context to the new route
         $context->setExtensionName($resolver->getExtensionId());
         $context->setModuleName($resolver->getControllerShortName());
@@ -89,18 +88,10 @@ class FlowController extends ClearFwFlowController implements ServiceManagerAwar
         }
 
         //add a custom header so the client knows where the route ends
-        header(
-            self::FORWARD_HEADER . ': ' . $resolver->getExtensionId() . '/'
-                .  $resolver->getControllerShortName() . '/' . $resolver->getMethodName()
-        );
+        header(self::FORWARD_HEADER . ': ' . $resolver->getExtensionId() . '/' .  $resolver->getControllerShortName() . '/' . $resolver->getMethodName());
 
         //execite the new action
-        $enforcer = new ActionEnforcer(
-            $resolver->getExtensionId(),
-            $resolver->getControllerClass(),
-            $resolver->getMethodName(),
-            $params
-        );
+        $enforcer = new ActionEnforcer($resolver->getExtensionId(), $resolver->getControllerClass(), $resolver->getMethodName(), $params);
         $this->propagate($enforcer);
         $enforcer->execute();
 

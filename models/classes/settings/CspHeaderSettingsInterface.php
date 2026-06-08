@@ -30,6 +30,6 @@ namespace oat\tao\model\settings;
  */
 interface CspHeaderSettingsInterface
 {
-    public const CSP_HEADER_SETTING  = 'cspHeader';
-    public const CSP_HEADER_LIST     = 'cspHeaderList';
+    const CSP_HEADER_SETTING  = 'cspHeader';
+    const CSP_HEADER_LIST     = 'cspHeaderList';
 }

@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -119,22 +117,16 @@ class tao_helpers_form_elements_xhtml_AsyncFile extends tao_helpers_form_element
 											var error = [],
 												files = files.filter(_.isObject),// due to Chrome drag\'n\'drop issue
 												givenLength = files.length,
-												filters = "' . implode(',', $mimetypes) . '"
-												    .split(",")
-												    .filter(function(e){return e.length});
+												filters = "' . implode(',', $mimetypes) . '".split(",").filter(function(e){return e.length});
 
 												if (filters.length){
 
 													files = _.filter(files, function(file){
-													    // IE9 doesnt detect type, so lets rely on server validation
-														return !file.type
-														    || _.includes(filters, file.type.replace(/[\'"]+/g, \'\'));
+														return !file.type || _.contains(filters, file.type.replace(/[\'"]+/g, \'\'));//IE9 doesnt detect type, so lets rely on server validation
 													});
 
 													if(files.length !== givenLength){
-														error.push(
-														    "' . __("Unauthorized files have been removed") . '"
-                                                        );
+														error.push("' . __("Unauthorized files have been removed") . '");
 													}
 
 												}

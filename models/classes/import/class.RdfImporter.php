@@ -37,10 +37,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  * @author  Joel Bout, <joel@taotesting.com>
  * @package tao
  */
-class tao_models_classes_import_RdfImporter implements
-    tao_models_classes_import_ImportHandler,
-    ServiceLocatorAwareInterface,
-    TaskParameterProviderInterface
+class tao_models_classes_import_RdfImporter implements tao_models_classes_import_ImportHandler, ServiceLocatorAwareInterface, TaskParameterProviderInterface
 {
     use EventManagerAwareTrait;
     use ImportHandlerHelperTrait;
@@ -145,10 +142,7 @@ class tao_models_classes_import_RdfImporter implements
         if (isset($propertiesValues[OntologyRdf::RDF_TYPE])) {
             // assuming single Type
             if (count($propertiesValues[OntologyRdf::RDF_TYPE]) > 1) {
-                return new common_report_Report(
-                    common_report_Report::TYPE_ERROR,
-                    __('Resource not imported due to multiple types')
-                );
+                return new common_report_Report(common_report_Report::TYPE_ERROR, __('Resource not imported due to multiple types'));
             } else {
                 foreach ($propertiesValues[OntologyRdf::RDF_TYPE] as $k => $v) {
                     $classType = isset($map[$v['value']])
@@ -164,14 +158,8 @@ class tao_models_classes_import_RdfImporter implements
         if (isset($propertiesValues[OntologyRdfs::RDFS_SUBCLASSOF])) {
             $resource = new core_kernel_classes_Class($resource);
             // assuming single subclass
-            if (
-                isset($propertiesValues[OntologyRdf::RDF_TYPE])
-                && count($propertiesValues[OntologyRdf::RDF_TYPE]) > 1
-            ) {
-                return new common_report_Report(
-                    common_report_Report::TYPE_ERROR,
-                    __('Resource not imported due to multiple super classes')
-                );
+            if (isset($propertiesValues[OntologyRdf::RDF_TYPE]) && count($propertiesValues[OntologyRdf::RDF_TYPE]) > 1) {
+                return new common_report_Report(common_report_Report::TYPE_ERROR, __('Resource not imported due to multiple super classes'));
             }
             foreach ($propertiesValues[OntologyRdfs::RDFS_SUBCLASSOF] as $k => $v) {
                 $classSup = isset($map[$v['value']])

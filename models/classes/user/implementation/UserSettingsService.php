@@ -25,11 +25,9 @@ namespace oat\tao\model\user\implementation;
 use oat\generis\model\data\Ontology;
 use oat\generis\model\GenerisRdf;
 use oat\oatbox\user\UserTimezoneServiceInterface;
-use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\user\UserSettingsInterface;
 use oat\tao\model\user\UserSettingsServiceInterface;
 use core_kernel_classes_Resource;
-use tao_models_classes_UserService;
 
 class UserSettingsService implements UserSettingsServiceInterface
 {
@@ -39,22 +37,10 @@ class UserSettingsService implements UserSettingsServiceInterface
     /** @var string */
     private $defaultTimeZone;
 
-    /** @var tao_models_classes_UserService */
-    private $userService;
-
-    /** @var FeatureFlagCheckerInterface */
-    private $featureFlagChecker;
-
-    public function __construct(
-        UserTimezoneServiceInterface $userTimezoneService,
-        Ontology $ontology,
-        tao_models_classes_UserService $userService,
-        FeatureFlagCheckerInterface $featureFlagChecker
-    ) {
+    public function __construct(UserTimezoneServiceInterface $userTimezoneService, Ontology $ontology)
+    {
         $this->defaultTimeZone = $userTimezoneService->getDefaultTimezone();
         $this->ontology = $ontology;
-        $this->userService = $userService;
-        $this->featureFlagChecker = $featureFlagChecker;
     }
 
     public function get(core_kernel_classes_Resource $user): UserSettingsInterface
@@ -63,8 +49,7 @@ class UserSettingsService implements UserSettingsServiceInterface
             [
                 $this->ontology->getProperty(GenerisRdf::PROPERTY_USER_UILG),
                 $this->ontology->getProperty(GenerisRdf::PROPERTY_USER_DEFLG),
-                $this->ontology->getProperty(GenerisRdf::PROPERTY_USER_TIMEZONE),
-                $this->ontology->getProperty(GenerisRdf::PROPERTY_USER_INTERFACE_MODE)
+                $this->ontology->getProperty(GenerisRdf::PROPERTY_USER_TIMEZONE)
             ]
         );
 
@@ -80,36 +65,10 @@ class UserSettingsService implements UserSettingsServiceInterface
             $timezone = (string) current($props[GenerisRdf::PROPERTY_USER_TIMEZONE]);
         }
 
-        $userSettings = new UserSettings(
+        return new UserSettings(
             $timezone ?? $this->defaultTimeZone,
             $uiLanguageCode ?? null,
             $dataLanguageCode ?? null
         );
-
-        if (
-            $this->featureFlagChecker->isEnabled(
-                FeatureFlagCheckerInterface::FEATURE_FLAG_SOLAR_DESIGN_ENABLED
-            )
-        ) {
-            $userSettings->setSetting(
-                UserSettingsInterface::INTERFACE_MODE,
-                empty($props[GenerisRdf::PROPERTY_USER_INTERFACE_MODE])
-                    ? GenerisRdf::PROPERTY_USER_INTERFACE_MODE_SIMPLE
-                    : current($props[GenerisRdf::PROPERTY_USER_INTERFACE_MODE])->getUri()
-            );
-        }
-
-        return $userSettings;
-    }
-
-    public function getCurrentUserSettings(): UserSettingsInterface
-    {
-        $currentUser = $this->userService->getCurrentUser();
-
-        if ($currentUser) {
-            return $this->get($currentUser);
-        }
-
-        return new UserSettings($this->defaultTimeZone);
     }
 }

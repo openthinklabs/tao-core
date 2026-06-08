@@ -38,8 +38,7 @@ class RegisterTaskQueueServices extends InstallAction
     public function __invoke($params)
     {
         $taskLogService = new TaskLog([
-            TaskLogInterface::OPTION_TASK_LOG_BROKER => new TaskLog\Broker\RdsTaskLogBroker('default'),
-            TaskLogInterface::OPTION_DEFAULT_BATCH_SIZE => TaskLogInterface::DEFAULT_BATCH_SIZE
+            TaskLogInterface::OPTION_TASK_LOG_BROKER => new TaskLog\Broker\RdsTaskLogBroker('default')
         ]);
         $this->registerService(TaskLogInterface::SERVICE_ID, $taskLogService);
 

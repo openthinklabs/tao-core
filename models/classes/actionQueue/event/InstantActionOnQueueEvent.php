@@ -31,7 +31,7 @@ use oat\tao\model\actionQueue\QueuedAction;
  */
 class InstantActionOnQueueEvent implements Event
 {
-    public const EVENT_NAME = __CLASS__;
+    const EVENT_NAME = __CLASS__;
 
     /**
      * (non-PHPdoc)

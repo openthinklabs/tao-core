@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -61,18 +59,15 @@ class tao_helpers_form_elements_xhtml_Password extends tao_helpers_form_elements
 
         // custom label rendering
         if (! isset($this->attributes['noLabel'])) {
-            $returnValue .= "<label class='form_desc' for='{$this->name}'>" . _dh($this->getDescription())
-                . (strlen($this->value) == 0 ? '' : ' (change)') . "</label>";
+            $returnValue .= "<label class='form_desc' for='{$this->name}'>" . _dh($this->getDescription()) . (strlen($this->value) == 0 ? '' : ' (change)') . "</label>";
         } else {
             unset($this->attributes['noLabel']);
         }
-        $returnValue .= "<input type='password' name='{$this->name}[]' id='{$this->name}' "
-            . "data-testid='{$this->getDescription()}' ";
+        $returnValue .= "<input type='password' name='{$this->name}[]' id='{$this->name}' data-testid='{$this->getDescription()}' ";
         $returnValue .= $this->renderAttributes();
         $returnValue .= ' value=""  /><br /><br />';
         $returnValue .= "<label class='form_desc'></label>";
-        $returnValue .= "<input type='password' name='{$this->name}[]' id='{$this->name}' "
-            . "data-testid='{$this->getDescription()}' ";
+        $returnValue .= "<input type='password' name='{$this->name}[]' id='{$this->name}' data-testid='{$this->getDescription()}' ";
         $returnValue .= $this->renderAttributes();
         $returnValue .= ' value=""  />';
 

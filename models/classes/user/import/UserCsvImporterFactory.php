@@ -25,15 +25,13 @@ use oat\tao\model\import\service\ImportMapperInterface;
 
 class UserCsvImporterFactory extends ImporterFactory
 {
-    public const SERVICE_ID = 'tao/userCsvImporterFactory';
+    const SERVICE_ID = 'tao/userCsvImporterFactory';
 
     /**
      * @return ImportMapperInterface
      */
     protected function getDefaultMapper()
     {
-        return new OntologyUserMapper([
-            UserMapperInterface::OPTION_SCHEMA => $this->getOption(self::OPTION_DEFAULT_SCHEMA)
-        ]);
+        return new OntologyUserMapper([UserMapperInterface::OPTION_SCHEMA => $this->getOption(self::OPTION_DEFAULT_SCHEMA)]);
     }
 }

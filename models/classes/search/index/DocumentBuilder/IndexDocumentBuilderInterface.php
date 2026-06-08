@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,9 +36,10 @@ interface IndexDocumentBuilderInterface
 
     /**
      * Creates IndexDocument object from the array data
-     * @param $resourceData $array
+     * @param $resource $array
      * @return IndexDocument
      * @throws \common_Exception
      */
-    public function createDocumentFromArray(array $resourceData = []): IndexDocument;
+    public function createDocumentFromArray(array $resource = []): IndexDocument;
 }
+

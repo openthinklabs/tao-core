@@ -29,7 +29,7 @@ use ReflectionMethod;
 
 class ControllerService extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/controllerService';
+    const SERVICE_ID = 'tao/controllerService';
 
     /**
      * @param $controllerClass

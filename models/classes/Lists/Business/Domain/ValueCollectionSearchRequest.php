@@ -78,7 +78,7 @@ class ValueCollectionSearchRequest
 
     public function hasValueCollectionUri(): bool
     {
-        return !empty($this->valueCollectionUri);
+        return null !== $this->valueCollectionUri;
     }
 
     public function getValueCollectionUri(): string
@@ -145,9 +145,7 @@ class ValueCollectionSearchRequest
 
     public function addExcluded(string $excluded): self
     {
-        if (!empty($excluded)) {
-            $this->excluded[] = $excluded;
-        }
+        $this->excluded[] = $excluded;
 
         return $this;
     }

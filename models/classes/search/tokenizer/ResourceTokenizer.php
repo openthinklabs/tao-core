@@ -30,6 +30,7 @@ namespace oat\tao\model\search\tokenizer;
  */
 interface ResourceTokenizer
 {
+   
     /**
      * @param \core_kernel_classes_Resource $value
      * @return array list of strings

@@ -85,13 +85,11 @@ class DependencyRepositoryContextTest extends TestCase
     public function invalidValues(): array
     {
         $invalidValues = [
-            new class () {
-            },
+            new class() {},
             'string',
             123,
             null,
-            [new class () {
-            }],
+            [new class() {}],
             [[]],
             [123],
             [null],

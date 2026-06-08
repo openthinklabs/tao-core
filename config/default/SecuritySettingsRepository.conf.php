@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 use oat\tao\model\security\DataAccess\Repository\SecuritySettingsRepository;
 use oat\tao\model\service\SettingsStorage;

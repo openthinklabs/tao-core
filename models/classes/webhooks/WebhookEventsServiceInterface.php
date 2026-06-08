@@ -24,7 +24,7 @@ use oat\oatbox\event\Event;
 
 interface WebhookEventsServiceInterface
 {
-    public const SERVICE_ID = 'tao/webhookEventsService';
+    const SERVICE_ID = 'tao/webhookEventsService';
 
     /**
      * Save new supported event to service config and attach listener to eventManager

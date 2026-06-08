@@ -10,6 +10,7 @@ use oat\tao\model\metadata\injector\Injector;
 
 class OntologyMetadataTest extends TestCase
 {
+
     public function testImport()
     {
         try {

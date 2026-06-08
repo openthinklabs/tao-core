@@ -9,8 +9,10 @@ use oat\tao\scripts\SyncModels;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use Doctrine\Migrations\Exception\IrreversibleMigration;
 
+
 final class Version202110221119032234_tao extends AbstractMigration
 {
+
     public function getDescription(): string
     {
         return 'This migration will add ur-IN locale to RTL map';

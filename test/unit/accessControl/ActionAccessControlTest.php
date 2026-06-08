@@ -113,15 +113,7 @@ class ActionAccessControlTest extends TestCase
 
         $this->configureActionAccessControl(['role1' => 'READ', 'role2' => 'WRITE', 'role3' => 'GRANT']);
         $this->assertEquals(
-            [
-                self::TEST_CONTROLLER => [
-                    self::TEST_ACTION => [
-                        'role1' => 'READ',
-                        'role2' => 'WRITE',
-                        'role3' => 'GRANT'
-                    ]
-                ]
-            ],
+            [self::TEST_CONTROLLER => [self::TEST_ACTION => ['role1' => 'READ', 'role2' => 'WRITE', 'role3' => 'GRANT']]],
             $this->getActionAccessControlPermissions()
         );
 
@@ -186,7 +178,7 @@ class ActionAccessControlTest extends TestCase
 
     private function createUser(): TestUser
     {
-        return new class () extends TestUser {
+        return new class extends TestUser {
             private $roles;
 
             public function getRoles()

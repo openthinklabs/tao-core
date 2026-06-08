@@ -26,9 +26,9 @@ use oat\tao\model\cliArgument\argument\Argument;
 
 class ArgumentService extends ArgumentLoader
 {
-    public const SERVICE_ID = 'tao/cliArgumentLoader';
+    const SERVICE_ID = 'tao/cliArgumentLoader';
 
-    public const ARGUMENT_OPTION = 'arguments';
+    const ARGUMENT_OPTION = 'arguments';
 
     /**
      * Get arguments from config and check if there are applicable

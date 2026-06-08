@@ -6,7 +6,7 @@ use oat\tao\helpers\ApplicationHelper;
 <footer aria-label="<?=__('About')?>" class="dark-bar">
     <div class="lft">
         © 2013 - <?= date('Y') ?> · <span class="tao-version"><?= ApplicationHelper::getVersionName() ?></span> ·
-        <a href="http://taotesting.com" target="_blank">Open Assessment Technologies S.A.</a>
+        <a href="#" target="_blank">Universitas Andalas</a>
         · <?= __('All rights reserved.') ?>
         <?php $releaseMsgData = Layout::getReleaseMsgData();
         if ($releaseMsgData['msg'] && ($releaseMsgData['is-unstable'] || $releaseMsgData['is-sandbox'])): ?>
@@ -15,7 +15,7 @@ use oat\tao\helpers\ApplicationHelper;
                     <span class="icon-warning"></span>
                 <?php endif; ?>
                 <?=$releaseMsgData['version-type']?> ·
-            <a href="<?=$releaseMsgData['link']?>" target="_blank"><?=$releaseMsgData['msg']?></a></span>
+            <a href="#" target="_blank"><?=$releaseMsgData['msg']?></a></span>
         <?php endif; ?>
     </div>
     <div class="rgt">
@@ -23,7 +23,7 @@ use oat\tao\helpers\ApplicationHelper;
         if (! empty($operatedByData['name'])): ?>
             <?= __('Operated By ') ?>
             <?php if (! empty($operatedByData['email'])): ?>
-                <a href="<?= $operatedByData['email'] ?>"><?= $operatedByData['name'] ?></a>
+                <a href="#"><?= $operatedByData['name'] ?></a>
             <?php else: ?>
                 <?= $operatedByData['name'] ?>
             <?php endif; ?>

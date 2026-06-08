@@ -31,24 +31,25 @@ use common_exception_InconsistentData;
  **/
 class SimpleLock implements Lock
 {
+    
     /**
      * the resource being locked
      * @var core_kernel_classe_Resource
      */
     private $resource;
-
+    
     /**
      * the owner of the lock
      * @var string
      */
     private $ownerId;
-
+    
     /**
      * the epoch when the lock was set up
      * @var string
      */
     private $epoch;
-
+    
     /**
      *
      * @author "Patrick Plichart, <patrick@taotesting.com>"
@@ -69,7 +70,7 @@ class SimpleLock implements Lock
         $this->ownerId = $ownerId;
         $this->epoch = $epoch;
     }
-
+    
     /**
      *
      * @author "Patrick Plichart, <patrick@taotesting.com>"
@@ -79,7 +80,7 @@ class SimpleLock implements Lock
     {
         return $this->resource;
     }
-
+    
     /**
      *
      * @author "Patrick Plichart, <patrick@taotesting.com>"
@@ -88,7 +89,7 @@ class SimpleLock implements Lock
     {
         return $this->epoch;
     }
-
+    
     public function getOwnerId()
     {
         return $this->ownerId;

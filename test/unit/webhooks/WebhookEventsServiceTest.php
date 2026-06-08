@@ -82,7 +82,7 @@ class WebhookEventsServiceTest extends TestCase
         ]);
 
         $service->setServiceLocator($this->getServiceLocatorMock([
-            WebhookRegistryInterface::class => $this->whConfigRegistryMock,
+            WebhookRegistryInterface::SERVICE_ID => $this->whConfigRegistryMock,
             WebhookTaskServiceInterface::SERVICE_ID => $this->whTaskServiceMock
         ]));
 
@@ -168,7 +168,7 @@ class WebhookEventsServiceTest extends TestCase
         ]);
 
         $service->setServiceLocator($this->getServiceLocatorMock([
-            WebhookRegistryInterface::class => $this->whConfigRegistryMock,
+            WebhookRegistryInterface::SERVICE_ID => $this->whConfigRegistryMock,
             WebhookTaskServiceInterface::SERVICE_ID => $this->whTaskServiceMock
         ]));
 
@@ -276,7 +276,7 @@ class WebhookEventsServiceTest extends TestCase
         ]);
 
         $service->setServiceLocator($this->getServiceLocatorMock([
-            WebhookRegistryInterface::class => $this->whConfigRegistryMock
+            WebhookRegistryInterface::SERVICE_ID => $this->whConfigRegistryMock
         ]));
 
         $service->handleEvent($event);

@@ -54,11 +54,7 @@ class SqlCreatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->exportedTable = new ExportedTable(
-            $this->rowsFixture,
-            $this->typeMappingFixture,
-            $this->tableNameFixture
-        );
+        $this->exportedTable = new ExportedTable($this->rowsFixture, $this->typeMappingFixture, $this->tableNameFixture);
     }
 
     public function testGetTableName()
@@ -66,7 +62,7 @@ class SqlCreatorTest extends TestCase
         $sqlCreator = new SqlCreator($this->exportedTable);
         $sql = $sqlCreator->getExportSql();
 
-        $sqlExpected = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'sqlFixture.sql');
+        $sqlExpected = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR .'sqlFixture.sql');
 
         $this->assertEquals($sqlExpected, $sql);
     }

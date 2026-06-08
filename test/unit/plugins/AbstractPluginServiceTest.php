@@ -60,6 +60,7 @@ class PluginRegistry extends AbstractPluginRegistry
  */
 class PluginService extends AbstractPluginService
 {
+
 }
 
 /**

@@ -44,7 +44,7 @@ final class SessionCookieAttributeCollection implements IteratorAggregate
     /**
      * @return iterable|SessionCookieAttributeInterface[]
      */
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         yield from $this->attributes;
     }

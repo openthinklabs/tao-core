@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -32,12 +32,10 @@ use oat\tao\model\Lists\Business\Domain\Metadata;
 use oat\tao\model\Lists\Business\Domain\MetadataCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
-use tao_helpers_form_elements_Calendar;
 use tao_helpers_form_elements_Checkbox as CheckBox;
 use tao_helpers_form_elements_Combobox as ComboBox;
 use tao_helpers_form_elements_Htmlarea as HtmlArea;
 use tao_helpers_form_elements_Radiobox as RadioBox;
-use tao_helpers_form_elements_Readonly;
 use tao_helpers_form_elements_Textarea as TextArea;
 use tao_helpers_form_elements_Textbox as TextBox;
 use tao_helpers_form_elements_xhtml_Searchtextbox as SearchTextBox;
@@ -50,7 +48,6 @@ class GetClassMetadataValuesService extends ConfigurableService
         TextBox::WIDGET_ID,
         TextArea::WIDGET_ID,
         HtmlArea::WIDGET_ID,
-        tao_helpers_form_elements_Readonly::WIDGET_ID,
     ];
     public const LIST_WIDGETS = [
         RadioBox::WIDGET_ID,
@@ -60,20 +57,9 @@ class GetClassMetadataValuesService extends ConfigurableService
         SearchDropdown::WIDGET_ID,
     ];
     public const DATA_TYPE_LIST = 'list';
-    public const DATA_TYPE_CALENDAR = 'calendar';
     public const DATA_TYPE_TEXT = 'text';
 
     private const BASE_LIST_ITEMS_URI = '/tao/PropertyValues/get?propertyUri=%s';
-
-    /** @var array */
-    private $ignoredWidgets = [];
-
-    public function ignoreWidgets(array $ignoreWidgets): self
-    {
-        $this->ignoredWidgets = $ignoreWidgets;
-
-        return $this;
-    }
 
     public function getByClassRecursive(
         core_kernel_classes_Class $class,
@@ -101,7 +87,7 @@ class GetClassMetadataValuesService extends ConfigurableService
                 continue;
             }
 
-            if (!$this->isCalendar($property) && !$this->isTextWidget($property) && !$this->isListWidget($property)) {
+            if (!$this->isTextWidget($property) && !$this->isListWidget($property)) {
                 continue;
             }
 
@@ -111,7 +97,7 @@ class GetClassMetadataValuesService extends ConfigurableService
             $metadata = (new Metadata())
                 ->setLabel($property->getLabel())
                 ->setAlias($property->getAlias())
-                ->setType($this->getWidgetType($property))
+                ->setType($this->isListWidget($property) ? self::DATA_TYPE_LIST : self::DATA_TYPE_TEXT)
                 ->setValues($values)
                 ->setUri($uri)
                 ->setPropertyUri($property->getUri());
@@ -150,39 +136,20 @@ class GetClassMetadataValuesService extends ConfigurableService
         return $values;
     }
 
-    private function getWidgetType(core_kernel_classes_Property $property): string
-    {
-        if ($this->isListWidget($property)) {
-            return self::DATA_TYPE_LIST;
-        }
-
-        if ($this->isCalendar($property)) {
-            return self::DATA_TYPE_CALENDAR;
-        }
-
-        return self::DATA_TYPE_TEXT;
-    }
-
     private function isTextWidget(core_kernel_classes_Property $property): bool
     {
-        return $this->isWidgetType($property, self::TEXT_WIDGETS);
+        $widgetUri = $property->getWidget()->getUri();
+        return ($widgetUri)
+            ? in_array($widgetUri, self::TEXT_WIDGETS, true)
+            : false;
     }
 
     private function isListWidget(core_kernel_classes_Property $property): bool
     {
-        return $this->isWidgetType($property, self::LIST_WIDGETS);
-    }
-
-    private function isCalendar(core_kernel_classes_Property $property): bool
-    {
-        return $this->isWidgetType($property, [tao_helpers_form_elements_Calendar::WIDGET_ID]);
-    }
-
-    private function isWidgetType(core_kernel_classes_Property $property, array $types): bool
-    {
         $widgetUri = $property->getWidget()->getUri();
-
-        return ($widgetUri) ? in_array($widgetUri, $types, true) : false;
+        return ($widgetUri) ?
+            in_array($widgetUri, self::LIST_WIDGETS, true)
+            : false;
     }
 
     private function getListItemsUri(core_kernel_classes_Property $property, ?array $values): ?string
@@ -196,15 +163,7 @@ class GetClassMetadataValuesService extends ConfigurableService
 
     private function isWidget(core_kernel_classes_Property $property): bool
     {
-        $widget = $property->getWidget();
-
-        if (!$widget instanceof core_kernel_classes_Resource) {
-            return false;
-        }
-
-        $widgetUri = $widget->getUri();
-
-        return $widgetUri && !in_array($widgetUri, $this->ignoredWidgets, true);
+        return $property->getWidget() instanceof core_kernel_classes_Resource;
     }
 
     private function getValueCollectionService(): ValueCollectionService

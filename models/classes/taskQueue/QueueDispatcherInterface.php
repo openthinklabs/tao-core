@@ -31,30 +31,30 @@ use Psr\Log\LoggerAwareInterface;
  */
 interface QueueDispatcherInterface extends QueuerInterface, LoggerAwareInterface
 {
-    public const SERVICE_ID = 'tao/taskQueue';
+    const SERVICE_ID = 'tao/taskQueue';
 
-    public const FILE_SYSTEM_ID = 'taskQueueStorage';
+    const FILE_SYSTEM_ID = 'taskQueueStorage';
 
     /**
      * Array of queues
      */
-    public const OPTION_QUEUES = 'queues';
+    const OPTION_QUEUES = 'queues';
 
     /**
      * Name of the default queue. Task without specified queue will be published here.
      */
-    public const OPTION_DEFAULT_QUEUE = 'default_queue';
+    const OPTION_DEFAULT_QUEUE = 'default_queue';
 
     /**
      * An array of tasks names with the specified queue where the tasks needs to be published to.
      */
-    public const OPTION_TASK_TO_QUEUE_ASSOCIATIONS = 'task_to_queue_associations';
+    const OPTION_TASK_TO_QUEUE_ASSOCIATIONS = 'task_to_queue_associations';
 
-    public const OPTION_TASK_LOG = 'task_log';
+    const OPTION_TASK_LOG = 'task_log';
 
-    public const OPTION_TASK_SELECTOR_STRATEGY = 'task_selector_strategy';
+    const OPTION_TASK_SELECTOR_STRATEGY = 'task_selector_strategy';
 
-    public const QUEUE_PREFIX = 'TQ';
+    const QUEUE_PREFIX = 'TQ';
 
     /**
      * Add new Queue.
@@ -136,13 +136,7 @@ interface QueueDispatcherInterface extends QueuerInterface, LoggerAwareInterface
      * @param boolean $masterStatus
      * @return CallbackTaskInterface
      */
-    public function createTask(
-        callable $callable,
-        array $parameters = [],
-        $label = null,
-        TaskInterface $parent = null,
-        $masterStatus = false
-    );
+    public function createTask(callable $callable, array $parameters = [], $label = null, TaskInterface $parent = null, $masterStatus = false);
 
     /**
      * Are all queues a sync one?

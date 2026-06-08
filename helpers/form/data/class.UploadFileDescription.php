@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2016 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2016 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -34,11 +32,12 @@ use oat\tao\model\upload\UploadService;
  */
 class tao_helpers_form_data_UploadFileDescription extends tao_helpers_form_data_FileDescription
 {
+
     /** Action form: add */
-    public const FORM_ACTION_ADD = 'add';
+    const FORM_ACTION_ADD = 'add';
 
     /** Action form: delete */
-    public const FORM_ACTION_DELETE = 'delete';
+    const FORM_ACTION_DELETE = 'delete';
 
     /**
      * The mime/type of the file e.g. text/plain.
@@ -84,9 +83,7 @@ class tao_helpers_form_data_UploadFileDescription extends tao_helpers_form_data_
         parent::__construct($name, $size);
         $this->type = $type;
         if ($tmpPath) {
-            $this->tmpPath = ServiceManager::getServiceManager()
-                ->get(UploadService::SERVICE_ID)
-                ->universalizeUpload($tmpPath);
+            $this->tmpPath = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID)->universalizeUpload($tmpPath);
         }
         $this->action = is_null($action) ? self::FORM_ACTION_ADD : $action;
     }

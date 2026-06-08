@@ -22,24 +22,23 @@ declare(strict_types=1);
 
 namespace oat\tao\model\search\tasks;
 
-use common_Exception;
-use common_exception_InconsistentData;
-use common_exception_MissingParameter;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\action\Action;
 use oat\oatbox\log\LoggerAwareTrait;
-use oat\oatbox\reporting\Report;
-use oat\tao\model\AdvancedSearch\AdvancedSearchChecker;
-use oat\tao\model\search\index\DocumentBuilder\IndexDocumentBuilderInterface;
-use oat\tao\model\search\SearchProxy;
+use oat\tao\model\search\index\DocumentBuilder\IndexDocumentBuilder;
+use oat\tao\model\search\index\IndexService;
+use oat\tao\model\search\Search;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
-use oat\taoAdvancedSearch\model\Index\Service\AdvancedSearchIndexDocumentBuilder;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
+use common_report_Report as Report;
 
 /**
+ * Class UpdateResourceInIndex
+ *
  * @author Ilya Yarkavets <ilya@taotesting.com>
+ * @package oat\tao\model\search\tasks
  */
 class UpdateResourceInIndex implements Action, ServiceLocatorAwareInterface, TaskAwareInterface
 {
@@ -48,96 +47,55 @@ class UpdateResourceInIndex implements Action, ServiceLocatorAwareInterface, Tas
     use TaskAwareTrait;
     use LoggerAwareTrait;
 
-    /** @var string[] */
-    private array $resourceUris = [];
-
-    /**
-     * @throws common_Exception
-     * @throws common_exception_InconsistentData
-     * @throws common_exception_MissingParameter
-     */
     public function __invoke($params): Report
     {
-        if (empty($params[0])) {
-            throw new common_exception_MissingParameter();
+        if (empty($params) || empty($params[0])) {
+            throw new \common_exception_MissingParameter();
         }
 
-        $resourceUris = is_array($params[0]) ? $params[0] : [$params[0]];
+        $createdResource = $this->getResource($params[0]);
 
-        return $this->getReport(
-            $this->getSearchProxy()->index(
-                $this->getIndexDocuments($resourceUris)
-            )
-        );
-    }
+        /** @var IndexService $indexService */
+        $indexService = $this->getServiceLocator()->get(IndexService::SERVICE_ID);
 
-    /**
-     * @throws common_exception_InconsistentData
-     * @throws common_Exception
-     */
-    private function getIndexDocuments(array $resourceUris): array
-    {
-        $documentBuilder = $this->getDocumentBuilder();
-        $documents = [];
+        /** @var IndexDocumentBuilder $documentBuilder */
+        $documentBuilder = $indexService->getDocumentBuilder();
+        $documentBuilder->setServiceLocator($this->getServiceLocator());
 
-        foreach ($resourceUris as $resourceUri) {
-            $this->resourceUris[] = $resourceUri;
+        $indexDocument = $documentBuilder->createDocumentFromResource($createdResource);
 
-            $documents[] = $documentBuilder->createDocumentFromResource($this->getResource($resourceUri));
-        }
+        /** @var Search $searchService */
+        $searchService = $this->getServiceLocator()->get(Search::SERVICE_ID);
 
-        return $documents;
-    }
+        $numberOfIndexed = $searchService->index([$indexDocument]);
 
-    private function getReport($numberOfIndexed): Report
-    {
-        $expectedIndexations = count($this->resourceUris);
-        $resourceUris = implode(',', $this->resourceUris);
+        if ($numberOfIndexed === 1) {
+            $type = Report::TYPE_SUCCESS;
+            $message = sprintf(
+                'Document in index was successfully updated for resource %s',
+                $indexDocument->getId()
+            );
 
-        if ($numberOfIndexed === $expectedIndexations) {
-            $message = sprintf('Document(s) "%s" successfully indexed', $resourceUris);
-
-            $this->logInfo($message);
-
-            return Report::createSuccess($message);
-        }
-
-        if ($numberOfIndexed === 0) {
-            $message = sprintf('Expecting document(s) to be indexed (got zero) for ID(s) "%s"', $resourceUris);
+            $this->logDebug($message);
+        } elseif ($numberOfIndexed === 0) {
+            $type = Report::TYPE_ERROR;
+            $message = sprintf(
+                'Expecting one document to be indexed (got zero) for ID "%s"',
+                $indexDocument->getId()
+            );
 
             $this->logError($message);
+        } else {
+            $type = Report::TYPE_WARNING;
+            $message = sprintf(
+                'Expecting a single document to be indexed (got %d) for ID "%s"',
+                $numberOfIndexed,
+                $indexDocument->getId()
+            );
 
-            return Report::createError($message);
+            $this->logWarning($message);
         }
 
-        $message = sprintf(
-            'Expecting "%s" document(s) to be indexed (got %s) for ID(s) "%s"',
-            $expectedIndexations,
-            $numberOfIndexed,
-            $resourceUris
-        );
-
-        $this->logWarning($message);
-
-        return Report::createWarning($message);
-    }
-
-    private function getDocumentBuilder(): IndexDocumentBuilderInterface
-    {
-        if ($this->getAdvancedSearchChecker()->isEnabled()) {
-            return $this->getServiceLocator()->getContainer()->get(AdvancedSearchIndexDocumentBuilder::class);
-        }
-
-        return $this->getServiceLocator()->getContainer()->get(IndexDocumentBuilderInterface::class);
-    }
-
-    private function getSearchProxy(): SearchProxy
-    {
-        return $this->getServiceLocator()->getContainer()->get(SearchProxy::SERVICE_ID);
-    }
-
-    private function getAdvancedSearchChecker(): AdvancedSearchChecker
-    {
-        return $this->getServiceLocator()->getContainer()->get(AdvancedSearchChecker::class);
+        return new Report($type, $message);
     }
 }

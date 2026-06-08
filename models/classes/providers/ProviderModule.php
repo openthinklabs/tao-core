@@ -30,4 +30,5 @@ use oat\tao\model\modules\DynamicModule;
  */
 class ProviderModule extends DynamicModule
 {
+
 }

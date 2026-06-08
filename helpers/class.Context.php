@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,10 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -32,6 +29,7 @@
  */
 class tao_helpers_Context
 {
+
     /**
      * The list of current loaded modes. This array contains strings.
      *
@@ -51,13 +49,11 @@ class tao_helpers_Context
     public static function load($mode)
     {
         if (!is_string($mode)) {
-            throw new InvalidArgumentException(
-                'Try to load an irregular mode in the context. The mode must be a string, ' . gettype($mode) . ' given.'
-            );
+            throw new InvalidArgumentException('Try to load an irregular mode in the context. The mode must be a string, ' . gettype($mode) . ' given.');
         } elseif (empty($mode)) {
             throw new InvalidArgumentException('Cannot load an empty mode in the context.');
         }
-
+        
         if (!in_array($mode, self::$current)) {
             self::$current[] = $mode;
         }
@@ -74,15 +70,13 @@ class tao_helpers_Context
     public static function check($mode)
     {
         $returnValue = (bool) false;
-
+        
         if (!is_string($mode)) {
-            throw new InvalidArgumentException(
-                'Try to check an irregular mode. The mode must be a string, ' . gettype($mode) . ' given.'
-            );
+            throw new InvalidArgumentException('Try to check an irregular mode. The mode must be a string, ' . gettype($mode) . ' given.');
         } elseif (empty($mode)) {
             throw new InvalidArgumentException('Cannot check an empty mode.');
         }
-
+        
         $returnValue = in_array($mode, self::$current);
 
         return (bool) $returnValue;
@@ -109,14 +103,11 @@ class tao_helpers_Context
     {
 
         if (!is_string($mode)) {
-            throw new InvalidArgumentException(
-                'Try to unload an irregular mode in the context. The mode must be a string, ' . gettype($mode)
-                    . ' given.'
-            );
+            throw new InvalidArgumentException('Try to unload an irregular mode in the context. The mode must be a string, ' . gettype($mode) . ' given.');
         } elseif (empty($mode)) {
             throw new InvalidArgumentException('Cannot unload an empty mode in the context.');
         }
-
+        
         if (in_array($mode, self::$current)) {
             $index = array_search($mode, self::$current);
             if ($index !== false) {
@@ -124,7 +115,7 @@ class tao_helpers_Context
             }
         }
     }
-
+    
     /**
      * Get the set of currently loaded modes.
      *

@@ -159,7 +159,8 @@ class MigrationAction extends ScriptAction
         int $pickSize,
         string $taskClass,
         bool $repeat = true
-    ): CallbackTaskInterface {
+    ): CallbackTaskInterface
+    {
         /** @var QueueDispatcherInterface $queueDispatcher */
         $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
 

@@ -30,4 +30,5 @@ namespace oat\tao\model\actionQueue;
  */
 class ActionQueueException extends \Exception
 {
+
 }

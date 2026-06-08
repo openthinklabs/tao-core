@@ -16,15 +16,7 @@
  * Copyright (c) 2022 Open Assessment Technologies SA;
  */
 
-/**
- * Feature visibility check examples:
- *  configuration: {path/featureA: 'show'}
- *
- *  feature.isVisible('path/featureA') return true
- *  feature.isVisible('path/featureB') return true
- *  feature.isVisible('path/featureB', false) return false
- */
-define(['module', 'core/logger'], function (module, loggerFactory) {
+define(['module', 'core/logger'], function(module, loggerFactory) {
     'use strict';
     const config = module.config();
     const featuresVisibilityList = config.visibility || {};
@@ -49,14 +41,13 @@ define(['module', 'core/logger'], function (module, loggerFactory) {
 
     return {
         /**
-         * Check if the feature is visible by provided featurePath
-         * and check 'show' or 'hide' status from configuration
-         * second parameter is visibility by default if feature is missed from configuration.
+         * Check if the feature is configured to be visible
+         * based on the module configuration
+         * and features that are not in the configuration are visible by default
          * @param {String} featurePath full path to feature ex('items/feature')
-         * @param {Boolean} isVisibleByDefault feature visibility if missed from configurations
-         * @returns {Boolean} true if feature is visible
+         * @returns {Boolean} true if feature is visible (or missed from the configuration)
          */
-        isVisible(featurePath = '', isVisibleByDefault = true) {
+        isVisible(featurePath = '') {
             let matchingPath = null;
 
             featuresKeys.some(path => {
@@ -71,7 +62,7 @@ define(['module', 'core/logger'], function (module, loggerFactory) {
                 }
             });
 
-            return matchingPath === null ? isVisibleByDefault : featuresVisibilityList[matchingPath] === 'show';
+            return matchingPath === null || featuresVisibilityList[matchingPath] === 'show';
         }
     };
 });

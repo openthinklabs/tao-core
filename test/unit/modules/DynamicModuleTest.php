@@ -30,8 +30,9 @@ use oat\generis\test\TestCase;
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
-class DynamicModuleTest extends TestCase
+class DynamicModuleTestModuleTest extends TestCase
 {
+
     /**
      * Data provider
      * @return array the data
@@ -166,8 +167,7 @@ class DynamicModuleTest extends TestCase
      */
     public function testJsonSerialize()
     {
-        $expected = '{"id":"bar","module":"bar\/bar","bundle":"modules\/bundle.min","position":12,"name":"Bar",'
-            . '"description":"The best bar ever","category":"dummy","active":false,"tags":["dummy","goofy"]}';
+        $expected = '{"id":"bar","module":"bar\/bar","bundle":"modules\/bundle.min","position":12,"name":"Bar","description":"The best bar ever","category":"dummy","active":false,"tags":["dummy","goofy"]}';
 
         $DynamicModule = new DynamicModule('bar', 'bar/bar', 'dummy', [
             'name' => 'Bar',

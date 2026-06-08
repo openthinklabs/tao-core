@@ -56,8 +56,7 @@ abstract class AbstractQueueBroker implements QueueBrokerInterface, PhpSerializa
 
     public function __toPhpCode()
     {
-        return 'new ' . get_called_class() . '('
-            . \common_Utils::toHumanReadablePhpString($this->numberOfTasksToReceive) . ')';
+        return 'new ' . get_called_class() . '(' . \common_Utils::toHumanReadablePhpString($this->numberOfTasksToReceive) . ')';
     }
 
     /**
@@ -93,21 +92,13 @@ abstract class AbstractQueueBroker implements QueueBrokerInterface, PhpSerializa
     }
 
     /**
-     * @inheritdoc
-     */
-    public function hasPreFetchedMessages(): bool
-    {
-        return $this->preFetchedQueue->count();
-    }
-
-    /**
      * Pop a task from the internal queue.
      *
      * @return TaskInterface|null
      */
     private function popPreFetchedMessage()
     {
-        if ($this->hasPreFetchedMessages()) {
+        if ($this->preFetchedQueue->count()) {
             return $this->preFetchedQueue->dequeue();
         }
 

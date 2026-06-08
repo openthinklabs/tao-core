@@ -55,203 +55,54 @@
             ]
         }
     },
-  "minimum-stability": "dev",
-  "prefer-stable": false,
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/generis.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/tao-community.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-community.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/tao-core.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-funcacl.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-dac-simple.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-itemqti.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-testtaker.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-group.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-item.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-itemqti-pci.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-itemqti-pic.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-test.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-testqti.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-outcome.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-outcomeui.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-outcomerds.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-outcomekeyvalue.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-outcomelti.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-delivery.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-delivery-rdf.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-lti.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-ltideliveryprovider.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-revision.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-mediamanager.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-pcisample.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-backoffice.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-proctoring.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-clientdiag.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-eventlog.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-task-queue.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/extension-tao-testqti-previewer.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/jig.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/composer-npm-bridge.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/imsglobal-lti.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/oatbox-extension-installer.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/lib-generis-search.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/lib-tao-qti.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/lib-test-cat.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/lib-tao-dtms.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/lib-lti1p3-ags.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/openthinklabs/lib-lti1p3-core.git"
-    }
-  ],    
+    "repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/generis.git"
+		},        
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/oatbox-extension-installer.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/composer-npm-bridge.git"
+		},        
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/jig.git"
+		},
+		{
+			"type": "vcs",
+			"url": "git@github.com:openthinklabs/lib-generis-search.git"
+		}                     
+    ],
     "require": {
+        "php": "^7.1",
         "ext-json": "*",
         "ext-mbstring": "*",
         "doctrine/dbal": "^2.10",
         "ezyang/htmlpurifier": "^4.9",
-        "guzzlehttp/guzzle": "^7.9",
-        "guzzlehttp/psr7": "^2.7.0",
-        "openthinklabs/imsglobal-lti": "dev-master",
-        "justinrainbow/json-schema": "^5.2.1",
-        "openthinklabs/jig": "dev-master",
-        "openthinklabs/composer-npm-bridge": "dev-master",
-        "openthinklabs/oatbox-extension-installer": "dev-master",
-        "openthinklabs/generis": "dev-master",
+        "guzzlehttp/guzzle": "6.5.5",
+        "guzzlehttp/psr7": "1.6.1",
+        "imsglobal/lti": "^3.0",
+        "justinrainbow/json-schema": "5.2.1",
+        "openthinklabs/jig": "0.1.1",
+        "openthinklabs/composer-npm-bridge": "0.4.3.2",
+        "openthinklabs/oatbox-extension-installer": "1.2.2",
+        "openthinklabs/generis": "~15.19.2.1",
         "composer/package-versions-deprecated": "^1.11",
         "paragonie/random_compat": "^2.0",
-        "phpdocumentor/reflection-docblock": "^5.2",
+        "phpdocumentor/reflection-docblock": "2.*",
         "pimple/pimple": "^3.0",
         "psr/http-message": "~1.0",
         "slim/slim": "^3.0",
         "symfony/dotenv": "~4.3",
-        "doctrine/migrations": "^3.4",
-        "doctrine/collections": "^1.6.7",
+        "doctrine/migrations": "3.0.1",
+        "doctrine/collections": "1.6.7",
         "flow/jsonpath": "~0.5",
-        "jtl-software/opsgenie-client": "^2.0.2",
-        "league/openapi-psr7-validator": "~0.18",
+        "jtl-software/opsgenie-client": "2.0.2",
+        "league/openapi-psr7-validator": "0.9",
         "league/csv": "^9.6"
     },
     "autoload": {
@@ -266,5 +117,12 @@
         "files": [
             "includes/globalHelpers.php"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "openthinklabs/oatbox-extension-installer": true,
+            "composer/package-versions-deprecated": true,
+            "openthinklabs/composer-npm-bridge": true
+        }
     }
 }

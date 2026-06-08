@@ -23,7 +23,6 @@ namespace oat\tao\model\taskQueue;
 
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\mutex\LockTrait;
-use oat\oatbox\service\ServiceManager;
 use oat\tao\model\taskQueue\Queue\Broker\QueueBrokerInterface;
 use oat\tao\model\taskQueue\Queue\Broker\SyncQueueBrokerInterface;
 use oat\tao\model\taskQueue\Task\TaskInterface;
@@ -42,7 +41,7 @@ class Queue implements QueueInterface, TaskLogAwareInterface
     use TaskLogAwareTrait;
     use LockTrait;
 
-    public const LOCK_PREFIX = 'taskqueue_lock_';
+    const LOCK_PREFIX = 'taskqueue_lock_';
     private $name;
 
     /**
@@ -143,7 +142,7 @@ class Queue implements QueueInterface, TaskLogAwareInterface
 
     public function getBroker(): QueueBrokerInterface
     {
-        $this->broker->setServiceLocator($this->getServiceLocator() ?? ServiceManager::getServiceManager());
+        $this->broker->setServiceLocator($this->getServiceLocator());
 
         return $this->broker;
     }
@@ -204,8 +203,10 @@ class Queue implements QueueInterface, TaskLogAwareInterface
 
     /**
      * Count of messages in the queue.
+     *
+     * @return int
      */
-    public function count(): int
+    public function count()
     {
         return $this->getBroker()->count();
     }
@@ -224,14 +225,6 @@ class Queue implements QueueInterface, TaskLogAwareInterface
     public function getNumberOfTasksToReceive()
     {
         return $this->getBroker()->getNumberOfTasksToReceive();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function hasPreFetchedMessages(): bool
-    {
-        return $this->getBroker()->hasPreFetchedMessages();
     }
 
     /**

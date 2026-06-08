@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint157\n"
-"PO-Revision-Date: 2021-06-18T08:52:19\n"
+"Project-Id-Version: TAO 2022.06\n"
+"PO-Revision-Date: 2026-06-08T14:21:54\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: id-ID\n"
@@ -29,7 +29,7 @@ msgid " is "
 msgstr ""
 
 msgid " next"
-msgstr ""
+msgstr "berikutnya"
 
 msgid " Remove criteria"
 msgstr ""
@@ -170,16 +170,16 @@ msgid "AC"
 msgstr ""
 
 msgid "Access Denied"
-msgstr ""
+msgstr "Akses Ditolak"
 
 msgid "Access denied. Please renew your authentication!"
-msgstr ""
+msgstr "Akses ditolak. Harap perbarui otentikasi Anda!"
 
 msgid "Account status"
-msgstr ""
+msgstr "Status akun"
 
 msgid "Action"
-msgstr ""
+msgstr "Aksi"
 
 msgid "Action %s - removed %s positions"
 msgstr ""
@@ -196,9 +196,6 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-msgid "Add / Edit lists"
-msgstr ""
-
 msgid "Add a CSV file"
 msgstr ""
 
@@ -213,6 +210,9 @@ msgid "add criteria"
 msgstr ""
 
 msgid "Add file(s)"
+msgstr ""
+
+msgid "Add index"
 msgstr ""
 
 msgid "Add property"
@@ -239,26 +239,23 @@ msgstr ""
 msgid "Advanced search, add filters"
 msgstr ""
 
-msgid "aliases:"
-msgstr ""
-
 msgid "all"
-msgstr ""
+msgstr "Semua"
 
 msgid "all audios"
 msgstr ""
 
 msgid "All data will be removed in %s"
-msgstr ""
+msgstr "Semua data di %s akan dibuang"
 
 msgid "All fields are required"
-msgstr ""
+msgstr "Semua field wajib diisi"
 
 msgid "all images"
 msgstr ""
 
 msgid "All rights reserved."
-msgstr ""
+msgstr "Hak cipta dilindungi"
 
 msgid "all videos"
 msgstr ""
@@ -315,16 +312,10 @@ msgstr ""
 msgid "Are you sure you want to delete it?"
 msgstr ""
 
-msgid "Argument check failed: %s"
-msgstr ""
-
-msgid "Arguments %s and %s are mutually exclusive"
+msgid "Are you sure you wish to delete it"
 msgstr ""
 
 msgid "Arguments separator"
-msgstr ""
-
-msgid "array"
 msgstr ""
 
 msgid "Assign"
@@ -388,10 +379,10 @@ msgstr ""
 msgid "Bitmap image"
 msgstr ""
 
-msgid "boolean"
+msgid "Browse folders:"
 msgstr ""
 
-msgid "Browse folders:"
+msgid "Browse resources"
 msgstr ""
 
 msgid "Browse..."
@@ -461,7 +452,7 @@ msgstr ""
 msgid "Check-in"
 msgstr ""
 
-msgid "choices:"
+msgid "Choose a type for your property first"
 msgstr ""
 
 msgid "Choose a value..."
@@ -515,6 +506,9 @@ msgstr ""
 msgid "Click to reload."
 msgstr ""
 
+msgid "Click to start"
+msgstr ""
+
 msgid "Close"
 msgstr ""
 
@@ -531,12 +525,6 @@ msgid "Collecting of abandoned actions in the action queue ..."
 msgstr ""
 
 msgid "Column"
-msgstr ""
-
-msgid "command"
-msgstr ""
-
-msgid "Commands:"
 msgstr ""
 
 msgid "comment..."
@@ -561,7 +549,7 @@ msgid "Confirm"
 msgstr ""
 
 msgid "Connect to the TAO platform"
-msgstr ""
+msgstr "<center>UTBK SIMA UNAND</center>"
 
 msgid "Continue"
 msgstr ""
@@ -582,9 +570,6 @@ msgid "cosh"
 msgstr ""
 
 msgid "Cosine"
-msgstr ""
-
-msgid "count"
 msgstr ""
 
 msgid "Create"
@@ -618,6 +603,9 @@ msgid "Current language"
 msgstr ""
 
 msgid "Current playback position"
+msgstr ""
+
+msgid "currently has a dependency established with "
 msgstr ""
 
 msgid "Data imported"
@@ -659,9 +647,6 @@ msgstr ""
 msgid "Default search"
 msgstr ""
 
-msgid "default:"
-msgstr ""
-
 msgid "Define the default values"
 msgstr ""
 
@@ -690,10 +675,16 @@ msgstr ""
 msgid "Deleting search index for %s"
 msgstr ""
 
+msgid "Deleting this property will also remove the dependency"
+msgstr ""
+
 msgid "Demo Sandbox"
 msgstr ""
 
-msgid "Did you mean %s?"
+msgid "Dependency URI Path"
+msgstr ""
+
+msgid "Depends on property"
 msgstr ""
 
 msgid "Digit 0"
@@ -727,6 +718,9 @@ msgid "Digit 9"
 msgstr ""
 
 msgid "Disabled %s"
+msgstr ""
+
+msgid "Do you want to override \"%s\"?"
 msgstr ""
 
 msgid "Do you wish to install the following extension(s):\n"
@@ -818,9 +812,6 @@ msgstr ""
 msgid "Error: %s"
 msgstr ""
 
-msgid "Examples:"
-msgstr ""
-
 msgid "Exclusive (OR)"
 msgstr ""
 
@@ -838,9 +829,6 @@ msgstr ""
 
 #, tao-public
 msgid "Export"
-msgstr ""
-
-msgid "Export "
 msgstr ""
 
 msgid "Export \"%s\" in %s"
@@ -869,6 +857,9 @@ msgid "Factorial"
 msgstr ""
 
 msgid "Failed"
+msgstr ""
+
+msgid "Failed to copy class."
 msgstr ""
 
 msgid "Failed to delete index for %s"
@@ -961,9 +952,6 @@ msgstr ""
 msgid "Fuzzy Matching"
 msgstr ""
 
-msgid "generated-value"
-msgstr ""
-
 msgid "Generis Form"
 msgstr ""
 
@@ -995,7 +983,7 @@ msgid "Height"
 msgstr ""
 
 msgid "Hi, %s<br>You indicated that you have forgotten your TAO password."
-msgstr ""
+msgstr "Halo, %s<br> Anda menyatakan bahwa Anda lupa kata sandi UTBK SIMA Anda."
 
 msgid "Hide detailed report"
 msgstr ""
@@ -1039,13 +1027,7 @@ msgstr ""
 msgid "If you do not wish to reset your password, just ignore this email and your password will remain the same."
 msgstr ""
 
-msgid "Implications failed:"
-msgstr ""
-
 msgid "Import"
-msgstr ""
-
-msgid "Import "
 msgstr ""
 
 msgid "Import a %s into \"%s"
@@ -1063,6 +1045,10 @@ msgstr ""
 msgid "Import Metadata from RDF file"
 msgstr ""
 
+#, tao-public
+msgid "Import statistical analysis metadata"
+msgstr ""
+
 msgid "Import succeeded."
 msgstr ""
 
@@ -1073,6 +1059,9 @@ msgid "Imported %d resources"
 msgstr ""
 
 msgid "Imported resource \"%s"
+msgstr ""
+
+msgid "Imported successfully finished!"
 msgstr ""
 
 msgid "impossible to update task status"
@@ -1123,10 +1112,10 @@ msgstr ""
 msgid "Instance saved"
 msgstr ""
 
-msgid "Interface Language"
+msgid "Interface language"
 msgstr ""
 
-msgid "Interface language"
+msgid "Interface Language"
 msgstr ""
 
 msgid "Invalid CSP header."
@@ -1168,19 +1157,22 @@ msgstr ""
 msgid "Invalid input for function"
 msgstr ""
 
-msgid "Invalid JSON config file: %s"
-msgstr ""
-
 msgid "Invalid login or password. Please try again."
-msgstr ""
+msgstr "Nomor Peserta atau Pin Peserta salah. Silakan coba lagi."
 
 msgid "Invalid login or password. Your account has been locked, please contact your administrator."
+msgstr ""
+
+msgid "Invalid path of a source \"%s\". Path must point to the existed file inside the package."
 msgstr ""
 
 msgid "invalid regular expression"
 msgstr ""
 
-msgid "Invalid values:"
+msgid "Invalid value"
+msgstr ""
+
+msgid "It appears there were some issues and we were unable to process your request. You can contact your TAO administrator if needed. Or, alternatively:"
 msgstr ""
 
 msgid "items per page"
@@ -1222,6 +1214,9 @@ msgstr ""
 msgid "List"
 msgstr ""
 
+msgid "List \"%s\" has duplicated values."
+msgstr ""
+
 msgid "List - Multiple choice - Check box"
 msgstr ""
 
@@ -1235,9 +1230,6 @@ msgid "List - Single choice - Radio button"
 msgstr ""
 
 msgid "List - Single choice - Search input"
-msgstr ""
-
-msgid "List item URI duplications found"
 msgstr ""
 
 msgid "List values"
@@ -1271,7 +1263,7 @@ msgid "Log Out"
 msgstr ""
 
 msgid "Login"
-msgstr ""
+msgstr "Nomor Peserta"
 
 msgid "Login available"
 msgstr ""
@@ -1309,9 +1301,6 @@ msgstr ""
 msgid "Manage class schema"
 msgstr ""
 
-msgid "Manage data list"
-msgstr ""
-
 #, tao-public
 msgid "Manage roles"
 msgstr ""
@@ -1327,6 +1316,9 @@ msgid "Manage Versioned File"
 msgstr ""
 
 msgid "Map the properties to the CSV columns"
+msgstr ""
+
+msgid "maximum %s"
 msgstr ""
 
 msgid "Maximum selection reached"
@@ -1381,6 +1373,9 @@ msgid "MIME encapsulation of aggregate HTML documents"
 msgstr ""
 
 msgid "Mind mapping software application (free mind open source)"
+msgstr ""
+
+msgid "minimum %s"
 msgstr ""
 
 msgid "minutes"
@@ -1441,6 +1436,21 @@ msgstr ""
 msgid "Multiply the value by 10^x"
 msgstr ""
 
+msgid "Must include at least one letter"
+msgstr ""
+
+msgid "Must include at least one number"
+msgstr ""
+
+msgid "Must include at least one special letter"
+msgstr ""
+
+msgid "Must include lower case letters"
+msgstr ""
+
+msgid "Must include upper case letters"
+msgstr ""
+
 msgid "Mute"
 msgstr ""
 
@@ -1468,13 +1478,13 @@ msgid "New role"
 msgstr ""
 
 msgid "Next"
-msgstr ""
+msgstr "Selanjutnya"
 
 msgid "Next match"
-msgstr ""
+msgstr "Yang cocok selanjutnya"
 
 msgid "Next page"
-msgstr ""
+msgstr "Halaman berikutnya"
 
 msgid "No"
 msgstr ""
@@ -1509,13 +1519,13 @@ msgstr ""
 msgid "Node duplication has failed"
 msgstr ""
 
-msgid "Not enough arguments following: %s"
-msgstr ""
-
-msgid "Not enough non-option arguments: got %s, need at least %s"
+msgid "none"
 msgstr ""
 
 msgid "Not started"
+msgstr ""
+
+msgid "NotEmpty"
 msgstr ""
 
 msgid "Nothing imported"
@@ -1537,9 +1547,6 @@ msgstr ""
 msgid "Nth root"
 msgstr ""
 
-msgid "number"
-msgstr ""
-
 msgid "Number of elements"
 msgstr ""
 
@@ -1555,10 +1562,10 @@ msgstr ""
 msgid "Ogg Vorbis video"
 msgstr ""
 
-msgid "OK"
+msgid "Ok"
 msgstr ""
 
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 msgid "Old Password"
@@ -1604,22 +1611,22 @@ msgid "Pascal file (.pas)"
 msgstr ""
 
 msgid "Password"
-msgstr ""
+msgstr "PIN Peserta"
 
 msgid "Password changed"
-msgstr ""
+msgstr "PIN Peserta berubah"
 
 msgid "Password is empty."
-msgstr ""
+msgstr "PIN Peserta kosong"
 
 msgid "Password reset"
 msgstr ""
 
 msgid "Password successfully changed"
-msgstr ""
+msgstr "PIN Peserta berhasil diiubah"
 
 msgid "Passwords are not matching"
-msgstr ""
+msgstr "PIN Peserta tidak sama"
 
 msgid "Pause"
 msgstr ""
@@ -1684,6 +1691,15 @@ msgstr ""
 msgid "Please report bugs, ideas, comments or feedback on the TAO Forum"
 msgstr ""
 
+msgid "Please select an image file from the resource manager. You can add files from your computer with the button \"Add file(s)\"."
+msgstr ""
+
+msgid "Please set 'min' and/or 'max' options!"
+msgstr ""
+
+msgid "Please try in %s."
+msgstr ""
+
 msgid "Please wait"
 msgstr ""
 
@@ -1694,9 +1710,6 @@ msgid "PNG image"
 msgstr ""
 
 msgid "Position"
-msgstr ""
-
-msgid "Positionals:"
 msgstr ""
 
 msgid "Post install processing"
@@ -1805,6 +1818,9 @@ msgstr ""
 msgid "Remove criteria"
 msgstr ""
 
+msgid "remove index"
+msgstr ""
+
 msgid "Remove Message"
 msgstr ""
 
@@ -1820,9 +1836,6 @@ msgstr ""
 msgid "Removing: %s"
 msgstr ""
 
-msgid "Rename"
-msgstr ""
-
 msgid "Repeat new password"
 msgstr ""
 
@@ -1833,9 +1846,6 @@ msgid "Request a password reset via Email."
 msgstr ""
 
 msgid "require notification ID"
-msgstr ""
-
-msgid "required"
 msgstr ""
 
 msgid "required length"
@@ -1899,9 +1909,6 @@ msgid "Return to sign in page"
 msgstr ""
 
 msgid "Rich Text Format file"
-msgstr ""
-
-msgid "Right click the tree to manage your lists"
 msgstr ""
 
 msgid "Right parenthesis"
@@ -2057,6 +2064,9 @@ msgstr ""
 msgid "Square root"
 msgstr ""
 
+msgid "Start"
+msgstr ""
+
 msgid "Start of document reached. Continuing from the end."
 msgstr ""
 
@@ -2073,9 +2083,6 @@ msgid "Store the value a variable"
 msgstr ""
 
 msgid "Storing digital video data on a computer game"
-msgstr ""
-
-msgid "string"
 msgstr ""
 
 msgid "Submit"
@@ -2124,13 +2131,13 @@ msgid "tanh"
 msgstr ""
 
 msgid "Tao Default Theme"
-msgstr ""
+msgstr "Tema Default UTBK SIMA UNAND"
 
 msgid "TAO Home"
-msgstr ""
+msgstr "Beranda UTBK SIMA UNAND"
 
 msgid "TAO Login"
-msgstr ""
+msgstr "Login UTBK SIMA UNAND"
 
 msgid "TAO platform is already on live mode since %s"
 msgstr ""
@@ -2198,7 +2205,13 @@ msgstr ""
 msgid "The action will not be applied to the following"
 msgstr ""
 
+msgid "The class has been copied."
+msgstr ""
+
 msgid "The column "
+msgstr ""
+
+msgid "The field \"List\" is disabled because the property is part of a dependency"
 msgstr ""
 
 msgid "The following criteria are not applicable to the selected class and have been removed from the search"
@@ -2217,6 +2230,9 @@ msgid "The lock has been released"
 msgstr ""
 
 msgid "The properties of the source class will be replaced by those of the destination class. This might result in a loss of metadata. Continue anyway?"
+msgstr ""
+
+msgid "The selected value(s) must be compatible with the primary property."
 msgstr ""
 
 msgid "The server has sent an empty response"
@@ -2309,9 +2325,6 @@ msgstr ""
 msgid "Tokenizer"
 msgstr ""
 
-msgid "Too many non-option arguments: got %s, maximum of %s"
-msgstr ""
-
 msgid "Too many suggestions match your query. Only a few are listed"
 msgstr ""
 
@@ -2336,7 +2349,7 @@ msgstr ""
 msgid "Transport Layer Security"
 msgstr ""
 
-msgid "Tree - Multiple node choice "
+msgid "Tree - Multiple node choice"
 msgstr ""
 
 msgid "Tree values"
@@ -2363,10 +2376,10 @@ msgstr ""
 msgid "Unable to copy the resource"
 msgstr ""
 
-msgid "Unable to delete %s"
+msgid "Unable to delete the selected resource"
 msgstr ""
 
-msgid "Unable to delete the selected resource"
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
 msgstr ""
 
 msgid "Unable to delete the selected resources"
@@ -2396,6 +2409,9 @@ msgstr ""
 msgid "Unable to send the password reset request"
 msgstr ""
 
+msgid "Unable to sync statistical data. Please, contact the system administrator for more details"
+msgstr ""
+
 msgid "Unable to update the asset service"
 msgstr ""
 
@@ -2405,16 +2421,22 @@ msgstr ""
 msgid "Unable to upload file %s : %s"
 msgstr ""
 
+msgid "UNAND Theme"
+msgstr ""
+
 msgid "Unary operator +"
 msgstr ""
 
 msgid "Unary operator -"
 msgstr ""
 
-msgid "Uncheck all"
+msgid "Unauthorized files have been removed"
 msgstr ""
 
 msgid "Uncheck All"
+msgstr ""
+
+msgid "Uncheck all"
 msgstr ""
 
 msgid "Undefined amount of the pages for pagination"
@@ -2605,6 +2627,9 @@ msgstr ""
 msgid "Windows Media video"
 msgstr ""
 
+msgid "with"
+msgstr ""
+
 msgid "Wrap image left"
 msgstr ""
 
@@ -2660,7 +2685,7 @@ msgid "Your account has been locked, please contact your administrator."
 msgstr ""
 
 msgid "Your browser does not meet the technical requirements to run TAO."
-msgstr ""
+msgstr "Browser Anda tidak memenuhi persyaratan teknis untuk menjalankan UTBK SIMA UNAND."
 
 msgid "Your browser does not support copying to the clipboard"
 msgstr ""
@@ -2672,10 +2697,10 @@ msgid "Your browser doesn’t support the video player."
 msgstr ""
 
 msgid "Your mail"
-msgstr ""
+msgstr "Email Anda"
 
 msgid "Your TAO Password"
-msgstr ""
+msgstr "Password UTBK SIMA UNAND Anda"
 
 msgid "ZIP archive"
 msgstr ""

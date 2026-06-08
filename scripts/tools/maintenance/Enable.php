@@ -43,17 +43,11 @@ class Enable implements Action, ServiceLocatorAwareInterface
             $state = $this->getMaintenanceService()->getPlatformState();
             if ($this->getMaintenanceService()->isPlatformReady($state)) {
                 return \common_report_Report::createSuccess(
-                    // phpcs:disable Generic.Files.LineLength
                     __('TAO platform is already on live mode since %s', $state->getDuration()->format(MaintenanceState::DATEDIFF_FORMAT))
-                    // phpcs:enable Generic.Files.LineLength
                 );
             }
 
-            $report = \common_report_Report::createSuccess(
-                // phpcs:disable Generic.Files.LineLength
-                __('TAO platform is now live. It was in maintenance since %s', $state->getDuration()->format(MaintenanceState::DATEDIFF_FORMAT))
-                // phpcs:enable Generic.Files.LineLength
-            );
+            $report = \common_report_Report::createSuccess(__('TAO platform is now live. It was in maintenance since %s', $state->getDuration()->format(MaintenanceState::DATEDIFF_FORMAT)));
             $this->getMaintenanceService()->enablePlatform();
             return $report;
         } catch (\common_Exception $e) {

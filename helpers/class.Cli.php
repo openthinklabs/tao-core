@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,10 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -32,6 +29,7 @@
  */
 class tao_helpers_Cli
 {
+
     /**
      * A set of color codes that can be used to highlight texts in a CLI context.
      * Keys of these associative array are color names in english and values are color
@@ -105,7 +103,7 @@ class tao_helpers_Cli
     public static function getBgColor($name)
     {
         $returnValue = (string) '';
-
+        
         if (!empty($name) && array_key_exists($name, self::$colors['background'])) {
             $returnValue = self::$colors['background'][$name];
         }
@@ -128,7 +126,7 @@ class tao_helpers_Cli
     public static function getFgColor($name)
     {
         $returnValue = (string) '';
-
+        
         if (!empty($name) && array_key_exists($name, self::$colors['foreground'])) {
             $returnValue = self::$colors['foreground'][$name];
         }

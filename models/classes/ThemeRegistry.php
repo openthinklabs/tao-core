@@ -21,9 +21,7 @@
 
 namespace oat\tao\model;
 
-use common_Exception;
 use common_ext_ExtensionsManager;
-use Exception;
 use oat\oatbox\AbstractRegistry;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\asset\AssetService;
@@ -31,7 +29,8 @@ use oat\tao\model\websource\WebsourceManager;
 
 class ThemeRegistry extends AbstractRegistry
 {
-    public const WEBSOURCE = 'websource_';
+
+    const WEBSOURCE = 'websource_';
 
     /**
      *
@@ -63,7 +62,7 @@ class ThemeRegistry extends AbstractRegistry
      * @author Lionel Lecaque, lionel@taotesting.com
      * @param string $target
      * @param string $themeId
-     * @throws common_Exception
+     * @throws \common_Exception
      */
     public function setDefaultTheme($target, $themeId)
     {
@@ -81,14 +80,14 @@ class ThemeRegistry extends AbstractRegistry
      * @param string $target
      * @param string $themeId
      * @return array
-     * @throws common_Exception
+     * @throws \common_Exception
      */
     private function getTheme($target, $themeId)
     {
 
         $returnValue = null;
         if (!$this->isRegistered($target)) {
-            throw new common_Exception('Target ' . $target . ' does not exist');
+            throw new \common_Exception('Target ' . $target . ' does not exist');
         } else {
             $array = $this->get($target);
             $found = false;
@@ -113,7 +112,7 @@ class ThemeRegistry extends AbstractRegistry
     {
         $defaultTheme = null;
         if (!$this->isRegistered($target)) {
-            throw new common_Exception('Target ' . $target . ' does not exist');
+            throw new \common_Exception('Target ' . $target . ' does not exist');
         } else {
             $array = $this->get($target);
             if (isset($array['default'])) {
@@ -134,13 +133,13 @@ class ThemeRegistry extends AbstractRegistry
      *
      * @param string $targetId
      * @param string|array $base
-     * @throws common_Exception
+     * @throws \common_Exception
      */
     public function createTarget($targetId, $base)
     {
 
         if (!is_string($base) && !is_array($base)) {
-            throw new common_Exception('Invalid base format');
+            throw new \common_Exception('Invalid base format');
         }
 
         $array = [
@@ -159,26 +158,26 @@ class ThemeRegistry extends AbstractRegistry
      * @param string $name
      * @param string $path
      * @param array $targets
-     * @throws common_Exception
+     * @throws \common_Exception
      */
     public function registerTheme($id, $name, $path = '', $targets = [], $templates = [])
     {
         if (preg_match('/^[a-zA-Z0-9]*$/', $id) === 0) {
-            throw new common_Exception('Invalid id "' . $id . '"');
+            throw new \common_Exception('Invalid id "' . $id . '"');
         }
         if (!is_array($targets) || count($targets) === 0) {
-            throw new common_Exception('No targets were provided for theme ' . $id);
+            throw new \common_Exception('No targets were provided for theme ' . $id);
         }
 
         foreach ($targets as $target) {
             if (!$this->isRegistered($target)) {
-                throw new common_Exception('Target ' . $target . ' does not exist');
+                throw new \common_Exception('Target ' . $target . ' does not exist');
             } else {
                 $array = $this->get($target);
 
                 foreach ($array['available'] as $theme) {
                     if ($theme['id'] == $id) {
-                        throw new common_Exception('Theme ' . $id . ' already exists for target ' . $target);
+                        throw new \common_Exception('Theme ' . $id . ' already exists for target ' . $target);
                     }
                 }
 
@@ -211,12 +210,12 @@ class ThemeRegistry extends AbstractRegistry
      * @author Joel Bout, joel@taotesting.com
      *
      * @param string $id
-     * @throws common_Exception
+     * @throws \common_Exception
      */
     public function unregisterTheme($id)
     {
         if (preg_match('/^[a-zA-Z0-9]*$/', $id) === 0) {
-            throw new common_Exception('Invalid id "' . $id . '"');
+            throw new \common_Exception('Invalid id "' . $id . '"');
         }
 
         $isDeleted = false;
@@ -269,7 +268,7 @@ class ThemeRegistry extends AbstractRegistry
     {
         $websource = WebsourceManager::singleton()->getWebsource($this->get(ThemeRegistry::WEBSOURCE));
         if (strpos($path, ThemeRegistry::WEBSOURCE) === 0) {
-            return $websource->getAccessUrl(substr($path, strlen(ThemeRegistry::WEBSOURCE)));
+                return $websource->getAccessUrl(substr($path, strlen(ThemeRegistry::WEBSOURCE)));
         } else {
             $assetService = $this->getServiceManager()->get(AssetService::SERVICE_ID);
             return $assetService->getAsset($path);

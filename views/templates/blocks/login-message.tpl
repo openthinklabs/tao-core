@@ -1,1 +1,1 @@
-<h1><?=__("Connect to the TAO platform")?></h1>
+<center><h1><?=__("Connect to the TAO platform")?></h1></center>

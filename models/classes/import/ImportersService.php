@@ -31,8 +31,9 @@ use oat\oatbox\service\ConfigurableService;
  */
 class ImportersService extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/Importers';
-    public const OPTION_IMPORTERS = 'importers';
+
+    const SERVICE_ID = 'tao/Importers';
+    const OPTION_IMPORTERS = 'importers';
 
     /**
      * @param $id

@@ -15,10 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013 (update and modification) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
@@ -39,7 +37,7 @@ use oat\oatbox\user\User;
  */
 class FileSink extends ConfigurableService implements Transport
 {
-    public const CONFIG_FILEPATH = 'path';
+    const CONFIG_FILEPATH = 'path';
 
     public function send(Message $message)
     {
@@ -48,7 +46,7 @@ class FileSink extends ConfigurableService implements Transport
         $written = file_put_contents($messageFile, $message->getBody());
         return $written !== false;
     }
-
+    
     /**
      * Get file path to save message
      * @param User $receiver

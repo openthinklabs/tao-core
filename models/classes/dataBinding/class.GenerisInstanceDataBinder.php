@@ -15,16 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
- *                         (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2022 (update and modification) Open Assessment Technologies SA;
  */
 
-use oat\generis\model\data\Ontology;
 use oat\generis\model\OntologyRdf;
 use oat\tao\model\dataBinding\AbstractDataBinder;
 use oat\tao\model\dataBinding\GenerisInstanceDataBindingException;
@@ -127,12 +123,12 @@ class tao_models_classes_dataBinding_GenerisInstanceDataBinder extends tao_model
                     $types = is_array($propertyValue) ? $propertyValue : [$propertyValue];
 
                     foreach ($types as $type) {
-                        $instance->setType($this->getOntology()->getClass($type));
+                        $instance->setType(new core_kernel_classes_Class($type));
                     }
                     continue;
                 }
 
-                $prop = $this->getOntology()->getProperty($propertyUri);
+                $prop = new core_kernel_classes_Property($propertyUri);
 
                 if ($this->isBlockedForModification($prop)) {
                     continue;
@@ -182,6 +178,7 @@ class tao_models_classes_dataBinding_GenerisInstanceDataBinder extends tao_model
             return $instance;
         } catch (common_Exception $e) {
             $msg = "An error occured while binding property values to instance '': " . $e->getMessage();
+            $instanceUri = $instance->getUri();
             throw new tao_models_classes_dataBinding_GenerisInstanceDataBindingException($msg);
         }
     }
@@ -190,13 +187,6 @@ class tao_models_classes_dataBinding_GenerisInstanceDataBinder extends tao_model
     {
         if ($this->forceModification) {
             return false;
-        }
-
-        if (
-            $property->getWidget()
-            && $property->getWidget()->getUri() === tao_helpers_form_elements_Readonly::WIDGET_ID
-        ) {
-            return true;
         }
 
         if ($this->getFeatureFlagChecker()->isEnabled('FEATURE_FLAG_STATISTIC_METADATA_IMPORT')) {
@@ -223,11 +213,6 @@ class tao_models_classes_dataBinding_GenerisInstanceDataBinder extends tao_model
     private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
     {
         return $this->getServiceManager()->get(FeatureFlagChecker::class);
-    }
-
-    private function getOntology(): Ontology
-    {
-        return $this->getServiceManager()->get(Ontology::SERVICE_ID);
     }
 
     private function getServiceManager(): ServiceManager

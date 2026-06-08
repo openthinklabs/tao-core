@@ -55,9 +55,7 @@ class ListPropertyWriter extends PropertyWriter
         $list = $this->getListService()->getListElements($listClass);
 
         if (empty($list)) {
-            throw new InconsistencyConfigException(
-                'List "' . $listClass->getUri() . '" does not contain element or not correctly configured.'
-            );
+            throw new InconsistencyConfigException('List "' . $listClass->getUri() . '" does not contain element or not correctly configured.');
         }
 
         /** @var \core_kernel_classes_Resource $element */

@@ -33,7 +33,7 @@ require.config({
         'text'              : 'lib/text/text',
         'json'              : 'lib/text/json',
         'css'               : 'lib/require-css/css',
-        'tpl'               : '../node_modules/@oat-sa/tao-core-libs/dist/tpl',
+        'tpl'               : 'tpl',
 //jquery and plugins
         'jquery'            : '../node_modules/jquery/jquery',
         'jquery.autocomplete'  : 'lib/jquery.autocomplete/jquery.autocomplete',
@@ -75,8 +75,6 @@ require.config({
     <?php foreach (get_data('extensionsAliases') as $name => $path) :?>
         '<?=$name?>'        : '<?=$path?>',
     <?php endforeach?>
-        'lib/handlebars/helpers' : '../node_modules/@oat-sa/tao-core-libs/dist/handlebars/helpers',
-        'lib/handlebars/moduleWriter' : '../../../tao/views/node_modules/@oat-sa/tao-core-libs/dist/handlebars/moduleWriter',
         'lib/uuid'          : '../node_modules/@oat-sa/tao-core-libs/dist/uuid',
         'core'              : '../node_modules/@oat-sa/tao-core-sdk/dist/core',
         'util'              : '../node_modules/@oat-sa/tao-core-sdk/dist/util',

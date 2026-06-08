@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,7 +22,6 @@ declare(strict_types=1);
 namespace oat\tao\model\listener;
 
 use core_kernel_classes_Property;
-use oat\generis\model\data\event\ResourceUpdated;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\AdvancedSearch\AdvancedSearchChecker;
 use oat\tao\model\dto\OldProperty;
@@ -34,11 +32,11 @@ use RuntimeException;
 
 class ClassPropertiesChangedListener extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/ClassPropertiesChangedListener';
+    const SERVICE_ID = 'tao/ClassPropertiesChangedListener';
 
     public function handleEvent(ClassPropertiesChangedEvent $event): void
     {
-        if (!$this->getServiceLocator()->get(AdvancedSearchChecker::class)->isEnabled()) {
+        if ( !$this->getServiceLocator()->get(AdvancedSearchChecker::class)->isEnabled()) {
             return;
         }
 
@@ -72,13 +70,5 @@ class ClassPropertiesChangedListener extends ConfigurableService
             ),
             $taskMessage
         );
-    }
-
-    public function handleUpdatedEvent(ResourceUpdated $event): void
-    {
-        if ($event->getResource()->isProperty()) {
-            $classProperty = new \core_kernel_classes_Property($event->getResource());
-            $classProperty->clearCachedValues();
-        }
     }
 }

@@ -14,6 +14,7 @@ use oat\tao\scripts\update\OntologyUpdater;
  */
 final class Version202007161231482234_tao extends AbstractMigration
 {
+
     public function getDescription(): string
     {
         return 'Update the Ontology model';

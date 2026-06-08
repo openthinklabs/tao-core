@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,11 +29,9 @@ use oat\generis\model\data\event\ResourceCreated;
 use oat\generis\model\data\event\ResourceDeleted;
 use oat\generis\model\data\event\ResourceUpdated;
 use oat\generis\model\data\Ontology;
-use oat\generis\test\ServiceManagerMockTrait;
+use oat\generis\test\TestCase;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\AdvancedSearch\AdvancedSearchChecker;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
-use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\resources\ResourceWatcher;
 use oat\tao\model\search\index\IndexUpdaterInterface;
 use oat\tao\model\search\Search;
@@ -44,13 +41,10 @@ use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class ResourceWatcherTest extends TestCase
 {
-    use ServiceManagerMockTrait;
-
     /** @var ResourceWatcher|MockObject */
     private $sut;
 
@@ -76,9 +70,6 @@ class ResourceWatcherTest extends TestCase
      */
     private $advancedSearchChecker;
 
-    /** @var FeatureFlagCheckerInterface|MockObject */
-    private $featureFlagChecker;
-
     protected function setUp(): void
     {
         $this->sut = new ResourceWatcher();
@@ -90,9 +81,8 @@ class ResourceWatcherTest extends TestCase
         $this->resource = $this->createMock(core_kernel_classes_Resource::class);
         $this->search = $this->createMock(Search::class);
         $this->advancedSearchChecker = $this->createMock(AdvancedSearchChecker::class);
-        $this->featureFlagChecker = $this->createMock(FeatureFlagCheckerInterface::class);
 
-        $serviceLocator = $this->getServiceManagerMock(
+        $serviceLocator = $this->getServiceLocatorMock(
             [
                 IndexUpdaterInterface::SERVICE_ID => $this->indexUpdater,
                 QueueDispatcherInterface::SERVICE_ID => $this->queueDispatcher,
@@ -100,13 +90,11 @@ class ResourceWatcherTest extends TestCase
                 LoggerService::SERVICE_ID => $this->logger,
                 Search::SERVICE_ID => $this->search,
                 AdvancedSearchChecker::class => $this->advancedSearchChecker,
-                FeatureFlagChecker::class => $this->featureFlagChecker,
             ]
         );
-        $this->sut->setServiceManager($serviceLocator);
+        $this->sut->setServiceLocator($serviceLocator);
     }
 
-    // phpcs:disable PSR1.Methods.CamelCapsMethodName
     public function testCatchCreatedResourceEvent_mustCreateIndexTaskInCaseResourceIsSupportedByIndex(): void
     {
         $classUri = 'https://tao.docker.localhost/ontologies/tao.rdf#Item';
@@ -132,16 +120,22 @@ class ResourceWatcherTest extends TestCase
             new ResourceCreated($this->resource)
         );
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
-    // phpcs:disable PSR1.Methods.CamelCapsMethodName,Generic.Files.LineLength
     public function testCatchCreatedResourceEvent_mustCreateIndexTaskInCaseResourceIsSupportedByIndexWhenRootClassBelongsToParent(): void
     {
         $classUri = 'https://tao.docker.localhost/ontologies/tao.rdf#Item';
-        $this->indexUpdater->expects($this->exactly(2))
+        $this->indexUpdater->expects($this->at(0))
             ->method('hasClassSupport')
             ->with($classUri)
-            ->willReturnOnConsecutiveCalls(false, true);
+            ->willReturn(
+                false
+            );
+        $this->indexUpdater->expects($this->at(1))
+            ->method('hasClassSupport')
+            ->with($classUri)
+            ->willReturn(
+                true
+            );
         $this->mockAdvancedSearchEnabled(true);
 
         $this->mockGetTypesResource($classUri);
@@ -186,9 +180,7 @@ class ResourceWatcherTest extends TestCase
             new ResourceCreated($this->resource)
         );
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName,Generic.Files.LineLength
 
-    // phpcs:disable PSR1.Methods.CamelCapsMethodName
     public function testCatchCreatedResourceEvent_mustNotCreateIndexTaskInCaseResourceIsNotSupported(): void
     {
         $classUri = 'https://tao.docker.localhost/ontologies/tao.rdf#Item';
@@ -224,9 +216,7 @@ class ResourceWatcherTest extends TestCase
             new ResourceCreated($this->resource)
         );
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
-    // phpcs:disable PSR1.Methods.CamelCapsMethodName
     public function testCatchUpdatedResourceEvent_mustCreateIndexTaskInCaseResourceIsSupportedByIndex(): void
     {
         $classUri = 'https://tao.docker.localhost/ontologies/tao.rdf#Item';
@@ -254,9 +244,7 @@ class ResourceWatcherTest extends TestCase
             new ResourceUpdated($this->resource)
         );
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
-    // phpcs:disable PSR1.Methods.CamelCapsMethodName
     public function testCatchUpdatedResourceEvent_mustNotCreateIndexTask(): void
     {
         $advancedSearchEnabled = false;
@@ -281,9 +269,7 @@ class ResourceWatcherTest extends TestCase
             new ResourceUpdated($this->resource)
         );
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
-    // phpcs:disable PSR1.Methods.CamelCapsMethodName
     public function testCatchUpdatedResourceEvent_mustCreateIndexTaskInCaseClassIsSupportedByIndex(): void
     {
         $resourceUri = 'https://tao.docker.localhost/ontologies/tao.rdf#i5ef45f413088c8e7901a84708e84ec';
@@ -310,7 +296,6 @@ class ResourceWatcherTest extends TestCase
             new ResourceUpdated($this->resource)
         );
     }
-    // phpcs:enable PSR1.Methods.CamelCapsMethodName
 
     public function testCatchDeletedResourceEventSuccess(): void
     {
@@ -333,8 +318,7 @@ class ResourceWatcherTest extends TestCase
         $this->logger->expects($this->once())
             ->method('error')
             ->with(
-                'Error delete index document for '
-                    . 'https://tao.docker.localhost/ontologies/tao.rdf#i5ef45f413088c8e7901a84708e84ec with message '
+                'Error delete index document for https://tao.docker.localhost/ontologies/tao.rdf#i5ef45f413088c8e7901a84708e84ec with message '
             );
 
         $this->sut->catchDeletedResourceEvent(
@@ -345,11 +329,11 @@ class ResourceWatcherTest extends TestCase
     private function mockGetTypesResource(string $classUri): void
     {
         $class = $this->createMock(core_kernel_classes_Class::class);
-        $class->expects($this->atLeastOnce())
+        $class->expects($this->once())
             ->method('getUri')
             ->willReturn($classUri);
 
-        $this->resource->expects($this->atLeastOnce())
+        $this->resource->expects($this->once())
             ->method('getTypes')
             ->willReturn(
                 [

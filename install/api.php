@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,14 +14,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
- *                         (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
+?>
+<?php
 
 /**
  * This file contains the TAO Install REST API.
@@ -60,22 +58,9 @@
  *           {"type": "CheckPHPExtension", "value": {"name": "curle", "optional": false}}]}
  *
  * will return:
- * {
- *     "type": "ReportCollection",
- *     "value": {
- *         "type": "PHPExtensionReport",
- *         "value": {"status": "valid", "message": "PHP Extension 'gd' is loaded.", "optional": false, "name": "gd"}
- *     },
- *     {
- *         "type": "PHPExtensionReport",
- *         "value": {
- *             "status": "unknown",
- *             "message": "PHP Extension 'curle' could not be found.",
- *             "optional": false,
- *             "name": "curle"
- *         }
- *     }
- * }
+ * {"type": "ReportCollection",
+ *  "value": {"type": "PHPExtensionReport", "value": {"status": "valid", "message": "PHP Extension 'gd' is loaded.", "optional": false, "name": "gd"}},
+ *           {"type": "PHPExtensionReport", "value": {"status": "unknown", "message": "PHP Extension 'curle' could not be found.", "optional": false, "name": "curle"}}}
  *
  *
  * CheckPHPExtension (POST)
@@ -154,10 +139,8 @@
  *
  * + The value->status will be 'valid' if the PHP Runtime version is between value->min and value->max, 'invalid' in any
  * other case.
- * + The value->min attribute is not mandatory if the value->max attribute is set. In this case, there is no minimal
- *   version.
- * + The value->max attribute is not mandatory if the value->min attribute is set. In this case, theire is no maximal
- *   version.
+ * + The value->min attribute is not mandatory if the value->max attribute is set. In this case, there is no minimal version.
+ * + The value->max attribute is not mandatory if the value->min attribute is set. In this case, theire is no maximal version.
  *
  *
  * CheckFileSystemComponent (POST)
@@ -190,8 +173,7 @@
  *
  * + The value->status attribute will be 'valid' if the file/directory exists and the expected rights are correct.
  * + The value->status attribute will be 'invalid' if the file/directory exists but the expected rights are incorrect.
- * + The value->status attribute will be 'unknown' if the file/directory does not exist or is not accessible with the
- *   rights
+ * + The value->status attribute will be 'unknown' if the file/directory does not exist or is not accessible with the rights
  * of the hosts has.
  *
  *
@@ -238,8 +220,6 @@
  *            "name": "db_connection"}}
  */
 
-// phpcs:disable PSR1.Files.SideEffects
-
 use oat\tao\install\api\NotAllowedAPICallException;
 
 // use unicode.
@@ -248,7 +228,7 @@ header('Content-Type:text/html; charset=UTF-8');
 // clear sessions.
 session_start();
 session_destroy();
-
+ 
 // initialize what we need.
 require_once('init.php');
 
@@ -274,7 +254,7 @@ try {
     if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_GET['type'] == 'Sync') {
         $data = new tao_install_services_Data(['type' => 'Sync']);
         $service = new tao_install_services_SyncService($data);
-
+        
         // Execute service.
         $service->execute();
         $result = $service->getResult();
@@ -284,7 +264,7 @@ try {
         echo $result->getContent();
         die();
     }
-
+    
     $service = null;
     $data = null;
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -293,7 +273,7 @@ try {
         $rawInput = file_get_contents('php://input');
         $input = @json_decode($rawInput, true);
     }
-
+    
     if ($input == null) {
         throw new tao_install_api_MalformedRequestBodyException("Unable to parse request body as valid JSON.");
     } elseif (!isset($input['type']) || empty($input['type'])) {
@@ -304,7 +284,7 @@ try {
                 case 'CheckPHPConfig':
                     $service = getService(json_encode($input), $input['type']);
                     break;
-
+                
                 default:
                     // Unknown service.
                     throw new tao_install_services_UnknownServiceException($input['type']);
@@ -331,14 +311,14 @@ try {
                 case 'CheckCustom':
                     $service = getService($rawInput, $input['type']);
                     break;
-
+                
                 default:
                     // Unknown service.
                     throw new tao_install_services_UnknownServiceException($input['type']);
                     break;
             }
         }
-
+    
         // Execute service.
         $service->execute();
         $result = $service->getResult();
@@ -356,8 +336,7 @@ try {
     header("HTTP/1.0 400 Bad Request");
     header("Content-Type:text; charset=UTF-8");
     echo "Request body could not be parsed as valid JSON.\n";
-    echo "Is your JSON data correctly formatted? You can check it on http://www.jslint.com, the JavaScript"
-        . " Quality Tool.\n";
+    echo "Is your JSON data correctly formatted? You can check it on http://www.jslint.com, the JavaScript Quality Tool.\n";
     echo "Make also sure your request body is UTF-8 encoded.";
 } catch (tao_install_api_InvalidAPICallException $e) {
     header("HTTP/1.0 400 Bad Request");

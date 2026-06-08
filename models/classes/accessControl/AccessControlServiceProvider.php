@@ -50,9 +50,5 @@ class AccessControlServiceProvider implements ContainerServiceProviderInterface
                     service(tao_models_classes_RoleService::class)
                 ]
             );
-
-        $services->set(RoleBasedContextRestrictAccess::class, RoleBasedContextRestrictAccess::class)
-            ->public()
-            ->args([[]]);
     }
 }

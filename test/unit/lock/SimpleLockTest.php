@@ -27,6 +27,7 @@ use oat\generis\test\TestCase;
 
 class SimpleLockTest extends TestCase
 {
+
     /**
      * @author Lionel Lecaque, lionel@taotesting.com
      */

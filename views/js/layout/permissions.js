@@ -76,7 +76,7 @@ define([
          * @returns {Boolean}
          */
         isSupported : function isSupported(right){
-            return _.includes(supportedRights, right);
+            return _.contains(supportedRights, right);
         },
 
         /**
@@ -101,7 +101,7 @@ define([
 
             if(_.isUndefined(permissions) && _.isPlainObject(uri)){
                 permissions = uri;
-                _.forEach(permissions, (value, key) => {
+                _.forEach(permissions, function(value, key){
                     this.addPermissions(key, value);
                 }, this);
             }
@@ -131,7 +131,7 @@ define([
                 return true;
             }
             if(typeof permissionStore[uri] !== 'undefined'){
-                return _.includes(permissionStore[uri], permission);
+                return _.contains(permissionStore[uri], permission);
             }
             return false;
         },
@@ -159,7 +159,7 @@ define([
             if(!_.isPlainObject(resourceContext)){
                 return false;
             }
-            return _.every(requiredRights, function(right, requiredParameter){
+            return _.all(requiredRights, function(right, requiredParameter){
                 var parameterValue;
 
                 // translate muti-id into single-id

@@ -32,12 +32,13 @@ use GuzzleHttp\Psr7\ServerRequest;
  */
 class DatatableRequest implements DatatableRequestInterface
 {
-    public const DEFAULT_ROWS = 25;
-    public const DEFAULT_PAGE = 1;
-    public const DEFAULT_SORT_BY = null;
-    public const DEFAULT_SORT_ORDER = 'asc';
-    public const DEFAULT_SORT_TYPE = 'string';
-    public const DEFAULT_FILTERS = [];
+
+    const DEFAULT_ROWS = 25;
+    const DEFAULT_PAGE = 1;
+    const DEFAULT_SORT_BY = null;
+    const DEFAULT_SORT_ORDER = 'asc';
+    const DEFAULT_SORT_TYPE = 'string';
+    const DEFAULT_FILTERS = [];
 
     /**
      * @var array
@@ -77,7 +78,7 @@ class DatatableRequest implements DatatableRequestInterface
      */
     public function getPage()
     {
-        $page = $this->requestParams[self::PARAM_PAGE] ?? self::DEFAULT_PAGE;
+        $page = isset($this->requestParams[self::PARAM_PAGE]) ? $this->requestParams[self::PARAM_PAGE] : self::DEFAULT_PAGE;
         return (int)$page;
     }
 

@@ -223,7 +223,7 @@ class QueueTest extends TestCase
         $queueBrokerMock = $this->getMockForAbstractClass(QueueBrokerInterface::class);
 
         $queueBrokerMock->expects($this->once())
-            ->method('count')->willReturn(1);
+            ->method('count');
 
         /** @var Queue|MockObject $queueMock */
         $queueMock = $this->getMockBuilder(Queue::class)

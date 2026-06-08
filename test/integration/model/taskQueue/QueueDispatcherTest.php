@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ *
  */
 
 namespace oat\tao\test\integration\model\taskQueue;
@@ -119,10 +120,7 @@ class QueueDispatcherTest extends TestCase
             ->method('enqueue')
             ->willReturn($this->returnValue(true));
 
-        $this->assertInstanceOf(
-            CallbackTaskInterface::class,
-            $queueMock->createTask([CallableFixture::class, 'exampleStatic'], [])
-        );
+        $this->assertInstanceOf(CallbackTaskInterface::class, $queueMock->createTask([CallableFixture::class, 'exampleStatic'], []));
     }
 
     public function testOneTimeWorkerHasServiceLocator()

@@ -15,12 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
- *                         (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *               2013-2018 (update and modification) Open Assessment Technologies SA;
  */
 
@@ -41,13 +38,13 @@ use oat\generis\model\OntologyAwareTrait;
  */
 class tao_actions_Import extends tao_actions_CommonModule
 {
-    use TaskLogActionTrait;
-    use OntologyAwareTrait;
-
     /**
      * @var tao_models_classes_import_ImportHandler[]
      */
     private $availableHandlers = [];
+
+    use TaskLogActionTrait;
+    use OntologyAwareTrait;
 
     /**
      * @return EventManager
@@ -76,7 +73,7 @@ class tao_actions_Import extends tao_actions_CommonModule
         );
         $importForm = $formContainer->getForm();
 
-        if ($importForm->isSubmited()) {
+        if ($importForm->isSubmited() && $importForm->isValid()) {
             /** @var QueueDispatcher $queueDispatcher */
             $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcher::SERVICE_ID);
 

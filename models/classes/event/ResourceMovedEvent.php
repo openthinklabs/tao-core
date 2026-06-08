@@ -34,10 +34,8 @@ class ResourceMovedEvent implements Event
     /** @var core_kernel_classes_Class */
     private $destinationClass;
 
-    public function __construct(
-        core_kernel_classes_Resource $movedResource,
-        core_kernel_classes_Class $destinationClass
-    ) {
+    public function __construct(core_kernel_classes_Resource $movedResource, core_kernel_classes_Class $destinationClass)
+    {
         $this->movedResource = $movedResource;
         $this->destinationClass = $destinationClass;
     }

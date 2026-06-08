@@ -17,6 +17,7 @@ use oat\tao\test\TaoPhpUnitTestRunner;
  */
 class ResponseAbstractTest extends TaoPhpUnitTestRunner
 {
+
     /**
      *
      * @var \oat\tao\model\mvc\error\ResponseAbstract

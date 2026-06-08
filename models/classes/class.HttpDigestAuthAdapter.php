@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,7 +34,7 @@ class tao_models_classes_HttpDigestAuthAdapter implements common_user_auth_Adapt
      * @var common_http_Request
      */
     private $request;
-
+    
     /**
      * Creates an Authentication adapter from an OAuth Request
      *
@@ -45,16 +44,16 @@ class tao_models_classes_HttpDigestAuthAdapter implements common_user_auth_Adapt
     {
         $this->request = $request;
     }
-
+    
     /**
      * (non-PHPdoc)
      * @see common_user_auth_Adapter::authenticate()
      */
     public function authenticate()
     {
-
+        
         throw new common_exception_NotImplemented();
-
+        
         $digest = tao_helpers_Http::getDigest();
         $data = tao_helpers_Http::parseDigest($digest);
         //store the hash A1 as a property to be updated on register/changepassword
@@ -62,8 +61,6 @@ class tao_models_classes_HttpDigestAuthAdapter implements common_user_auth_Adapt
         $trialPassword = 'admin';
         $A1 = md5($trialLogin . ':' . $this::realm . ':' . $trialPassword);
         $A2 = md5($_SERVER['REQUEST_METHOD'] . ':' . $data['uri']);
-        $valid_response = md5(
-            $A1 . ':' . $data['nonce'] . ':' . $data['nc'] . ':' . $data['cnonce'] . ':' . $data['qop'] . ':' . $A2
-        );
+        $valid_response = md5($A1 . ':' . $data['nonce'] . ':' . $data['nc'] . ':' . $data['cnonce'] . ':' . $data['qop'] . ':' . $A2);
     }
 }

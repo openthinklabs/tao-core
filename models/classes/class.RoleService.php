@@ -15,12 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg
- *                         (under the project TAO & TAO2);
- *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
+ *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -37,8 +34,7 @@ use oat\tao\model\event\RoleRemovedEvent;
  * @author Joel Bout, <joel@taotesting.com>
  * @package tao
  */
-class tao_models_classes_RoleService extends tao_models_classes_GenerisService implements
-    core_kernel_users_RolesManagement
+class tao_models_classes_RoleService extends tao_models_classes_GenerisService implements core_kernel_users_RolesManagement
 {
     use EventManagerAwareTrait;
 
@@ -180,9 +176,8 @@ class tao_models_classes_RoleService extends tao_models_classes_GenerisService i
     /**
      * Creates a new Role in persistent memory.
      *
-     * @param string $label The label of the new role.
-     * @param mixed $includedRoles The roles to include to the new role. Can be either a core_kernel_classes_Resource
-     *                             or an array of core_kernel_classes_Resource.
+     * @param string label The label of the new role.
+     * @param mixed includedRoles The roles to include to the new role. Can be either a core_kernel_classes_Resource or an array of core_kernel_classes_Resource.
      * @param core_kernel_classes_Class (optional) A specific class for the new role.
      * @return core_kernel_classes_Resource The newly created role.
      */
@@ -227,9 +222,7 @@ class tao_models_classes_RoleService extends tao_models_classes_GenerisService i
     public function includeRole(core_kernel_classes_Resource $role, core_kernel_classes_Resource $roleToInclude)
     {
         $this->generisUserService->includeRole($role, $roleToInclude);
-        $this->getEventManager()->trigger(
-            new RoleChangedEvent($role->getUri(), 'included role', $roleToInclude->getUri())
-        );
+        $this->getEventManager()->trigger(new RoleChangedEvent($role->getUri(), 'included role', $roleToInclude->getUri()));
     }
 
     /**
@@ -241,16 +234,13 @@ class tao_models_classes_RoleService extends tao_models_classes_GenerisService i
     public function unincludeRole(core_kernel_classes_Resource $role, core_kernel_classes_Resource $roleToUninclude)
     {
         $this->generisUserService->unincludeRole($role, $roleToUninclude);
-        $this->getEventManager()->trigger(
-            new RoleChangedEvent($role->getUri(), 'excluded role', $roleToUninclude->getUri())
-        );
+        $this->getEventManager()->trigger(new RoleChangedEvent($role->getUri(), 'excluded role', $roleToUninclude->getUri()));
     }
 
     /**
      * Returns the whole collection of Roles stored into TAO.
      *
-     * @return array An associative array where keys are Role URIs and values are core_kernel_classes_Resource
-     *               instances.
+     * @return array An associative array where keys are Role URIs and values are core_kernel_classes_Resource instances.
      */
     public function getAllRoles()
     {

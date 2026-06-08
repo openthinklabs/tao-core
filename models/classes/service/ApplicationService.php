@@ -28,11 +28,11 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class ApplicationService extends ConfigurableService
 {
-    public const SERVICE_ID = 'tao/ApplicationService';
+    const SERVICE_ID = 'tao/ApplicationService';
 
-    public const OPTION_BUILD_NUMBER = 'taoBuildNumber';
+    const OPTION_BUILD_NUMBER = 'taoBuildNumber';
 
-    public const OPTION_INSTALLATION_FINISHED = 'installationFinished';
+    const OPTION_INSTALLATION_FINISHED = 'installationFinished';
 
     /**
      * Returns a whenever or not the current instance is used as demo instance

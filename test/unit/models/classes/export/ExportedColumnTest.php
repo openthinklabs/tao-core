@@ -60,3 +60,18 @@ class ExportedColumnTest extends TestCase
         $this->assertEquals($name, $this->fixtureColumnName);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

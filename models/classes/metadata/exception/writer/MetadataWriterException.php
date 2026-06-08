@@ -23,4 +23,5 @@ namespace oat\tao\model\metadata\exception\writer;
 
 class MetadataWriterException extends \common_Exception
 {
+
 }

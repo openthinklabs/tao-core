@@ -39,23 +39,17 @@ class Metadata implements JsonSerializable
     /** @var array */
     private $values = [];
 
-    /** @var string|null */
+    /** @var string|null  */
     private $uri;
 
-    /** @var string|null */
+    /** @var string|null  */
     private $propertyUri;
 
-    /** @var string|null */
+    /** @var string|null  */
     private $classLabel;
 
     /** @var bool */
     private $isDuplicated = false;
-
-    /** @var bool */
-    private $isSortable = false;
-
-    /** @var string */
-    private $sortId;
 
     public function getLabel(): string
     {
@@ -160,44 +154,18 @@ class Metadata implements JsonSerializable
         return $this;
     }
 
-    public function getSortId(): ?string
-    {
-        return $this->sortId;
-    }
-
-    public function setSortId(string $sortId = null): self
-    {
-        $this->sortId = $sortId;
-
-        return $this;
-    }
-
-    public function isSortable(): bool
-    {
-        return $this->isSortable;
-    }
-
-    public function setIsSortable(bool $isSortable): self
-    {
-        $this->isSortable = $isSortable;
-
-        return $this;
-    }
-
     public function jsonSerialize(): array
     {
         return [
-            'sortId' => $this->getSortId(),
-            'isSortable' => $this->isSortable(),
-            'label' => $this->getLabel(),
-            'alias' => $this->getAlias(),
-            'type' => $this->getType(),
-            'values' => $this->getValues(),
-            'isDuplicated' => $this->isDuplicated(),
-            'propertyUri' => tao_helpers_Uri::encode($this->getPropertyUri()),
-            'uri' => $this->getUri(),
+            'label' => $this->label,
+            'alias' => $this->alias,
+            'type' => $this->type,
+            'values' => $this->values,
+            'isDuplicated' => $this->isDuplicated,
+            'propertyUri' => tao_helpers_Uri::encode($this->propertyUri),
+            'uri' => $this->uri,
             'class' => [
-                'label' => $this->getClassLabel(),
+                'label' => $this->classLabel
             ],
         ];
     }

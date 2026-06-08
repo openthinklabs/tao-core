@@ -218,15 +218,7 @@ class OntologyMetadataInjectorTest extends TestCase
         $data = ['dataFixture'];
         $dryrun = 'dryrunFixture';
 
-        $writerMock = $this->getMockForAbstractClass(
-            OntologyWriter::class,
-            [],
-            '',
-            false,
-            true,
-            true,
-            ['validate', 'write', 'format']
-        );
+        $writerMock = $this->getMockForAbstractClass(OntologyWriter::class, [], '', false, true, true, ['validate', 'write', 'format']);
         $writerMock->expects($this->once())
             ->method('format')
             ->with($this->equalTo($data))
@@ -263,15 +255,7 @@ class OntologyMetadataInjectorTest extends TestCase
         $data = ['dataFixture'];
         $dryrun = 'dryrunFixture';
 
-        $writerMock = $this->getMockForAbstractClass(
-            \stdClass::class,
-            [],
-            '',
-            false,
-            true,
-            true,
-            ['validate', 'format']
-        );
+        $writerMock = $this->getMockForAbstractClass(\stdClass::class, [], '', false, true, true, ['validate', 'format']);
 
         $writerMock->expects($this->once())
             ->method('format')
@@ -300,15 +284,7 @@ class OntologyMetadataInjectorTest extends TestCase
         $data = ['dataFixture'];
         $dryrun = 'dryrunFixture';
 
-        $writerMock = $this->getMockForAbstractClass(
-            \stdClass::class,
-            [],
-            '',
-            false,
-            true,
-            true,
-            ['validate', 'format']
-        );
+        $writerMock = $this->getMockForAbstractClass(\stdClass::class, [], '', false, true, true, ['validate', 'format']);
 
         $writerMock->expects($this->once())
             ->method('format')
@@ -337,15 +313,7 @@ class OntologyMetadataInjectorTest extends TestCase
         $data = ['dataFixture'];
         $dryrun = 'dryrunFixture';
 
-        $writerMock = $this->getMockForAbstractClass(
-            OntologyWriter::class,
-            [],
-            '',
-            false,
-            true,
-            true,
-            ['validate', 'format', 'write']
-        );
+        $writerMock = $this->getMockForAbstractClass(OntologyWriter::class, [], '', false, true, true, ['validate', 'format', 'write']);
 
         $writerMock->expects($this->once())
             ->method('format')

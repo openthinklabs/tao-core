@@ -12,7 +12,9 @@
  *
  */
 
-define(['jquery', 'layout/tree/helpers'], function($, helpers) {
+define(['jquery'], function($) {
+
+
 	// jQuery plugin
 	$.tree = {
 		datastores	: { },
@@ -315,7 +317,6 @@ define(['jquery', 'layout/tree/helpers'], function($, helpers) {
 						_this.container.empty().append($("<ul class='ltr'>").html(str));
 						_this.container.find("li:last-child").addClass("last").end().find("li:has(ul)").not(".open").addClass("closed");
 						_this.container.find("li").not(".open").not(".closed").addClass("leaf");
-						helpers.setALevelVar(_this.container);
 						_this.reselect();
 					});
 				});
@@ -394,8 +395,8 @@ define(['jquery', 'layout/tree/helpers'], function($, helpers) {
 						return true;
 					});
                 this.container
-				    .on('click', 'li, dfn', function(event) { // WHEN CLICK IS ON THE ARROW
-						if(!(event.target.tagName == "LI" || event.target.tagName == "DFN")) return true;
+				    .on('click', 'li', function(event) { // WHEN CLICK IS ON THE ARROW
+						if(event.target.tagName != "LI") return true;
 						_this.off_height();
 						if(event.pageY - $(event.target).offset().top > _this.li_height) return true;
 						_this.toggle_branch.apply(_this, [event.target]);
@@ -782,7 +783,6 @@ define(['jquery', 'layout/tree/helpers'], function($, helpers) {
 
 					var _datastore = new $.tree.datastores[this.settings.data.type]();
 					_datastore.load(this.callback("beforedata",[obj,this]),this,this.settings.data.opts,function(data){
-						data.level = parseInt(obj.attr('data-level'));
 						data = _this.callback("ondata", [data, _this]);
 						if(!data || data.length == 0) {
 							obj.removeClass("closed").removeClass("open").addClass("leaf").children("ul").remove();
@@ -795,7 +795,6 @@ define(['jquery', 'layout/tree/helpers'], function($, helpers) {
 							obj.children("ul:eq(0)").replaceWith($("<ul>").html(str));
 							obj.find("li:last-child").addClass("last").end().find("li:has(ul)").not(".open").addClass("closed");
 							obj.find("li").not(".open").not(".closed").addClass("leaf");
-							helpers.setALevelVar(obj);
 							_this.open_branch.apply(_this, [obj]);
 							if(callback) callback.call();
 						});
@@ -921,9 +920,6 @@ define(['jquery', 'layout/tree/helpers'], function($, helpers) {
 				var torename = false;
 				if(!obj)	obj = {};
 				else		obj = $.extend(true, {}, obj);
-				if(!root) {
-					obj.level = parseInt(ref_node.attr('data-level'));
-				}
 				if(!obj.attributes) obj.attributes = {};
 				if(!obj.attributes[this.settings.rules.type_attr]) obj.attributes[this.settings.rules.type_attr] = this.get_type(tmp) || "default";
 				if(this.settings.languages.length) {
@@ -2037,7 +2033,6 @@ define(['jquery', 'layout/tree/helpers'], function($, helpers) {
 							'data'		: data,
 							'dataType'	: "json",
 							'success'	: function (d, textStatus) {
-								helpers.setTreeLevels(d);
 								callback.call(null, d);
 							},
 							'error'		: function (xhttp, textStatus, errorThrown) {

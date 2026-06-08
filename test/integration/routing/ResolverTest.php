@@ -38,6 +38,7 @@ use oat\oatbox\extension\exception\ManifestNotFoundException;
  */
 class ResolverTest extends GenerisPhpUnitTestRunner
 {
+
     public function testGetExtensionId()
     {
         $serviceLocator = $this->getServiceManager();

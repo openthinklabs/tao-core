@@ -11,7 +11,7 @@ views/js/test/.htaccess
 /views/css/tao-3.css.map.orig
 /views/css/tao-3.css.orig
 /views/index.html
-
+generis/
 ### OSX ###
 .DS_Store
 .AppleDouble
@@ -76,3 +76,11 @@ node_modules
 vendor/
 
 composer.lock
+package-lock.json
+
+# E2E testing files
+views/cypress/videos
+views/cypress/screenshots
+views/cypress/examples
+views/cypress/envs/*.json
+views/cypress.env.json

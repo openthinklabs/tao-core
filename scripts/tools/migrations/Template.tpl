@@ -9,11 +9,10 @@ use oat\tao\scripts\tools\migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
- *
- * phpcs:disable Squiz.Classes.ValidClassName
  */
 final class <className> extends AbstractMigration
 {
+
     public function getDescription(): string
     {
         return '';

@@ -97,6 +97,7 @@ trait FilesystemAwareTrait
      * @param string $fileName
      * @return string
      *
+     * @throws \League\Flysystem\FileExistsException
      * @throws \common_Exception
      */
     protected function saveStringToStorage($string, $fileName)

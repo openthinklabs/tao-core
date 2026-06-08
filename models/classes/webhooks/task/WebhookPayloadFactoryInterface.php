@@ -22,7 +22,7 @@ namespace oat\tao\model\webhooks\task;
 
 interface WebhookPayloadFactoryInterface
 {
-    public const SERVICE_ID = 'tao/webhookPayloadFactory';
+    const SERVICE_ID = 'tao/webhookPayloadFactory';
 
     /**
      * @param string $eventName

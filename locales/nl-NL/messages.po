@@ -1,28 +1,20 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-09-14 10:34\n"
+"Project-Id-Version: TAO 3.4.0-sprint157\n"
+"PO-Revision-Date: 2021-06-18T08:54:58\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: nl\n"
+"Language: nl-NL\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: en-GB\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"targetLanguage: nl-NL\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-Project: tao-open-source\n"
-"X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: nl\n"
-"X-Crowdin-File: /[oat-sa.tao-core] develop/locales/en-GB/messages.po\n"
-"X-Crowdin-File-ID: 617\n"
-"Language-Team: Dutch\n"
 
 msgid ""
 msgstr ""
-""
 
 msgid " and "
 msgstr " en "
@@ -133,7 +125,7 @@ msgid "7-zip archive"
 msgstr ""
 
 msgid "<del>Filters</del>"
-msgstr ""
+msgstr "<del>Filters</del>"
 
 msgid "<del>Options</del>"
 msgstr "<del>Opties</del>"
@@ -169,13 +161,13 @@ msgid "About"
 msgstr ""
 
 msgid "abs"
-msgstr ""
+msgstr "abs"
 
 msgid "Absolute value"
 msgstr "Absolute waarde"
 
 msgid "AC"
-msgstr ""
+msgstr "AC"
 
 msgid "Access Denied"
 msgstr "Toegang geweigerd"
@@ -184,7 +176,7 @@ msgid "Access denied. Please renew your authentication!"
 msgstr "Toegang geweigerd. Gelieve uw verificatie opnieuw in te voeren!"
 
 msgid "Account status"
-msgstr ""
+msgstr "Account status"
 
 msgid "Action"
 msgstr "Handeling"
@@ -585,10 +577,10 @@ msgid "Copy to clipboard"
 msgstr "Naar klembord kopiëren"
 
 msgid "cos"
-msgstr ""
+msgstr "cos"
 
 msgid "cosh"
-msgstr ""
+msgstr "cosh"
 
 msgid "Cosine"
 msgstr "Cosinus"
@@ -612,7 +604,7 @@ msgid "CSP Header settings were saved successfully!"
 msgstr ""
 
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 msgid "CSV file"
 msgstr ""
@@ -700,7 +692,7 @@ msgid "Deleting search index for %s"
 msgstr "Verwijderen van de zoekindex voor %s"
 
 msgid "Demo Sandbox"
-msgstr ""
+msgstr "Demo Sandbox"
 
 msgid "Did you mean %s?"
 msgstr ""
@@ -756,7 +748,7 @@ msgid "Dot"
 msgstr "Punt"
 
 msgid "Download"
-msgstr ""
+msgstr "Download"
 
 msgid "Download this file"
 msgstr "Download dit bestand"
@@ -784,7 +776,7 @@ msgid "Edit Instance"
 msgstr "Pas instantie aan"
 
 msgid "Element"
-msgstr ""
+msgstr "Element"
 
 msgid "Element deleted."
 msgstr "Element verwijderd"
@@ -805,7 +797,7 @@ msgid "Enhanced metafile"
 msgstr ""
 
 msgid "Enter"
-msgstr ""
+msgstr "Enter"
 
 msgid "Error"
 msgstr "Fout"
@@ -832,7 +824,7 @@ msgid "Examples:"
 msgstr ""
 
 msgid "Exclusive (OR)"
-msgstr ""
+msgstr "Exclusive (OR)"
 
 msgid "Execute"
 msgstr "Uitvoeren"
@@ -918,7 +910,7 @@ msgid "files selected"
 msgstr "geselecteerde bestanden"
 
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 msgid "Filter by value"
 msgstr "Filter op waarde"
@@ -1053,7 +1045,7 @@ msgid "Implications failed:"
 msgstr ""
 
 msgid "Import"
-msgstr ""
+msgstr "Import"
 
 msgid "Import "
 msgstr "Importeer"
@@ -1203,7 +1195,7 @@ msgid "JPEG image"
 msgstr ""
 
 msgid "Label"
-msgstr ""
+msgstr "Label"
 
 msgid "Label Path"
 msgstr ""
@@ -1541,7 +1533,7 @@ msgstr "Niets om te laten zien!"
 msgid "Notifications"
 msgstr "Notificaties"
 
-msgid "notifications drivers aren\\'t persistent. use a persistent database storage driver"
+msgid "notifications drivers aren\'t persistent. use a persistent database storage driver"
 msgstr ""
 
 msgid "Nth root"
@@ -1566,10 +1558,10 @@ msgid "Ogg Vorbis video"
 msgstr ""
 
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 msgid "Old Password"
 msgstr "Oud wachtwoord"
@@ -1774,7 +1766,7 @@ msgid "RAR archive"
 msgstr ""
 
 msgid "RDF"
-msgstr ""
+msgstr "RDF"
 
 msgid "RealMedia file"
 msgstr ""
@@ -2317,7 +2309,7 @@ msgid "Toggle the date time picker"
 msgstr ""
 
 msgid "Tokenizer"
-msgstr ""
+msgstr "Tokenizer"
 
 msgid "Too many non-option arguments: got %s, maximum of %s"
 msgstr ""
@@ -2359,7 +2351,7 @@ msgid "trunc"
 msgstr ""
 
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 msgid "Type your search"
 msgstr "Typ uw zoekopdracht in"

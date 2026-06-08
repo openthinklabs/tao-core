@@ -27,13 +27,13 @@ namespace oat\tao\model\export\implementation\sql;
  */
 class ExportedColumn
 {
-    public const TYPE_BOOLEAN = 'BOOLEAN';
-    public const TYPE_INTEGER = 'INT';
-    public const TYPE_DECIMAL = 'DECIMAL';
-    public const TYPE_VARCHAR = 'VARCHAR(16000)';
-    public const TYPE_TIMESTAMP = 'TIMESTAMP';
+    const TYPE_BOOLEAN = 'BOOLEAN';
+    const TYPE_INTEGER = 'INT';
+    const TYPE_DECIMAL = 'DECIMAL';
+    const TYPE_VARCHAR = 'VARCHAR(16000)';
+    const TYPE_TIMESTAMP = 'TIMESTAMP';
 
-    public const PREFIX = 'col_';
+    const PREFIX = 'col_';
 
     /**
      * @var string $name
@@ -87,7 +87,7 @@ class ExportedColumn
      * @param $columnName
      * @return string
      */
-    private function convertColumnName($columnName): string
+    private function convertColumnName($columnName) : string
     {
         return preg_replace(['/(\s+|-)/', '/[^A-Za-z0-9_]/'], ['_', ''], strtolower($columnName));
     }

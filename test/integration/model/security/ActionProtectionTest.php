@@ -27,6 +27,7 @@ use oat\generis\test\GenerisPhpUnitTestRunner;
  */
 class ActionProtectionTest extends GenerisPhpUnitTestRunner
 {
+
     /**
      * @var string
      */

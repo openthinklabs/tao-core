@@ -278,7 +278,7 @@ abstract class AbstractTask implements TaskInterface
     /**
      * @return array
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         $cloneMetadata = $this->metadata;
 

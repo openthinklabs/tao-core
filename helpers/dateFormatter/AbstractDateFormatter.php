@@ -32,7 +32,7 @@ use tao_helpers_Date as DateHelper;
  */
 class AbstractDateFormatter extends Configurable implements DateFormatterInterface
 {
-    public const REPLACEMENTS = [
+    const REPLACEMENTS = [
         'A' => 'A',      // for the sake of escaping below
         'a' => 'a',      // for the sake of escaping below
         'B' => '',       // Swatch internet time (.beats), no equivalent

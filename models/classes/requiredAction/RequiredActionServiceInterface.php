@@ -33,8 +33,8 @@ namespace oat\tao\model\requiredAction;
  */
 interface RequiredActionServiceInterface
 {
-    public const CONFIG_ID = 'tao/requiredAction';
-    public const OPTION_REQUIRED_ACTIONS = 'required_actions';
+    const CONFIG_ID = 'tao/requiredAction';
+    const OPTION_REQUIRED_ACTIONS = 'required_actions';
 
     /**
      * Get list of all required actions

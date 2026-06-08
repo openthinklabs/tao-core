@@ -23,9 +23,9 @@ namespace oat\tao\model\maintenance;
 
 class MaintenanceStorage
 {
-    public const LAST_MODE = 'last';
+    const LAST_MODE = 'last';
 
-    public const PREFIX = 'maintenance_';
+    const PREFIX = 'maintenance_';
 
     /**
      * Driver to access KeyValue storage

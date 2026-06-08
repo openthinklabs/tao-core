@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,10 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung
- *                         (under the project TAO-TRANSFER);
- *               2009-2012 (update and modification) Public Research Centre Henri Tudor
- *                         (under the project TAO-SUSTAIN & TAO-DEV);
+ * Copyright (c) 2008-2010 (original work) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
+ *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  *
  */
 
@@ -44,7 +41,7 @@ class tao_helpers_Scriptloader
      * @access public
      * @var string
      */
-    public const CSS = 'css';
+    const CSS = 'css';
 
     /**
      * Short description of attribute JS
@@ -52,7 +49,7 @@ class tao_helpers_Scriptloader
      * @access public
      * @var string
      */
-    public const JS = 'js';
+    const JS = 'js';
 
     /**
      * Short description of attribute jsFiles
@@ -92,16 +89,16 @@ class tao_helpers_Scriptloader
      */
     public static function contextInit($extension, $module, $action)
     {
-
-
+        
+        
         $basePath = '/' . $extension . '/views/';
-
+        
         //load module scripts
         $jsModuleFile = $basePath . self::JS . '/controllers/' . strtolower($module) . '/' . $action . '.' . self::JS;
-
+        
         $cssModuleFile = $basePath . self::CSS . '/' . $module . '.' . self::CSS;
         $cssModuleDir = $basePath . self::CSS . '/' . $module . '/';
-
+        
         if (file_exists($jsModuleFile)) {
             self::addJsFile($jsModuleFile);
         }
@@ -111,7 +108,7 @@ class tao_helpers_Scriptloader
         foreach (glob($cssModuleDir . '*.' . self::CSS) as $file) {
             self::addCssFile($file);
         }
-
+        
         //
         //@todo load action scripts
         //
@@ -129,7 +126,7 @@ class tao_helpers_Scriptloader
      */
     public static function setPaths($paths, $recursive = false, $filter = '')
     {
-
+        
         foreach ($paths as $path) {
             if (!preg_match("/\/$/", $path)) {
                 $path .= '/';
@@ -170,7 +167,7 @@ class tao_helpers_Scriptloader
      */
     public static function addFile($file, $type = '')
     {
-
+        
         if (empty($type)) {
             if (preg_match("/\." . tao_helpers_Scriptloader::CSS . "$/", $file)) {
                 $type = tao_helpers_Scriptloader::CSS;
@@ -201,7 +198,7 @@ class tao_helpers_Scriptloader
      */
     public static function addCssFile($file)
     {
-
+        
         self::addFile($file, tao_helpers_Scriptloader::CSS);
     }
 
@@ -215,7 +212,7 @@ class tao_helpers_Scriptloader
      */
     public static function addJsFile($file)
     {
-
+        
         self::addFile($file, tao_helpers_Scriptloader::JS);
     }
 
@@ -229,7 +226,7 @@ class tao_helpers_Scriptloader
      */
     public static function addCssFiles($files = [])
     {
-
+        
         foreach ($files as $file) {
             self::addFile($file, tao_helpers_Scriptloader::CSS);
         }
@@ -245,7 +242,7 @@ class tao_helpers_Scriptloader
      */
     public static function addJsFiles($files = [])
     {
-
+        
         foreach ($files as $file) {
             self::addFile($file, tao_helpers_Scriptloader::JS);
         }
@@ -262,8 +259,8 @@ class tao_helpers_Scriptloader
      */
     public static function addJsVar($name, $value = '')
     {
-
-
+        
+        
         self::$jsVars[$name] = $value;
     }
 
@@ -277,8 +274,8 @@ class tao_helpers_Scriptloader
      */
     public static function addJsVars($vars)
     {
-
-
+        
+        
         if (is_array($vars)) {
             foreach ($vars as $name => $value) {
                 if (is_int($name)) {
@@ -288,7 +285,7 @@ class tao_helpers_Scriptloader
             }
         }
     }
-
+    
     public static function getJsFiles()
     {
         return self::$jsFiles;
@@ -306,7 +303,7 @@ class tao_helpers_Scriptloader
     {
         $returnValue = (string) '';
 
-
+        
         if (empty($filter) || strtolower($filter) == tao_helpers_Scriptloader::CSS) {
             foreach (self::$cssFiles as $file) {
                 $returnValue .= "\t<link rel='stylesheet' type='text/css' href='{$file}' />\n";
@@ -324,7 +321,7 @@ class tao_helpers_Scriptloader
                 $returnValue .= "\t<script type='text/javascript' src='{$file}' ></script>\n";
             }
         }
-
+        
 
         return (string) $returnValue;
     }
